@@ -23,6 +23,21 @@
     /* 경고, 오류, 위험 상태 */
     --color-warning: #DE6A5E;
 
+    /* 기본 본문 글자 */
+    --color-text: #1F2937;
+
+    /* 설명 및 보조 글자 */
+    --color-text-subtle: #667085;
+
+    /* 입력창과 버튼 테두리 */
+    --color-border: #D9DEE7;
+
+    /* 카드와 입력창의 기본 배경 */
+    --color-surface: #FFFFFF;
+
+    /* 페이지 전체 배경 */
+    --color-page-background: #F4F6F8;
+
 
     /* =====================================================
     2. PC Grid 기본값
@@ -74,8 +89,8 @@ body {
         Arial,
         sans-serif;
 
-    color: #1F2937;
-    background: #F4F6F8;
+    color: var(--color-text);
+    background: var(--color-page-background);
 }
 
 

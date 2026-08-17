@@ -1,2 +1,7 @@
 node_modules/
 dist/
+
+# Codex analysis and revised-document working folders
+/.codex-analysis/
+/.codex-analysis-20260817/
+/dev_log_revised/

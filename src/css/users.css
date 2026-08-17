@@ -60,7 +60,7 @@
     font-size: 10px;
     font-weight: 800;
 
-    color: #667085;
+    color: var(--color-text-subtle);
 }
 
 .sidebar-link {
@@ -133,7 +133,7 @@
     font-size: 20px;
     font-weight: 800;
 
-    color: #1F2937;
+    color: var(--color-text);
 }
 
 .admin-badge {
@@ -165,13 +165,13 @@
 
     padding: 0 10px;
 
-    border: 1px solid #D9DEE7;
+    border: 1px solid var(--color-border);
     border-radius: 6px;
 
     font-size: 10px;
 
     color: #475467;
-    background: #FFFFFF;
+    background: var(--color-surface);
 }
 
 /* =========================================================
@@ -187,7 +187,7 @@
     border: 1px solid #E3E7ED;
     border-radius: 10px;
 
-    background: #FFFFFF;
+    background: var(--color-surface);
 
     box-shadow: 0 6px 18px rgba(63, 91, 134, 0.06);
 }
@@ -223,7 +223,7 @@
     font-size: 10px;
     font-weight: 700;
 
-    color: #667085;
+    color: var(--color-text-subtle);
 }
 
 .filter-select {
@@ -232,14 +232,14 @@
 
     padding: 0 10px;
 
-    border: 1px solid #D9DEE7;
+    border: 1px solid var(--color-border);
     border-radius: 6px;
     outline: 0;
 
     font-size: 10px;
 
     color: #344054;
-    background: #FFFFFF;
+    background: var(--color-surface);
 }
 
 .filter-select:focus {
@@ -266,10 +266,10 @@
 }
 
 .secondary-button {
-    border: 1px solid #D9DEE7;
+    border: 1px solid var(--color-border);
 
     color: #475467;
-    background: #FFFFFF;
+    background: var(--color-surface);
 }
 
 /* =========================================================
@@ -332,7 +332,7 @@
     font-size: 9px;
     line-height: 1.5;
 
-    color: #667085;
+    color: var(--color-text-subtle);
 
     word-break: keep-all;
 }
@@ -380,7 +380,7 @@
 .user-table th {
     font-weight: 700;
 
-    color: #667085;
+    color: var(--color-text-subtle);
     background: #FAFBFC;
 }
 
@@ -444,13 +444,13 @@
 
     padding: 0 7px;
 
-    border: 1px solid #D9DEE7;
+    border: 1px solid var(--color-border);
     border-radius: 6px;
 
     font-size: 9px;
 
     color: #475467;
-    background: #FFFFFF;
+    background: var(--color-surface);
 }
 
 .page-button.is-active {
@@ -496,14 +496,14 @@
 
     padding: 0 10px;
 
-    border: 1px solid #D9DEE7;
+    border: 1px solid var(--color-border);
     border-radius: 6px;
     outline: 0;
 
     font-size: 10px;
 
     color: #344054;
-    background: #FFFFFF;
+    background: var(--color-surface);
 }
 
 .user-form-input::placeholder {
@@ -519,7 +519,7 @@
 
 .user-form-input[readonly],
 .user-form-select:disabled {
-    color: #667085;
+    color: var(--color-text-subtle);
     background: #F7F8FA;
 }
 
@@ -527,7 +527,7 @@
     font-size: 9px;
     line-height: 1.5;
 
-    color: #667085;
+    color: var(--color-text-subtle);
 
     word-break: keep-all;
 }
@@ -573,7 +573,7 @@
     border-radius: 8px;
 
     color: #344054;
-    background: #FFFFFF;
+    background: var(--color-surface);
 }
 
 .user-mobile-item.is-selected {
@@ -599,7 +599,7 @@
 .user-mobile-sub {
     font-size: 9px;
 
-    color: #667085;
+    color: var(--color-text-subtle);
 }
 
 /* =========================================================
@@ -633,7 +633,7 @@
 
     border-radius: 10px;
 
-    background: #FFFFFF;
+    background: var(--color-surface);
 
     box-shadow: 0 18px 48px rgba(17, 24, 39, 0.18);
 }
@@ -665,7 +665,7 @@
 
     font-size: 18px;
 
-    color: #667085;
+    color: var(--color-text-subtle);
     background: transparent;
 }
 
@@ -681,7 +681,7 @@
 .password-target-user {
     font-size: 10px;
 
-    color: #667085;
+    color: var(--color-text-subtle);
 }
 
 .password-modal-actions {
@@ -738,7 +738,7 @@
     font-size: 10px;
     text-align: center;
 
-    color: #667085;
+    color: var(--color-text-subtle);
 }
 
 .detail-close-button {
@@ -754,7 +754,7 @@
 
     font-size: 18px;
 
-    color: #667085;
+    color: var(--color-text-subtle);
     background: transparent;
 }
 
@@ -917,7 +917,7 @@
         border-top: 1px solid #E3E7ED;
         border-radius: 12px 12px 0 0;
 
-        background: #FFFFFF;
+        background: var(--color-surface);
 
         box-shadow: 0 -12px 30px rgba(17, 24, 39, 0.14);
     }
