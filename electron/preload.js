@@ -27,5 +27,12 @@ contextBridge.exposeInMainWorld('erpApi', {
                 options
             }
         );
+    },
+    // 확인창 요청 함수
+    confirm(message) {
+        return ipcRenderer.invoke(
+            'dialog:confirm',
+            message
+        );
     }
 });

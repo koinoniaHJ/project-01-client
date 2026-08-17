@@ -3,7 +3,7 @@
 // Electron의 앱, 창, IPC, HTTP 통신 기능을 가져온다.
 // ipcMain: Renderer Process가 보낸 IPC 요청을 Main Process에서 받아 처리하는 기능
 // net: Main Process에서 Spring Boot 같은 외부 서버로 HTTP 요청을 보내는 Electron의 네트워크 기능
-const { app, BrowserWindow, ipcMain, net } = require('electron/main');
+const { app, BrowserWindow, ipcMain, net, dialog } = require('electron/main');
 
 // 파일 경로를 안전하게 조합하는 Node.js path 모듈을 가져온다.
 const path = require('node:path');
@@ -20,6 +20,30 @@ const ALLOWED_METHODS = new Set([
     'PATCH',
     'DELETE'
 ]);
+
+// 확인창 IPC 처리 코드
+ipcMain.handle('dialog:confirm', async (event, message) => {
+
+    // 요청을 보낸 Renderer가 속한 Electron 창을 찾는다.
+    const parentWindow = BrowserWindow.fromWebContents(event.sender);
+
+    // 해당 Electron 창에 연결된 확인창을 띄운다.
+    const result = await dialog.showMessageBox(
+        parentWindow,
+        {
+            type: 'question',
+            title: '확인',
+            message,
+            buttons: ['확인', '취소'],
+            defaultId: 0,
+            cancelId: 1,
+            noLink: true
+        }
+    );
+
+    // 첫 번째 버튼인 '확인'을 눌렀으면 true를 반환한다.
+    return result.response === 0;
+});
 
 // Renderer가 'api:request' 채널로 보낸 API 요청을 처리한다.
 ipcMain.handle('api:request', async (_event, request) => {

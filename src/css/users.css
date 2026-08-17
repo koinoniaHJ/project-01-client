@@ -1,0 +1,951 @@
+/* =========================================================
+    1. 사용자 관리 페이지 전체
+   ========================================================= */
+
+.user-page {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+
+    min-height: calc(100dvh - (var(--grid-gutter) * 2));
+
+    column-gap: var(--grid-gutter);
+}
+
+/* =========================================================
+    2. Sidebar
+   ========================================================= */
+
+.user-sidebar {
+    grid-column: 1 / span 2;
+
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+    max-height: calc(100dvh - (var(--grid-gutter) * 2));
+
+    padding-right: 16px;
+
+    gap: 18px;
+
+    overflow-y: auto;
+
+    border-right: 1px solid #E3E7ED;
+}
+
+.sidebar-brand {
+    padding: 8px 4px;
+
+    font-size: 18px;
+    font-weight: 800;
+
+    color: var(--color-primary);
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+.sidebar-group {
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+.sidebar-group-title {
+    font-size: 10px;
+    font-weight: 800;
+
+    color: #667085;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+
+    min-height: 32px;
+
+    padding: 0 10px;
+
+    border: 0;
+    border-radius: 6px;
+
+    font-size: 11px;
+    text-align: left;
+
+    color: #344054;
+    background: transparent;
+}
+
+.sidebar-link:hover {
+    background: rgba(63, 91, 134, 0.06);
+}
+
+.sidebar-link.is-active {
+    font-weight: 700;
+
+    color: var(--color-primary);
+    background: rgba(63, 91, 134, 0.10);
+}
+
+/* =========================================================
+    3. 사용자 관리 업무 영역
+   ========================================================= */
+
+.user-main {
+    grid-column: 3 / -1;
+
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    gap: 16px;
+}
+
+.user-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    min-height: 48px;
+
+    padding-bottom: 12px;
+
+    gap: 16px;
+
+    border-bottom: 1px solid #E3E7ED;
+}
+
+.user-topbar-left,
+.user-topbar-right {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+}
+
+.user-title {
+    font-size: 20px;
+    font-weight: 800;
+
+    color: #1F2937;
+}
+
+.admin-badge {
+    display: inline-flex;
+    align-items: center;
+
+    min-height: 20px;
+
+    padding: 0 7px;
+
+    border-radius: 999px;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    color: var(--color-primary);
+    background: rgba(63, 91, 134, 0.10);
+}
+
+.current-user {
+    font-size: 11px;
+    font-weight: 700;
+
+    color: #475467;
+}
+
+.logout-button {
+    height: 30px;
+
+    padding: 0 10px;
+
+    border: 1px solid #D9DEE7;
+    border-radius: 6px;
+
+    font-size: 10px;
+
+    color: #475467;
+    background: #FFFFFF;
+}
+
+/* =========================================================
+    4. 사용자 관리 Card
+   ========================================================= */
+
+.user-card {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    border: 1px solid #E3E7ED;
+    border-radius: 10px;
+
+    background: #FFFFFF;
+
+    box-shadow: 0 6px 18px rgba(63, 91, 134, 0.06);
+}
+
+.user-toolbar {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+
+    padding: 14px 16px;
+
+    gap: 14px;
+
+    border-bottom: 1px solid #E3E7ED;
+}
+
+.user-filters {
+    display: flex;
+    align-items: end;
+    flex-wrap: wrap;
+
+    gap: 12px;
+}
+
+.filter-field {
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+.filter-label {
+    font-size: 10px;
+    font-weight: 700;
+
+    color: #667085;
+}
+
+.filter-select {
+    width: 140px;
+    height: 34px;
+
+    padding: 0 10px;
+
+    border: 1px solid #D9DEE7;
+    border-radius: 6px;
+    outline: 0;
+
+    font-size: 10px;
+
+    color: #344054;
+    background: #FFFFFF;
+}
+
+.filter-select:focus {
+    border-color: var(--color-primary);
+}
+
+.primary-button,
+.secondary-button {
+    height: 34px;
+
+    padding: 0 13px;
+
+    border-radius: 6px;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.primary-button {
+    border: 0;
+
+    color: #FFFFFF;
+    background: var(--color-primary);
+}
+
+.secondary-button {
+    border: 1px solid #D9DEE7;
+
+    color: #475467;
+    background: #FFFFFF;
+}
+
+/* =========================================================
+    5. 사용자 목록 / 사용자 정보 Grid
+   ========================================================= */
+
+.user-workspace {
+    display: grid;
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+
+    min-width: 0;
+}
+
+.user-list-section {
+    grid-column: 1 / span 6;
+
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    padding: 16px;
+
+    gap: 10px;
+
+    border-right: 1px solid #E3E7ED;
+}
+
+.user-detail-section {
+    grid-column: 7 / span 4;
+
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    padding: 16px;
+
+    gap: 10px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    min-height: 28px;
+
+    gap: 10px;
+}
+
+.section-title {
+    font-size: 13px;
+    font-weight: 800;
+
+    color: #1F2937;
+}
+
+.section-description {
+    font-size: 9px;
+    line-height: 1.5;
+
+    color: #667085;
+
+    word-break: keep-all;
+}
+
+.user-count {
+    font-size: 10px;
+    font-weight: 700;
+
+    color: #475467;
+}
+
+/* =========================================================
+    6. 사용자 목록 Table
+   ========================================================= */
+
+.user-table-wrap {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+.user-table {
+    width: 100%;
+
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.user-table th,
+.user-table td {
+    height: 40px;
+
+    padding: 0 9px;
+
+    border-bottom: 1px solid #E8ECF1;
+
+    overflow: hidden;
+
+    font-size: 9px;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.user-table th {
+    font-weight: 700;
+
+    color: #667085;
+    background: #FAFBFC;
+}
+
+.user-table tbody tr {
+    cursor: pointer;
+}
+
+.user-table tbody tr:hover {
+    background: rgba(63, 91, 134, 0.04);
+}
+
+.user-table tbody tr.is-selected {
+    background: rgba(63, 91, 134, 0.09);
+}
+
+.role-badge,
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+
+    min-height: 18px;
+
+    padding: 0 6px;
+
+    border-radius: 999px;
+
+    font-size: 8px;
+    font-weight: 700;
+}
+
+.role-badge {
+    color: var(--color-primary);
+    background: rgba(63, 91, 134, 0.10);
+}
+
+.status-badge.is-active {
+    color: var(--color-accent);
+    background: rgba(79, 138, 123, 0.12);
+}
+
+.status-badge.is-inactive {
+    color: var(--color-warning);
+    background: rgba(222, 106, 94, 0.12);
+}
+
+/* =========================================================
+    7. Pagination
+   ========================================================= */
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+}
+
+.page-button {
+    min-width: 28px;
+    height: 28px;
+
+    padding: 0 7px;
+
+    border: 1px solid #D9DEE7;
+    border-radius: 6px;
+
+    font-size: 9px;
+
+    color: #475467;
+    background: #FFFFFF;
+}
+
+.page-button.is-active {
+    border-color: var(--color-primary);
+
+    color: #FFFFFF;
+    background: var(--color-primary);
+}
+
+/* =========================================================
+    8. 사용자 정보 Form
+   ========================================================= */
+
+.user-detail-form {
+    display: flex;
+    flex-direction: column;
+
+    gap: 11px;
+}
+
+.user-form-field {
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+.user-form-label {
+    font-size: 10px;
+    font-weight: 700;
+
+    color: #344054;
+}
+
+.required-mark {
+    color: var(--color-warning);
+}
+
+.user-form-input,
+.user-form-select {
+    width: 100%;
+    height: 36px;
+
+    padding: 0 10px;
+
+    border: 1px solid #D9DEE7;
+    border-radius: 6px;
+    outline: 0;
+
+    font-size: 10px;
+
+    color: #344054;
+    background: #FFFFFF;
+}
+
+.user-form-input::placeholder {
+    color: #A0A9B5;
+}
+
+.user-form-input:focus,
+.user-form-select:focus {
+    border-color: var(--color-primary);
+
+    box-shadow: 0 0 0 3px rgba(63, 91, 134, 0.08);
+}
+
+.user-form-input[readonly],
+.user-form-select:disabled {
+    color: #667085;
+    background: #F7F8FA;
+}
+
+.user-form-help {
+    font-size: 9px;
+    line-height: 1.5;
+
+    color: #667085;
+
+    word-break: keep-all;
+}
+
+.user-detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+
+    padding-top: 6px;
+
+    gap: 8px;
+}
+
+.user-detail-actions .primary-button {
+    min-width: 90px;
+}
+
+#createPasswordField[hidden],
+#createStatusHelp[hidden] {
+    display: none;
+}
+
+/* =========================================================
+    9. Mobile 사용자 목록
+   ========================================================= */
+
+.user-mobile-list {
+    display: none;
+}
+
+.user-mobile-item {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+
+    padding: 11px;
+
+    gap: 7px;
+
+    border: 1px solid #E3E7ED;
+    border-radius: 8px;
+
+    color: #344054;
+    background: #FFFFFF;
+}
+
+.user-mobile-item.is-selected {
+    border-color: var(--color-primary);
+
+    background: rgba(63, 91, 134, 0.05);
+}
+
+.user-mobile-top,
+.user-mobile-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 8px;
+}
+
+.user-mobile-name {
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.user-mobile-sub {
+    font-size: 9px;
+
+    color: #667085;
+}
+
+/* =========================================================
+    10. 비밀번호 초기화 Modal
+   ========================================================= */
+
+.password-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(17, 24, 39, 0.46);
+}
+
+.password-modal-backdrop[hidden] {
+    display: none;
+}
+
+.password-modal {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    max-width: 460px;
+
+    border-radius: 10px;
+
+    background: #FFFFFF;
+
+    box-shadow: 0 18px 48px rgba(17, 24, 39, 0.18);
+}
+
+.password-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 16px 18px;
+
+    border-bottom: 1px solid #E3E7ED;
+}
+
+.password-modal-title {
+    font-size: 15px;
+    font-weight: 800;
+
+    color: #1F2937;
+}
+
+.password-modal-close {
+    width: 28px;
+    height: 28px;
+
+    padding: 0;
+
+    border: 0;
+
+    font-size: 18px;
+
+    color: #667085;
+    background: transparent;
+}
+
+.password-modal-body {
+    display: flex;
+    flex-direction: column;
+
+    padding: 16px 18px;
+
+    gap: 11px;
+}
+
+.password-target-user {
+    font-size: 10px;
+
+    color: #667085;
+}
+
+.password-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+
+    padding: 0 18px 18px;
+
+    gap: 8px;
+}
+
+/* =========================================================
+    사용자 관리 JavaScript 동작 상태
+   ========================================================= */
+
+.user-page-error,
+.user-form-error,
+.password-reset-error {
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.5;
+
+    color: var(--color-warning);
+
+    word-break: keep-all;
+}
+
+.user-page-error {
+    padding: 10px 12px;
+
+    border: 1px solid rgba(222, 106, 94, 0.28);
+    border-radius: 6px;
+
+    background: rgba(222, 106, 94, 0.06);
+}
+
+.user-page-error[hidden],
+.user-form-error[hidden],
+.password-reset-error[hidden],
+.user-detail-empty[hidden],
+.user-detail-form[hidden] {
+    display: none;
+}
+
+.user-detail-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 240px;
+
+    padding: 20px;
+
+    font-size: 10px;
+    text-align: center;
+
+    color: #667085;
+}
+
+.detail-close-button {
+    display: none;
+
+    width: 28px;
+    height: 28px;
+
+    padding: 0;
+
+    border: 0;
+    border-radius: 6px;
+
+    font-size: 18px;
+
+    color: #667085;
+    background: transparent;
+}
+
+.primary-button:disabled,
+.secondary-button:disabled,
+.logout-button:disabled,
+.page-button:disabled {
+    cursor: default;
+
+    opacity: 0.55;
+}
+
+/* =========================================================
+    11. Tablet
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .user-sidebar {
+        display: none;
+    }
+
+    .user-main {
+        grid-column: 1 / -1;
+    }
+
+    .user-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .user-filters {
+        display: grid;
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+
+        gap: var(--grid-gutter);
+    }
+
+    .filter-field {
+        grid-column: span 3;
+    }
+
+    .filter-select {
+        width: 100%;
+    }
+
+    #filterResetButton {
+        grid-column: span 2;
+
+        align-self: end;
+    }
+
+    #newUserButton {
+        width: 100%;
+    }
+
+    .user-workspace {
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+    }
+
+    .user-list-section,
+    .user-detail-section {
+        grid-column: 1 / -1;
+    }
+
+    .user-list-section {
+        border-right: 0;
+        border-bottom: 1px solid #E3E7ED;
+    }
+}
+
+/* =========================================================
+    12. Mobile
+   ========================================================= */
+
+@media (max-width: 375px) {
+
+    .user-main {
+        gap: 12px;
+    }
+
+    .user-topbar {
+        min-height: 42px;
+    }
+
+    .user-title {
+        font-size: 17px;
+    }
+
+    .current-user {
+        display: none;
+    }
+
+    .user-card {
+        border-radius: 8px;
+    }
+
+    .user-toolbar {
+        padding: 12px;
+    }
+
+    .user-filters {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+
+        gap: 10px;
+    }
+
+    .filter-field {
+        grid-column: span 2;
+    }
+
+    #filterResetButton {
+        grid-column: 1 / -1;
+    }
+
+    .user-workspace {
+        display: block;
+    }
+
+    .user-list-section {
+        padding: 12px;
+
+        border-bottom: 0;
+    }
+
+    .section-description {
+        display: none;
+    }
+
+    .detail-close-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .user-table-wrap {
+        display: none;
+    }
+
+    .user-mobile-list {
+        display: flex;
+        flex-direction: column;
+
+        gap: 8px;
+    }
+
+    .user-detail-section {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 900;
+
+        max-height: 82dvh;
+
+        padding: 16px 20px;
+
+        overflow-y: auto;
+
+        border-top: 1px solid #E3E7ED;
+        border-radius: 12px 12px 0 0;
+
+        background: #FFFFFF;
+
+        box-shadow: 0 -12px 30px rgba(17, 24, 39, 0.14);
+    }
+
+    .user-detail-section[hidden] {
+        display: none;
+    }
+
+    .user-detail-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .user-detail-actions .primary-button {
+        grid-column: 1 / -1;
+
+        min-width: 0;
+    }
+
+    .password-modal-backdrop {
+        align-items: flex-end;
+
+        padding: 0;
+    }
+
+    .password-modal {
+        max-width: none;
+
+        border-radius: 12px 12px 0 0;
+    }
+}

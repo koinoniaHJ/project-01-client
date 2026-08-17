@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ERP User Management</title>
+
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/users.css">
+</head>
+
+<body>
+
+    <div class="page-root">
+
+        <main class="page-container user-page">
+
+            <!-- Sidebar -->
+            <aside class="user-sidebar">
+
+                <div class="sidebar-brand">ERP</div>
+
+                <nav class="sidebar-nav" aria-label="ERP 메뉴">
+
+                    <!-- 대시보드 -->
+                    <div class="sidebar-group">
+                        <button class="sidebar-link" type="button">대시보드</button>
+                    </div>
+
+                    <!-- 기준정보 -->
+                    <div class="sidebar-group">
+                        <p class="sidebar-group-title">기준정보</p>
+                        <button class="sidebar-link is-active" type="button">사용자 관리</button>
+                        <button class="sidebar-link" type="button">거래처 관리</button>
+                        <button class="sidebar-link" type="button">공급업체 관리</button>
+                        <button class="sidebar-link" type="button">품목 관리</button>
+                        <button class="sidebar-link" type="button">창고 관리</button>
+                        <button class="sidebar-link" type="button">안전재고 관리</button>
+                    </div>
+
+                    <!-- 구매 -->
+                    <div class="sidebar-group">
+                        <p class="sidebar-group-title">구매</p>
+                        <button class="sidebar-link" type="button">발주 목록</button>
+                        <button class="sidebar-link" type="button">입고 목록</button>
+                        <button class="sidebar-link" type="button">매입 반품</button>
+                    </div>
+
+                    <!-- 판매 -->
+                    <div class="sidebar-group">
+                        <p class="sidebar-group-title">판매</p>
+                        <button class="sidebar-link" type="button">주문 목록</button>
+                        <button class="sidebar-link" type="button">출고 목록</button>
+                        <button class="sidebar-link" type="button">거래처 반품</button>
+                    </div>
+
+                    <!-- 재고 -->
+                    <div class="sidebar-group">
+                        <p class="sidebar-group-title">재고</p>
+                        <button class="sidebar-link" type="button">재고 현황</button>
+                        <button class="sidebar-link" type="button">재고 변동 이력</button>
+                        <button class="sidebar-link" type="button">재고 실사</button>
+                        <button class="sidebar-link" type="button">재고 조정</button>
+                    </div>
+
+                    <!-- 정산 -->
+                    <div class="sidebar-group">
+                        <p class="sidebar-group-title">정산</p>
+                        <button class="sidebar-link" type="button">전표 조회</button>
+                        <button class="sidebar-link" type="button">입금</button>
+                        <button class="sidebar-link" type="button">매출 정산</button>
+                        <button class="sidebar-link" type="button">매입 현황</button>
+                    </div>
+
+                </nav>
+
+            </aside>
+
+            <!-- 사용자 관리 업무 영역 -->
+            <section class="user-main">
+
+                <!-- 상단 Header -->
+                <header class="user-topbar">
+
+                    <div class="user-topbar-left">
+                        <h1 class="user-title">사용자 관리</h1>
+                        <!-- <span class="admin-badge">ADMIN 전용</span> -->
+                    </div>
+                
+                    <div class="user-topbar-right">
+                        <span id="currentUserName" class="current-user">관리자</span>
+                        <button id="logoutButton" class="logout-button" type="button">로그아웃</button>
+                    </div>
+                
+                </header>
+                
+                <p id="userPageError" class="user-page-error" role="alert" aria-live="polite" hidden></p>
+
+                <!-- 사용자 관리 Card -->
+                <section class="user-card">
+
+                    <!-- 검색 조건 / 신규 등록 -->
+                    <div class="user-toolbar">
+
+                        <div class="user-filters">
+
+                            <div class="filter-field">
+                                <label class="filter-label" for="roleFilter">역할</label>
+
+                                <select id="roleFilter" class="filter-select">
+                                    <option value="">전체</option>
+                                    <option value="ADMIN">ADMIN</option>
+                                    <option value="OFFICE">OFFICE</option>
+                                    <option value="WAREHOUSE">WAREHOUSE</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-field">
+                                <label class="filter-label" for="statusFilter">사용 상태</label>
+
+                                <select id="statusFilter" class="filter-select">
+                                    <option value="">전체</option>
+                                    <option value="ACTIVE">사용중</option>
+                                    <option value="INACTIVE">사용중지</option>
+                                </select>
+                            </div>
+
+                            <button id="filterResetButton" class="secondary-button" type="button">초기화</button>
+
+                        </div>
+
+                        <button id="newUserButton" class="primary-button" type="button">+ 신규 등록</button>
+
+                    </div>
+
+                    <!-- 사용자 목록 / 사용자 정보 -->
+                    <div class="user-workspace">
+
+                        <!-- 사용자 목록 -->
+                        <section class="user-list-section">
+
+                            <div class="section-header">
+
+                                <div>
+                                    <h2 class="section-title">사용자 목록</h2>
+                                    <span id="userCount" class="user-count">전체 8건</span>
+                                </div>
+
+                                <p class="section-description">사용자를 선택하면 사용자 정보를 확인할 수 있습니다.</p>
+
+                            </div>
+
+                            <!-- PC / Tablet Table -->
+                            <div class="user-table-wrap">
+
+                                <table class="user-table">
+
+                                    <colgroup>
+                                        <col style="width: 23%;">
+                                        <col style="width: 22%;">
+                                        <col style="width: 18%;">
+                                        <col style="width: 17%;">
+                                        <col style="width: 20%;">
+                                    </colgroup>
+
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">로그인 아이디</th>
+                                            <th scope="col">사용자명</th>
+                                            <th scope="col">역할</th>
+                                            <th scope="col">상태</th>
+                                            <th scope="col">최종 로그인</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody id="userTableBody">
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                            <!-- Mobile Card 목록 -->
+                            <div id="userMobileList" class="user-mobile-list">
+                            </div>
+
+                            <!-- Pagination -->
+                            <nav id="pagination" class="pagination" aria-label="사용자 목록 페이지">
+                            </nav>
+
+                        </section>
+
+                        <!-- 사용자 정보 -->
+                        <section id="userDetailSection" class="user-detail-section">
+
+                            <div class="section-header">
+                                <h2 class="section-title">사용자 정보</h2>
+                                <p id="userDetailModeText" class="section-description">선택한 사용자 정보를 수정할 수 있습니다.</p>
+                                <button id="detailCloseButton" class="detail-close-button" type="button" aria-label="사용자 정보 닫기">×</button>
+                            </div>
+                            
+                            <div id="userDetailEmpty" class="user-detail-empty" hidden>조회된 사용자가 없습니다.</div>
+
+                            <form id="userDetailForm" class="user-detail-form">
+
+                                <!-- 로그인 아이디 -->
+                                <div class="user-form-field">
+                                    <label class="user-form-label" for="userUsername">로그인 아이디</label>
+                                    <input id="userUsername" class="user-form-input" type="text" value="office01" maxlength="50" readonly>
+                                </div>
+
+                                <!-- 사용자명 -->
+                                <div class="user-form-field">
+                                    <label class="user-form-label" for="userName">사용자명 <span class="required-mark">*</span></label>
+                                    <input id="userName" class="user-form-input" type="text" value="이오피스" maxlength="100">
+                                </div>
+
+                                <!-- 역할 -->
+                                <div class="user-form-field">
+                                    <label class="user-form-label" for="userRole">역할 <span class="required-mark">*</span></label>
+
+                                    <select id="userRole" class="user-form-select">
+                                        <option value="ADMIN">ADMIN</option>
+                                        <option value="OFFICE" selected>OFFICE</option>
+                                        <option value="WAREHOUSE">WAREHOUSE</option>
+                                    </select>
+                                </div>
+
+                                <!-- 사용 상태 -->
+                                <div class="user-form-field">
+                                    <label class="user-form-label" for="userStatus">사용 상태 <span class="required-mark">*</span></label>
+
+                                    <select id="userStatus" class="user-form-select">
+                                        <option value="ACTIVE" selected>사용중</option>
+                                        <option value="INACTIVE">사용중지</option>
+                                    </select>
+
+                                    <p id="createStatusHelp" class="user-form-help" hidden>신규 사용자는 사용중 상태로 등록됩니다.</p>
+                                </div>
+
+                                <!-- 신규 등록 시 사용할 최초 비밀번호 -->
+                                <div id="createPasswordField" class="user-form-field" hidden>
+                                    <label class="user-form-label" for="createPassword">비밀번호 <span class="required-mark">*</span></label>
+                                    <input id="createPassword" class="user-form-input" type="password" autocomplete="new-password" placeholder="최초 로그인 비밀번호를 입력하세요.">
+                                </div>
+
+                                <!-- 사용자 정보 버튼 -->
+                                <p id="userFormError" class="user-form-error" role="alert" aria-live="polite" hidden></p>
+
+                                <div class="user-detail-actions">
+                                    <button id="passwordResetButton" class="secondary-button" type="button">비밀번호 초기화</button>
+                                    <button id="statusChangeButton" class="secondary-button" type="button">상태 변경</button>
+                                    <button id="userSaveButton" class="primary-button" type="submit">저장</button>
+                                </div>
+
+                            </form>
+
+                        </section>
+
+                    </div>
+
+                </section>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <!-- 비밀번호 초기화 Modal -->
+    <div id="passwordModalBackdrop" class="password-modal-backdrop" hidden>
+
+        <form id="passwordResetForm" class="password-modal" role="dialog" aria-modal="true" aria-labelledby="passwordModalTitle">
+
+            <header class="password-modal-header">
+                <h2 id="passwordModalTitle" class="password-modal-title">비밀번호 초기화</h2>
+                <button id="passwordModalCloseButton" class="password-modal-close" type="button" aria-label="비밀번호 초기화 창 닫기">×</button>
+            </header>
+
+            <div class="password-modal-body">
+
+                <p id="passwordTargetUser" class="password-target-user">대상 사용자: 이오피스 (office01)</p>
+            
+                <div class="user-form-field">
+                    <label class="user-form-label" for="newPassword">새 비밀번호 <span class="required-mark">*</span></label>
+                    <input id="newPassword" class="user-form-input" type="password" autocomplete="new-password">
+                </div>
+            
+                <div class="user-form-field">
+                    <label class="user-form-label" for="newPasswordConfirm">새 비밀번호 확인 <span class="required-mark">*</span></label>
+                    <input id="newPasswordConfirm" class="user-form-input" type="password" autocomplete="new-password">
+                </div>
+            
+                <p id="passwordResetError" class="password-reset-error" role="alert" aria-live="polite" hidden></p>
+            
+            </div>
+
+            <div class="password-modal-actions">
+                <button id="passwordCancelButton" class="secondary-button" type="button">취소</button>
+                <button id="passwordConfirmButton" class="primary-button" type="submit">초기화</button>
+            </div>
+
+        </form>
+
+    </div>
+    <script type="module" src="../js/users.js"></script>
+</body>
+</html>
