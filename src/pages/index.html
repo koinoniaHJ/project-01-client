@@ -3,15 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ERP Client</title>
+
+    <title>ERP</title>
+
+    <link rel="stylesheet" href="../css/common.css">
 </head>
+
 <body>
-    <h1>ERP Client</h1>
 
-    <button id="testApiButton">API 테스트</button>
+    <div class="page-root">
 
-    <pre id="result"></pre>
+        <main class="page-container stack">
+
+            <header class="row">
+
+                <h1>ERP</h1>
+
+                <span id="currentUserName"></span>
+
+                <span id="currentUserRole"></span>
+
+                <button id="logoutButton" type="button">로그아웃</button>
+
+            </header>
+
+            <p id="pageError" role="alert" hidden></p>
+
+        </main>
+
+    </div>
 
     <script type="module" src="../js/index.js"></script>
+
 </body>
 </html>

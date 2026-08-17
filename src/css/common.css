@@ -1,0 +1,263 @@
+/* =========================================================
+    ERP Common Style
+    - 공통 컬러 시스템
+    - PC / Tablet / Mobile 반응형 Grid
+    - 화면 가장자리 여백은 margin이 아닌 padding으로 처리
+   ========================================================= */
+
+
+/* =========================================================
+    1. 공통 컬러 시스템
+   ========================================================= */
+
+:root {
+    /* 주요 액션, 선택 상태 */
+    --color-primary: #3F5B86;
+
+    /* 보조 액션, 보조 UI */
+    --color-secondary: #8193AC;
+
+    /* 강조 정보, 정상 상태 */
+    --color-accent: #4F8A7B;
+
+    /* 경고, 오류, 위험 상태 */
+    --color-warning: #DE6A5E;
+
+
+    /* =====================================================
+    2. PC Grid 기본값
+    1200px / 12 Columns
+    Margin 40px / Gutter 20px
+    Column 75px
+    ===================================================== */
+
+    --page-max-width: 1200px;
+
+    /* 화면 좌우 가장자리와 실제 콘텐츠 사이 간격 */
+    --page-padding-inline: 40px;
+
+    /*
+     * 컬럼 사이 간격
+     * 동시에 화면 위·아래 기본 padding으로 사용
+     */
+    --grid-gutter: 20px;
+
+    --grid-columns: 12;
+}
+
+
+/* =========================================================
+    3. 기본 Reset
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    min-width: 320px;
+
+    font-family:
+        Pretendard,
+        "Noto Sans KR",
+        "Apple SD Gothic Neo",
+        Arial,
+        sans-serif;
+
+    color: #1F2937;
+    background: #F4F6F8;
+}
+
+
+/*
+ * 기본 margin을 사용하지 않고
+ * 필요한 간격은 각 영역의 padding 또는 gap으로 처리한다.
+ */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    margin: 0;
+}
+
+
+/* form 요소에서도 공통 폰트를 그대로 사용한다. */
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+
+/* =========================================================
+    4. 전체 화면 Root
+   ========================================================= */
+
+/*
+ * 페이지를 화면 가운데 배치하기 위한 외부 영역
+ *
+ * margin: 0 auto를 사용하지 않고
+ * Flexbox의 justify-content로 가운데 정렬한다.
+ */
+.page-root {
+    display: flex;
+    justify-content: center;
+
+    width: 100%;
+    min-height: 100dvh;
+}
+
+
+/* =========================================================
+    5. 공통 Page Container
+   ========================================================= */
+
+/*
+ * 모든 실제 ERP 페이지의 최상위 Container
+ *
+ * PC 기준
+ * ┌─ 40px ─ 콘텐츠 ─ 40px ─┐
+ *
+ * 위·아래에는 gutter와 동일한 20px padding을 적용한다.
+ */
+.page-container {
+    width: 100%;
+    max-width: var(--page-max-width);
+    min-height: 100dvh;
+
+    padding:
+        var(--grid-gutter) var(--page-padding-inline);
+}
+
+
+/* =========================================================
+    6. 공통 Grid
+   ========================================================= */
+
+/*
+ * 최대 1200px일 때
+ *
+ * 전체 1200
+ * - 좌우 padding 40 × 2
+ * - gutter 20 × 11
+ * - column 75 × 12
+ *
+ * = 1200px
+ */
+.grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(var(--grid-columns),
+            minmax(0, 1fr));
+
+    gap: var(--grid-gutter);
+}
+
+
+/*
+ * 가로 방향 간격만 Grid gutter를 사용하고 싶을 때
+ */
+.grid-horizontal {
+    display: grid;
+
+    grid-template-columns:
+        repeat(var(--grid-columns),
+            minmax(0, 1fr));
+
+    column-gap: var(--grid-gutter);
+}
+
+
+/* =========================================================
+    7. 공통 Stack
+   ========================================================= */
+
+/*
+ * 세로 방향 요소 간 간격 역시 margin 대신 gap 사용
+ */
+.stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--grid-gutter);
+}
+
+
+/*
+ * 가로 방향 요소 간 간격
+ */
+.row {
+    display: flex;
+    align-items: center;
+    gap: var(--grid-gutter);
+}
+
+
+/* =========================================================
+    8. Tablet
+    768px / 8 Columns
+    Margin 32px / Gutter 24px
+    Column 67px
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    :root {
+        --page-max-width: 768px;
+
+        --page-padding-inline: 32px;
+
+        --grid-gutter: 24px;
+
+        --grid-columns: 8;
+    }
+}
+
+
+/* =========================================================
+    9. Mobile
+    375px 기준
+    실제 Grid Page Width 372px
+    4 Columns
+    Margin 20px / Gutter 12px
+    Column 74px
+   ========================================================= */
+
+@media (max-width: 375px) {
+
+    :root {
+        /*
+         * 첨부한 Grid 계산:
+         *
+         * 20 × 2
+         * + 74 × 4
+         * + 12 × 3
+         * = 372px
+         */
+        --page-max-width: 372px;
+
+        --page-padding-inline: 20px;
+
+        --grid-gutter: 12px;
+
+        --grid-columns: 4;
+    }
+}

@@ -1,0 +1,477 @@
+/* =========================================================
+    1. 로그인 페이지 전체
+   ========================================================= */
+
+    .login-page {
+    display: flex;
+    flex-direction: column;
+
+    min-height:
+        calc(
+            100dvh - (var(--grid-gutter) * 2)
+        );
+
+    gap: var(--grid-gutter);
+}
+
+
+/*
+ * 로그인 본문 Grid
+ *
+ * PC에서는 왼쪽 절반을 비워 두고,
+ * 오른쪽 영역에 로그인 화면을 배치한다.
+ */
+.login-layout {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            var(--grid-columns),
+            minmax(0, 1fr)
+        );
+
+    column-gap: var(--grid-gutter);
+
+    flex: 1;
+    align-items: center;
+}
+
+
+/* PC 시안의 왼쪽 영역: 콘텐츠를 넣지 않는 빈 영역 */
+.login-blank {
+    grid-column: 1 / span 6;
+
+    min-height: 560px;
+}
+
+
+/* 오른쪽 로그인 영역 */
+.login-panel {
+    grid-column: 7 / span 6;
+
+    display: flex;
+    justify-content: center;
+}
+
+
+/*
+ * 로그인 실제 콘텐츠 폭
+ * Grid 안에서 가운데 정렬하며 별도의 margin은 사용하지 않는다.
+ */
+.login-panel-inner {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    max-width: 460px;
+
+    gap: 20px;
+}
+
+
+/* =========================================================
+    2. ERP 제목 영역
+   ========================================================= */
+
+.login-brand {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    text-align: center;
+
+    gap: 6px;
+}
+
+.login-brand-title {
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1.2;
+
+    color: var(--color-primary);
+}
+
+.login-brand-subtitle {
+    font-size: 15px;
+    font-weight: 700;
+
+    color: var(--color-text);
+}
+
+.login-brand-description {
+    font-size: 12px;
+    line-height: 1.6;
+
+    color: var(--color-text-subtle);
+    word-break: keep-all;
+}
+
+
+/* =========================================================
+    3. 로그인 Card
+   ========================================================= */
+
+.login-card {
+    display: flex;
+    flex-direction: column;
+
+    padding: 28px;
+
+    gap: 20px;
+
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+
+    background: var(--color-surface);
+
+    box-shadow:
+        0 8px 24px
+        rgba(63, 91, 134, 0.08);
+}
+
+.login-card-title {
+    font-size: 22px;
+    font-weight: 800;
+
+    color: var(--color-text);
+}
+
+
+/* =========================================================
+    4. 로그인 Form
+   ========================================================= */
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+
+    gap: 16px;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+.form-label {
+    font-size: 12px;
+    font-weight: 700;
+
+    color: var(--color-text);
+}
+
+
+/*
+ * Input 외곽 Wrapper
+ * 아이콘과 실제 input을 한 줄에 배치한다.
+ */
+.form-input-shell {
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+    height: 44px;
+
+    padding: 0 12px;
+
+    gap: 10px;
+
+    border: 1px solid var(--color-border);
+    border-radius: 7px;
+
+    background: var(--color-surface);
+}
+
+.form-input-shell:focus-within {
+    border-color: var(--color-primary);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(63, 91, 134, 0.10);
+}
+
+.form-input-shell.is-error {
+    border-color: var(--color-warning);
+}
+
+.form-input-icon {
+    flex: 0 0 auto;
+
+    width: 18px;
+    height: 18px;
+
+    color: var(--color-secondary);
+}
+
+.form-input {
+    flex: 1;
+
+    min-width: 0;
+    height: 100%;
+
+    padding: 0;
+
+    border: 0;
+    outline: 0;
+
+    color: var(--color-text);
+    background: transparent;
+}
+
+.form-input::placeholder {
+    color: #A0A9B5;
+    font-size: 12px;
+}
+
+
+/* 비밀번호 보기 버튼 */
+.password-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 auto;
+
+    width: 28px;
+    height: 28px;
+
+    padding: 0;
+
+    border: 0;
+    border-radius: 6px;
+
+    color: var(--color-secondary);
+    background: transparent;
+}
+
+.password-toggle:hover {
+    background:
+        rgba(129, 147, 172, 0.10);
+}
+
+
+/* =========================================================
+    5. 인증 실패 메시지
+   ========================================================= */
+
+.login-error {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 7px;
+
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.5;
+
+    color: var(--color-warning);
+}
+
+.login-error[hidden] {
+    display: none;
+}
+
+.login-error-icon {
+    flex: 0 0 auto;
+
+    width: 16px;
+    height: 16px;
+}
+
+
+/* =========================================================
+    6. 로그인 버튼
+   ========================================================= */
+
+.login-button {
+    width: 100%;
+    height: 44px;
+
+    padding: 0 16px;
+
+    border: 0;
+    border-radius: 7px;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    color: #FFFFFF;
+    background: var(--color-primary);
+}
+
+.login-button:hover {
+    filter: brightness(0.96);
+}
+
+.login-button:focus-visible {
+    outline: 3px solid rgba(63, 91, 134, 0.24);
+    outline-offset: 2px;
+}
+
+
+/* =========================================================
+    7. Session 보안 안내
+   ========================================================= */
+
+.login-security {
+    display: flex;
+    align-items: flex-start;
+
+    padding: 14px;
+
+    gap: 12px;
+
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+
+    background: #FAFBFC;
+}
+
+.login-security-icon {
+    flex: 0 0 auto;
+
+    width: 24px;
+    height: 24px;
+
+    color: var(--color-primary);
+}
+
+.login-security-content {
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+.login-security-title {
+    font-size: 12px;
+    font-weight: 800;
+
+    color: var(--color-text);
+}
+
+.login-security-description {
+    font-size: 11px;
+    line-height: 1.5;
+
+    color: var(--color-text-subtle);
+    word-break: keep-all;
+}
+
+
+/* =========================================================
+    8. Footer
+   ========================================================= */
+
+.login-footer {
+    display: flex;
+    justify-content: center;
+
+    width: 100%;
+
+    padding: 4px 0;
+
+    font-size: 10px;
+
+    color: var(--color-secondary);
+}
+
+
+/* =========================================================
+    9. Tablet
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .login-blank {
+        display: none;
+    }
+
+    /*
+     * Tablet 8 Column 중 가운데 6 Column 사용
+     */
+    .login-panel {
+        grid-column: 2 / span 6;
+    }
+
+    .login-panel-inner {
+        max-width: 100%;
+
+        gap: 18px;
+    }
+
+    .login-card {
+        padding: 24px;
+    }
+}
+
+
+/* =========================================================
+    10. Mobile
+   ========================================================= */
+
+@media (max-width: 375px) {
+
+    /*
+     * Mobile 4 Column 전체 사용
+     */
+    .login-panel {
+        grid-column: 1 / -1;
+    }
+
+    .login-panel-inner {
+        gap: 12px;
+    }
+
+    .login-brand {
+        gap: 4px;
+    }
+
+    .login-brand-title {
+        font-size: 24px;
+    }
+
+    .login-brand-subtitle {
+        font-size: 12px;
+    }
+
+    .login-brand-description {
+        display: none;
+    }
+
+    .login-card {
+        padding: 16px;
+
+        gap: 16px;
+
+        border-radius: 10px;
+    }
+
+    .login-card-title {
+        font-size: 18px;
+    }
+
+    .login-form {
+        gap: 12px;
+    }
+
+    .form-input-shell {
+        height: 40px;
+    }
+
+    .login-button {
+        height: 40px;
+    }
+
+    .login-security {
+        padding: 12px;
+
+        gap: 10px;
+    }
+
+    .login-footer {
+        font-size: 9px;
+    }
+}

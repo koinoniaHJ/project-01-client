@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ERP Login</title>
+
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/login.css">
+</head>
+
+<body>
+
+    <div class="page-root">
+
+        <main class="page-container login-page">
+
+            <section class="login-layout">
+
+                <!--
+                    PC 시안의 왼쪽 영역
+                    추후 필요할 때 이미지 또는 안내 영역을 추가한다.
+                    현재는 아무 콘텐츠도 표시하지 않는다.
+                -->
+                <div class="login-blank" aria-hidden="true"></div>
+
+                <section class="login-panel" aria-labelledby="loginTitle">
+
+                    <div class="login-panel-inner">
+
+                        <!-- ERP 제목 -->
+                        <header class="login-brand">
+
+                            <h1 class="login-brand-title">ERP</h1>
+
+                            <p class="login-brand-subtitle">비즈니스의 모든 통합 관리</p>
+
+                            <p class="login-brand-description">
+                                업무의 흐름을 줄이고,
+                                더 스마트한 업무 경험을 실현하세요.
+                            </p>
+
+                        </header>
+
+                        <!-- 로그인 Card -->
+                        <section class="login-card">
+
+                            <h2 id="loginTitle" class="login-card-title">로그인</h2>
+
+                            <form id="loginForm" class="login-form">
+
+                                <!-- 로그인 아이디 -->
+                                <div class="form-field">
+
+                                    <label for="username" class="form-label">로그인 아이디</label>
+
+                                    <div class="form-input-shell">
+
+                                        <!-- 사용자 아이콘 -->
+                                        <svg class="form-input-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                            <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                                            <path d="M5 20a7 7 0 0 1 14 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                                        </svg>
+
+                                        <input id="username" name="username" class="form-input" type="text" autocomplete="username" placeholder="아이디를 입력하세요." required>
+
+                                    </div>
+
+                                </div>
+
+                                <!-- 비밀번호 -->
+                                <div class="form-field">
+
+                                    <label for="password" class="form-label">비밀번호</label>
+
+                                    <div class="form-input-shell">
+
+                                        <!-- 자물쇠 아이콘 -->
+                                        <svg class="form-input-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                            <rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.8" />
+                                            <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                                        </svg>
+
+                                        <input id="password" name="password" class="form-input" type="password" autocomplete="current-password" placeholder="비밀번호를 입력하세요." required>
+
+                                        <!-- 비밀번호 보기 버튼 -->
+                                        <button id="passwordToggle" class="password-toggle" type="button" aria-label="비밀번호 표시">
+
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                                <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6 -3.5 6-9.5 6 -9.5-6-9.5-6Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                                                <circle cx="12" cy="12" r="2.5" stroke="currentColor" stroke-width="1.8" />
+                                            </svg>
+
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                                <!--
+                                    인증 실패 시 표시할 오류 영역
+                                    로그인 API 호출 결과에 따라 JavaScript에서 표시한다.
+                                -->
+                                <p id="loginError" class="login-error" role="alert" aria-live="polite" hidden>
+
+                                    <svg class="login-error-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                        <path d="M12 4 21 20H3L12 4Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+                                        <path d="M12 9v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                                        <circle cx="12" cy="17" r="1" fill="currentColor" />
+                                    </svg>
+
+                                    <span>아이디 또는 비밀번호가 올바르지 않습니다.</span>
+
+                                </p>
+
+                                <!-- 로그인 버튼 -->
+                                <button id="loginButton" class="login-button" type="submit">로그인</button>
+
+                            </form>
+
+                            <!-- Session 기반 보안 안내 -->
+                            <div class="login-security">
+
+                                <svg class="login-security-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                    <path d="M12 3 20 6v5 c0 5-3.4 8.2-8 10 -4.6-1.8-8-5-8-10V6l8-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" />
+                                    <path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+
+                                <div class="login-security-content">
+                                    <p class="login-security-title">ERP 업무 시스템</p>
+                                    <p class="login-security-description">등록된 계정으로 로그인하여 업무를 시작하세요.</p>
+                                </div>
+
+                            </div>
+
+                        </section>
+
+                    </div>
+
+                </section>
+
+            </section>
+
+            <footer class="login-footer">© 2026 ERP. All rights reserved.</footer>
+
+        </main>
+
+    </div>
+
+    <script type="module" src="../js/login.js"></script>
+
+</body>
+</html>

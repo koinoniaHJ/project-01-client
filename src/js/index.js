@@ -1,19 +1,54 @@
-import { api } from './api.js';
-// api.js에서 export한 api 객체를 가져와 현재 파일에서 사용한다.
+// ********** 메인 화면의 사용자 정보 표시와 로그아웃 처리 **********
 
-const testApiButton = document.querySelector('#testApiButton');
-const result = document.querySelector('#result');
+import { getApiErrorMessage } from './api.js';
+import { requireAuth, logout } from './auth.js';
 
-// API 테스트 버튼 클릭 이벤트 등록
-testApiButton.addEventListener('click', async () => {
+
+const currentUserName = document.querySelector('#currentUserName');
+const currentUserRole = document.querySelector('#currentUserRole');
+const logoutButton = document.querySelector('#logoutButton');
+const pageError = document.querySelector('#pageError');
+
+async function initialize() {
+
     try {
-        // 공통 api.get()을 통해 GET /api/v1/test/success 요청
-        const body = await api.get('/test/success');
 
-        // 성공 응답 객체를 보기 쉬운 JSON 문자열로 변환하여 화면에 출력
-        result.textContent = JSON.stringify(body, null, 2);
+        const user = await requireAuth();
+
+        if (!user) {
+            return; // initialize() 종료
+        }
+
+        currentUserName.textContent = user.userName;
+
+        currentUserRole.textContent = user.role;
+
     } catch (error) {
-        // API 호출 실패 시 전달받은 오류 응답을 화면에 출력
-        result.textContent = JSON.stringify(error, null, 2);
+
+        pageError.textContent =
+            getApiErrorMessage(error, '현재 사용자 정보를 불러오지 못했습니다.');
+
+        pageError.hidden = false;
     }
-});
+}
+
+logoutButton.addEventListener('click', async () => {
+
+        logoutButton.disabled = true;
+
+        try {
+
+            await logout();
+
+        } catch (error) {
+
+            pageError.textContent = getApiErrorMessage(error, '로그아웃 중 오류가 발생했습니다.');
+
+            pageError.hidden = false;
+
+            logoutButton.disabled = false;
+        }
+    }
+);
+
+initialize();
