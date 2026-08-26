@@ -25,6 +25,9 @@ let mobileDetailOpen = false;
 const currentUserName = document.querySelector('#currentUserName');
 const logoutButton = document.querySelector('#logoutButton');
 const userPageError = document.querySelector('#userPageError');
+const dashboardMenuButton = document.querySelector('#dashboardMenuButton');
+const usersMenuButton = document.querySelector('#usersMenuButton');
+const customersMenuButton = document.querySelector('#customersMenuButton');
 
 // ========== 사용자 목록 Filter ==========
 const roleFilter = document.querySelector('#roleFilter');
@@ -924,6 +927,11 @@ async function handleLogout() {
 
 // + 신규 등록
 newUserButton.addEventListener('click', enterCreateMode);
+
+// 현재 구현된 공통 업무 화면 이동
+dashboardMenuButton.addEventListener('click', () => window.location.href = './index.html');
+usersMenuButton.addEventListener('click', () => window.location.href = './users.html');
+customersMenuButton.addEventListener('click', () => window.location.href = './customers.html');
 
 // 역할 / 사용 상태 Filter
 roleFilter.addEventListener('change', applyFilters);

@@ -1,0 +1,1377 @@
+/* =========================================================
+    1. 거래처 관리 페이지 전체
+   ========================================================= */
+
+   .customer-page {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+
+    min-height: calc(100dvh - (var(--grid-gutter) * 2));
+
+    column-gap: var(--grid-gutter);
+}
+
+
+/* =========================================================
+    2. Sidebar
+   ========================================================= */
+
+.customer-sidebar {
+    grid-column: 1 / span 2;
+
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+    max-height: calc(100dvh - (var(--grid-gutter) * 2));
+
+    padding-right: 16px;
+
+    gap: 18px;
+
+    overflow-y: auto;
+
+    border-right: 1px solid #E3E7ED;
+}
+
+.sidebar-brand {
+    padding: 8px 4px;
+
+    font-size: 18px;
+    font-weight: 800;
+
+    color: var(--color-primary);
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+.sidebar-group {
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+.sidebar-group-title {
+    font-size: 10px;
+    font-weight: 800;
+
+    color: var(--color-text-subtle);
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+
+    min-height: 32px;
+
+    padding: 0 10px;
+
+    border: 0;
+    border-radius: 6px;
+
+    font-size: 11px;
+    text-align: left;
+
+    color: #344054;
+    background: transparent;
+}
+
+.sidebar-link:hover {
+    background: rgba(63, 91, 134, 0.06);
+}
+
+.sidebar-link.is-active {
+    font-weight: 700;
+
+    color: var(--color-primary);
+    background: rgba(63, 91, 134, 0.10);
+}
+
+
+/* =========================================================
+    3. 거래처 관리 업무 영역
+   ========================================================= */
+
+.customer-main {
+    grid-column: 3 / -1;
+
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    gap: 16px;
+}
+
+.customer-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    min-height: 48px;
+
+    padding-bottom: 12px;
+
+    gap: 16px;
+
+    border-bottom: 1px solid #E3E7ED;
+}
+
+.customer-topbar-left,
+.customer-topbar-right {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+}
+
+.customer-title {
+    font-size: 20px;
+    font-weight: 800;
+
+    color: var(--color-text);
+}
+
+.current-user {
+    font-size: 11px;
+    font-weight: 700;
+
+    color: #475467;
+}
+
+.logout-button {
+    height: 30px;
+
+    padding: 0 10px;
+
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+
+    font-size: 10px;
+
+    color: #475467;
+    background: var(--color-surface);
+}
+
+
+/* =========================================================
+    4. 거래처 관리 Card와 검색 영역
+   ========================================================= */
+
+.customer-card {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    border: 1px solid #E3E7ED;
+    border-radius: 10px;
+
+    background: var(--color-surface);
+
+    box-shadow: 0 6px 18px rgba(63, 91, 134, 0.06);
+}
+
+.customer-toolbar {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+
+    padding: 14px 16px;
+
+    gap: 14px;
+
+    border-bottom: 1px solid #E3E7ED;
+}
+
+.customer-filters {
+    display: flex;
+    align-items: end;
+    flex-wrap: wrap;
+
+    gap: 10px;
+}
+
+.filter-field {
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+.customer-keyword-field {
+    width: 220px;
+}
+
+.filter-label {
+    font-size: 10px;
+    font-weight: 700;
+
+    color: var(--color-text-subtle);
+}
+
+.filter-input,
+.filter-select {
+    width: 120px;
+    height: 34px;
+
+    padding: 0 10px;
+
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    outline: 0;
+
+    font-size: 10px;
+
+    color: #344054;
+    background: var(--color-surface);
+}
+
+.filter-input {
+    width: 100%;
+}
+
+.filter-input::placeholder {
+    color: #A0A9B5;
+}
+
+.filter-input:focus,
+.filter-select:focus {
+    border-color: var(--color-primary);
+
+    box-shadow: 0 0 0 3px rgba(63, 91, 134, 0.08);
+}
+
+.primary-button,
+.secondary-button {
+    height: 34px;
+
+    padding: 0 13px;
+
+    border-radius: 6px;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.primary-button {
+    border: 0;
+
+    color: #FFFFFF;
+    background: var(--color-primary);
+}
+
+.primary-button:hover {
+    filter: brightness(0.96);
+}
+
+.secondary-button {
+    border: 1px solid var(--color-border);
+
+    color: #475467;
+    background: var(--color-surface);
+}
+
+.secondary-button:hover,
+.logout-button:hover {
+    background: #F7F8FA;
+}
+
+.primary-button:focus-visible,
+.secondary-button:focus-visible,
+.logout-button:focus-visible,
+.sidebar-link:focus-visible {
+    outline: 3px solid rgba(63, 91, 134, 0.18);
+    outline-offset: 2px;
+}
+
+
+/* =========================================================
+    5. 거래처 목록과 상세정보 Grid
+   ========================================================= */
+
+.customer-workspace {
+    display: grid;
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+
+    min-width: 0;
+}
+
+.customer-list-section {
+    grid-column: 1 / span 6;
+
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    padding: 16px;
+
+    gap: 10px;
+
+    border-right: 1px solid #E3E7ED;
+}
+
+.customer-detail-section {
+    grid-column: 7 / span 4;
+
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    padding: 16px;
+
+    gap: 14px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    min-height: 28px;
+
+    gap: 10px;
+}
+
+.section-title {
+    font-size: 13px;
+    font-weight: 800;
+
+    color: var(--color-text);
+}
+
+.section-description {
+    font-size: 9px;
+    line-height: 1.5;
+
+    color: var(--color-text-subtle);
+
+    word-break: keep-all;
+}
+
+.customer-count {
+    font-size: 10px;
+    font-weight: 700;
+
+    color: #475467;
+}
+
+
+/* =========================================================
+    6. 거래처 목록 Table
+   ========================================================= */
+
+.customer-table-wrap {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+.customer-table {
+    width: 100%;
+    min-width: 650px;
+
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.customer-table th,
+.customer-table td {
+    height: 40px;
+
+    padding: 0 8px;
+
+    border-bottom: 1px solid #E8ECF1;
+
+    overflow: hidden;
+
+    font-size: 9px;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.customer-table th {
+    font-weight: 700;
+
+    color: var(--color-text-subtle);
+    background: #FAFBFC;
+}
+
+.customer-table tbody tr {
+    cursor: pointer;
+}
+
+.customer-table tbody tr:hover {
+    background: rgba(63, 91, 134, 0.04);
+}
+
+.customer-table tbody tr.is-selected {
+    background: rgba(63, 91, 134, 0.09);
+}
+
+.customer-table th:last-child,
+.customer-table td:last-child {
+    text-align: right;
+}
+
+.customer-empty-row {
+    cursor: default;
+}
+
+.customer-empty-row:hover {
+    background: transparent;
+}
+
+.customer-empty-row td {
+    height: 120px;
+
+    text-align: center;
+
+    color: var(--color-text-subtle);
+}
+
+
+/* 사용 상태와 거래 상태 Badge 공통 형태 */
+.status-badge,
+.trade-status-badge {
+    display: inline-flex;
+    align-items: center;
+
+    min-height: 18px;
+
+    padding: 0 6px;
+
+    border-radius: 999px;
+
+    font-size: 8px;
+    font-weight: 700;
+}
+
+.status-badge.is-active {
+    color: var(--color-accent);
+    background: rgba(79, 138, 123, 0.12);
+}
+
+.status-badge.is-inactive {
+    color: var(--color-warning);
+    background: rgba(222, 106, 94, 0.12);
+}
+
+.trade-status-badge.is-normal {
+    color: var(--color-primary);
+    background: rgba(63, 91, 134, 0.10);
+}
+
+.trade-status-badge.is-hold {
+    color: var(--color-warning);
+    background: rgba(222, 106, 94, 0.12);
+}
+
+
+/* =========================================================
+    7. Pagination
+   ========================================================= */
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 28px;
+
+    gap: 5px;
+}
+
+.page-button {
+    min-width: 28px;
+    height: 28px;
+
+    padding: 0 7px;
+
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+
+    font-size: 9px;
+
+    color: #475467;
+    background: var(--color-surface);
+}
+
+.page-button:hover:not(:disabled) {
+    border-color: var(--color-primary);
+
+    color: var(--color-primary);
+}
+
+.page-button.is-active {
+    border-color: var(--color-primary);
+
+    color: #FFFFFF;
+    background: var(--color-primary);
+}
+
+
+/* =========================================================
+    8. 거래처 상세정보 Form
+   ========================================================= */
+
+.customer-detail-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 300px;
+
+    padding: 20px;
+
+    font-size: 10px;
+    line-height: 1.6;
+    text-align: center;
+
+    color: var(--color-text-subtle);
+}
+
+.customer-detail-form {
+    display: flex;
+    flex-direction: column;
+
+    gap: 14px;
+}
+
+.customer-form-section {
+    display: flex;
+    flex-direction: column;
+
+    padding-bottom: 14px;
+
+    gap: 10px;
+
+    border-bottom: 1px solid #E8ECF1;
+}
+
+.customer-form-section:last-of-type {
+    border-bottom: 0;
+}
+
+.customer-form-section-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 10px;
+}
+
+.customer-form-section-title {
+    font-size: 11px;
+    font-weight: 800;
+
+    color: #344054;
+}
+
+.customer-form-section-description {
+    font-size: 9px;
+    line-height: 1.5;
+
+    color: var(--color-text-subtle);
+
+    word-break: keep-all;
+}
+
+.customer-summary-grid,
+.customer-form-grid,
+.customer-address-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+}
+
+.customer-form-field {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    gap: 5px;
+}
+
+.customer-form-field-wide,
+.customer-form-field-full {
+    grid-column: 1 / -1;
+}
+
+.customer-postal-field {
+    grid-column: span 1;
+}
+
+.customer-address-field {
+    grid-column: span 1;
+}
+
+.customer-form-label {
+    font-size: 10px;
+    font-weight: 700;
+
+    color: #344054;
+}
+
+.required-mark {
+    color: var(--color-warning);
+}
+
+.customer-form-input,
+.customer-form-textarea {
+    width: 100%;
+
+    padding: 0 10px;
+
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    outline: 0;
+
+    font-size: 10px;
+    line-height: 1.5;
+
+    color: #344054;
+    background: var(--color-surface);
+}
+
+.customer-form-input {
+    height: 36px;
+}
+
+.customer-form-textarea {
+    min-height: 80px;
+
+    padding-top: 9px;
+    padding-bottom: 9px;
+
+    resize: vertical;
+}
+
+.customer-form-input::placeholder,
+.customer-form-textarea::placeholder {
+    color: #A0A9B5;
+}
+
+.customer-form-input:focus,
+.customer-form-textarea:focus {
+    border-color: var(--color-primary);
+
+    box-shadow: 0 0 0 3px rgba(63, 91, 134, 0.08);
+}
+
+.customer-form-input[readonly],
+.customer-form-input:disabled,
+.customer-form-textarea:disabled {
+    color: var(--color-text-subtle);
+    background: #F7F8FA;
+}
+
+.customer-status-value {
+    display: flex;
+    align-items: center;
+
+    min-height: 36px;
+}
+
+.customer-receivable-amount {
+    display: flex;
+    align-items: center;
+
+    min-height: 36px;
+
+    font-size: 12px;
+
+    color: var(--color-primary);
+}
+
+.customer-detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+
+    padding-top: 2px;
+
+    gap: 8px;
+}
+
+.customer-detail-actions .primary-button {
+    min-width: 88px;
+}
+
+
+/* =========================================================
+    9. 거래 상태 변경 이력
+   ========================================================= */
+
+.trade-history-section {
+    display: flex;
+    flex-direction: column;
+
+    padding-top: 2px;
+
+    gap: 10px;
+
+    border-top: 1px solid #E3E7ED;
+}
+
+.trade-history-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 10px;
+}
+
+.trade-history-count {
+    font-size: 9px;
+    font-weight: 700;
+
+    color: #475467;
+}
+
+.trade-history-table-wrap {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+.trade-history-table {
+    width: 100%;
+    min-width: 520px;
+
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.trade-history-table th,
+.trade-history-table td {
+    min-height: 38px;
+
+    padding: 9px 7px;
+
+    border-bottom: 1px solid #E8ECF1;
+
+    overflow: hidden;
+
+    font-size: 8px;
+    line-height: 1.5;
+    text-align: left;
+    text-overflow: ellipsis;
+}
+
+.trade-history-table th {
+    font-weight: 700;
+
+    color: var(--color-text-subtle);
+    background: #FAFBFC;
+}
+
+.trade-history-table td {
+    color: #475467;
+}
+
+.trade-history-empty-row td {
+    height: 90px;
+
+    text-align: center;
+
+    color: var(--color-text-subtle);
+}
+
+
+/* =========================================================
+    10. Mobile 목록과 변경 이력 Card
+   ========================================================= */
+
+.customer-mobile-list,
+.trade-history-mobile-list {
+    display: none;
+}
+
+.customer-mobile-empty,
+.trade-history-mobile-empty {
+    padding: 24px 12px;
+
+    font-size: 10px;
+    text-align: center;
+
+    color: var(--color-text-subtle);
+}
+
+.customer-mobile-item {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+
+    padding: 11px;
+
+    gap: 8px;
+
+    border: 1px solid #E3E7ED;
+    border-radius: 8px;
+
+    color: #344054;
+    background: var(--color-surface);
+}
+
+.customer-mobile-item.is-selected {
+    border-color: var(--color-primary);
+
+    background: rgba(63, 91, 134, 0.05);
+}
+
+.customer-mobile-top,
+.customer-mobile-middle,
+.customer-mobile-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 8px;
+}
+
+.customer-mobile-name {
+    overflow: hidden;
+
+    font-size: 11px;
+    font-weight: 800;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.customer-mobile-code,
+.customer-mobile-phone,
+.customer-mobile-receivable {
+    font-size: 9px;
+
+    color: var(--color-text-subtle);
+}
+
+.customer-mobile-badges {
+    display: flex;
+    align-items: center;
+
+    gap: 5px;
+}
+
+.trade-history-mobile-item {
+    display: flex;
+    flex-direction: column;
+
+    padding: 11px;
+
+    gap: 7px;
+
+    border: 1px solid #E3E7ED;
+    border-radius: 8px;
+
+    background: var(--color-surface);
+}
+
+.trade-history-mobile-status {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    color: #344054;
+}
+
+.trade-history-mobile-reason {
+    font-size: 9px;
+    line-height: 1.5;
+
+    color: #475467;
+
+    word-break: break-word;
+}
+
+.trade-history-mobile-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 8px;
+
+    font-size: 8px;
+
+    color: var(--color-text-subtle);
+}
+
+
+/* =========================================================
+    11. 공통 상태 변경 Modal
+   ========================================================= */
+
+.status-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(17, 24, 39, 0.46);
+}
+
+.status-modal {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    max-width: 460px;
+
+    border-radius: 10px;
+
+    background: var(--color-surface);
+
+    box-shadow: 0 18px 48px rgba(17, 24, 39, 0.18);
+}
+
+.status-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 16px 18px;
+
+    border-bottom: 1px solid #E3E7ED;
+}
+
+.status-modal-title {
+    font-size: 15px;
+    font-weight: 800;
+
+    color: var(--color-text);
+}
+
+.status-modal-close {
+    width: 28px;
+    height: 28px;
+
+    padding: 0;
+
+    border: 0;
+    border-radius: 6px;
+
+    font-size: 18px;
+
+    color: var(--color-text-subtle);
+    background: transparent;
+}
+
+.status-modal-close:hover {
+    background: #F7F8FA;
+}
+
+.status-modal-body {
+    display: flex;
+    flex-direction: column;
+
+    padding: 16px 18px;
+
+    gap: 14px;
+}
+
+.status-target-customer {
+    font-size: 10px;
+    font-weight: 700;
+
+    color: #475467;
+}
+
+.status-change-summary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+
+    align-items: center;
+
+    padding: 14px;
+
+    gap: 10px;
+
+    border: 1px solid #E3E7ED;
+    border-radius: 8px;
+
+    background: #FAFBFC;
+}
+
+.status-change-item {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    gap: 5px;
+}
+
+.status-change-label {
+    font-size: 9px;
+
+    color: var(--color-text-subtle);
+}
+
+.status-change-value {
+    overflow: hidden;
+
+    font-size: 11px;
+
+    color: #344054;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.status-change-arrow {
+    font-size: 14px;
+
+    color: var(--color-secondary);
+}
+
+.textarea-length {
+    align-self: flex-end;
+
+    font-size: 8px;
+
+    color: var(--color-text-subtle);
+}
+
+.status-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+
+    padding: 0 18px 18px;
+
+    gap: 8px;
+}
+
+
+/* =========================================================
+    12. JavaScript 동작 상태와 오류 표시
+   ========================================================= */
+
+.customer-page-error,
+.customer-form-error,
+.status-modal-error {
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.5;
+
+    color: var(--color-warning);
+
+    word-break: keep-all;
+}
+
+.customer-page-error {
+    padding: 10px 12px;
+
+    border: 1px solid rgba(222, 106, 94, 0.28);
+    border-radius: 6px;
+
+    background: rgba(222, 106, 94, 0.06);
+}
+
+.detail-close-button {
+    display: none;
+
+    width: 28px;
+    height: 28px;
+
+    padding: 0;
+
+    border: 0;
+    border-radius: 6px;
+
+    font-size: 18px;
+
+    color: var(--color-text-subtle);
+    background: transparent;
+}
+
+.customer-page-error[hidden],
+.customer-form-error[hidden],
+.status-modal-error[hidden],
+.customer-detail-empty[hidden],
+.customer-detail-form[hidden],
+.trade-history-section[hidden],
+.status-modal-backdrop[hidden],
+#statusReasonField[hidden],
+.receivable-column[hidden],
+#totalReceivableField[hidden],
+#customerMemoSection[hidden] {
+    display: none;
+}
+
+.primary-button:disabled,
+.secondary-button:disabled,
+.logout-button:disabled,
+.page-button:disabled,
+.customer-form-input:disabled,
+.customer-form-textarea:disabled {
+    cursor: default;
+
+    opacity: 0.55;
+}
+
+
+/* =========================================================
+    13. Tablet
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .customer-sidebar {
+        display: none;
+    }
+
+    .customer-main {
+        grid-column: 1 / -1;
+    }
+
+    .customer-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .customer-filters {
+        display: grid;
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+
+        gap: 12px;
+    }
+
+    .customer-keyword-field {
+        grid-column: span 4;
+
+        width: auto;
+    }
+
+    .customer-filters .filter-field:not(.customer-keyword-field) {
+        grid-column: span 2;
+    }
+
+    .filter-select {
+        width: 100%;
+    }
+
+    #searchButton,
+    #filterResetButton {
+        grid-column: span 2;
+
+        align-self: end;
+    }
+
+    #newCustomerButton {
+        width: 100%;
+    }
+
+    .customer-workspace {
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+    }
+
+    .customer-list-section,
+    .customer-detail-section {
+        grid-column: 1 / -1;
+    }
+
+    .customer-list-section {
+        border-right: 0;
+        border-bottom: 1px solid #E3E7ED;
+    }
+
+    .customer-summary-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .customer-form-grid,
+    .customer-address-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+/* =========================================================
+    14. Mobile
+   ========================================================= */
+
+@media (max-width: 375px) {
+
+    .customer-main {
+        gap: 12px;
+    }
+
+    .customer-topbar {
+        min-height: 42px;
+    }
+
+    .customer-title {
+        font-size: 17px;
+    }
+
+    .current-user {
+        display: none;
+    }
+
+    .customer-card {
+        border-radius: 8px;
+    }
+
+    .customer-toolbar {
+        padding: 12px;
+    }
+
+    .customer-filters {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+
+        gap: 10px;
+    }
+
+    .customer-keyword-field {
+        grid-column: 1 / -1;
+    }
+
+    .customer-filters .filter-field:not(.customer-keyword-field) {
+        grid-column: span 2;
+    }
+
+    #searchButton,
+    #filterResetButton {
+        grid-column: span 2;
+    }
+
+    .customer-workspace {
+        display: block;
+    }
+
+    .customer-list-section {
+        padding: 12px;
+
+        border-bottom: 0;
+    }
+
+    .section-description {
+        display: none;
+    }
+
+    .customer-table-wrap {
+        display: none;
+    }
+
+    .customer-mobile-list {
+        display: flex;
+        flex-direction: column;
+
+        gap: 8px;
+    }
+
+    .detail-close-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /*
+     * Mobile에서는 거래처 상세정보를 화면 하단 Panel로 표시한다.
+     * 목록 Card를 선택하거나 신규 등록을 누르면 JavaScript에서 연다.
+     */
+    .customer-detail-section {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 900;
+
+        max-height: 88dvh;
+
+        padding: 16px 20px;
+
+        overflow-y: auto;
+
+        border-top: 1px solid #E3E7ED;
+        border-radius: 12px 12px 0 0;
+
+        background: var(--color-surface);
+
+        box-shadow: 0 -12px 30px rgba(17, 24, 39, 0.14);
+    }
+
+    .customer-detail-section[hidden] {
+        display: none;
+    }
+
+    .customer-summary-grid,
+    .customer-form-grid,
+    .customer-address-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .customer-form-field-wide,
+    .customer-form-field-full,
+    .customer-postal-field,
+    .customer-address-field {
+        grid-column: 1;
+    }
+
+    .customer-form-section-header {
+        flex-direction: column;
+    }
+
+    .customer-detail-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .customer-detail-actions .primary-button {
+        grid-column: 1 / -1;
+
+        min-width: 0;
+    }
+
+    .trade-history-table-wrap {
+        display: none;
+    }
+
+    .trade-history-mobile-list {
+        display: flex;
+        flex-direction: column;
+
+        gap: 8px;
+    }
+
+    /*
+     * Mobile에서는 상태 변경 Modal을 화면 하단 Sheet로 표시한다.
+     */
+    .status-modal-backdrop {
+        align-items: flex-end;
+
+        padding: 0;
+    }
+
+    .status-modal {
+        max-width: none;
+
+        border-radius: 12px 12px 0 0;
+    }
+
+    .status-change-summary {
+        padding: 12px;
+    }
+}

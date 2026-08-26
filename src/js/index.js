@@ -1,13 +1,15 @@
 // ********** 메인 화면의 사용자 정보 표시와 로그아웃 처리 **********
 
 import { getApiErrorMessage } from './api.js';
-import { requireAuth, logout } from './auth.js';
+import { hasRole, requireAuth, logout } from './auth.js';
 
 
 const currentUserName = document.querySelector('#currentUserName');
 const currentUserRole = document.querySelector('#currentUserRole');
 const logoutButton = document.querySelector('#logoutButton');
 const pageError = document.querySelector('#pageError');
+const usersMenuButton = document.querySelector('#usersMenuButton');
+const customersMenuButton = document.querySelector('#customersMenuButton');
 
 async function initialize() {
 
@@ -22,6 +24,9 @@ async function initialize() {
         currentUserName.textContent = user.userName;
 
         currentUserRole.textContent = user.role;
+
+        // 사용자 관리 진입 메뉴는 ADMIN 역할에만 표시한다.
+        usersMenuButton.hidden = !hasRole('ADMIN');
 
     } catch (error) {
 
@@ -50,5 +55,9 @@ logoutButton.addEventListener('click', async () => {
         }
     }
 );
+
+// 현재 구현된 기준정보 업무 화면 이동
+usersMenuButton.addEventListener('click', () => window.location.href = './users.html');
+customersMenuButton.addEventListener('click', () => window.location.href = './customers.html');
 
 initialize();
