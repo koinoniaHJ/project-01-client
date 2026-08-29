@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERP 공급업체 관리</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/common-layout.css">
+    <link rel="stylesheet" href="../css/suppliers.css">
+    <link rel="stylesheet" href="../css/common-modal.css">
+</head>
+<body>
+    <div class="page-root">
+        <!-- 공급업체 관리 화면 전체 영역 -->
+        <main class="page-container erp-page">
+            <!-- common-layout.js에서 모든 업무 화면이 공유하는 ERP Sidebar를 생성한다. -->
+            <aside id="commonSidebar" class="erp-sidebar"></aside>
+
+            <!-- 공급업체 목록과 상세정보를 포함하는 본문 영역 -->
+            <section class="erp-main">
+                <!-- common-layout.js에서 화면 제목, 사용자명과 로그아웃 버튼을 생성한다. -->
+                <header id="commonHeader" class="erp-header"></header>
+
+            <!-- 로그인·권한·초기 조회 실패 등 화면 전체 오류 표시 -->
+            <p id="supplierPageError" class="form-error supplier-page-error" role="alert" hidden></p>
+
+            <section class="supplier-card">
+                <!-- 공급업체 검색 조건과 신규 등록 버튼 -->
+                <div class="supplier-toolbar">
+                    <div class="supplier-filter-group">
+                        <label class="supplier-filter-field supplier-keyword-field">
+                            <span>검색어</span>
+                            <input type="search" id="keywordFilter" placeholder="공급업체 코드, 공급업체명, 연락처, 발주 이메일" autocomplete="off">
+                        </label>
+                        <label class="supplier-filter-field">
+                            <span>사용 상태</span>
+                            <select id="statusFilter">
+                                <option value="">전체</option>
+                                <option value="ACTIVE">사용</option>
+                                <option value="INACTIVE">미사용</option>
+                            </select>
+                        </label>
+                        <!-- ITEM·SUPPLIER_ITEM 구현 후 실제 취급 품목 목록과 itemId 검색 조건을 연결 -->
+                        <label class="supplier-filter-field">
+                            <span>취급 품목</span>
+                            <select id="itemFilter" disabled>
+                                <option value="">품목 구현 후 연결</option>
+                            </select>
+                        </label>
+                        <div class="supplier-filter-actions">
+                            <button type="button" id="searchButton" class="button button-primary">검색</button>
+                            <button type="button" id="resetFilterButton" class="button button-secondary">초기화</button>
+                        </div>
+                    </div>
+                    <!-- ADMIN·OFFICE 사용자에게만 표시하고 WAREHOUSE 사용자에게는 숨김 -->
+                    <button type="button" id="newSupplierButton" class="button button-primary supplier-new-button">신규 등록</button>
+                </div>
+
+                <!-- PC·Tablet에서는 목록과 상세정보를 나란히 표시 -->
+                <div class="supplier-workspace">
+                    <section class="supplier-list-section" aria-labelledby="supplierListTitle">
+                        <div class="supplier-section-header">
+                            <div>
+                                <h2 id="supplierListTitle">공급업체 목록</h2>
+                            </div>
+                            <span id="supplierCount" class="supplier-count">총 0건</span>
+                        </div>
+
+                        <!-- PC·Tablet 공급업체 목록 -->
+                        <div class="supplier-table-wrap">
+                            <table class="supplier-table">
+                                <colgroup>
+                                    <col style="width: 16%">
+                                    <col style="width: 22%">
+                                    <col style="width: 18%">
+                                    <col style="width: 28%">
+                                    <col style="width: 16%">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">공급업체 코드</th>
+                                        <th scope="col">공급업체명</th>
+                                        <th scope="col">연락처</th>
+                                        <th scope="col">발주 이메일</th>
+                                        <th scope="col">사용 상태</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="supplierTableBody">
+                                    <tr>
+                                        <td colspan="5" class="supplier-empty-cell">공급업체 목록을 불러오는 중입니다.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Mobile 공급업체 카드 목록 -->
+                        <div id="supplierMobileList" class="supplier-mobile-list" aria-live="polite">
+                            <p class="supplier-mobile-empty">공급업체 목록을 불러오는 중입니다.</p>
+                        </div>
+
+                        <!-- 공급업체 목록 페이지 이동 영역 -->
+                        <nav id="supplierPagination" class="supplier-pagination" aria-label="공급업체 목록 페이지"></nav>
+                    </section>
+
+                    <!-- 선택 공급업체 상세·신규 등록·수정 입력 영역 -->
+                    <section id="supplierDetailSection" class="supplier-detail-section" aria-labelledby="supplierDetailTitle">
+                        <div class="supplier-section-header supplier-detail-header">
+                            <div>
+                                <h2 id="supplierDetailTitle">공급업체 정보</h2>
+                                <p id="supplierDetailMode" class="supplier-section-description">선택한 공급업체 정보를 확인하거나 수정할 수 있습니다.</p>
+                            </div>
+                            <button type="button" id="closeDetailButton" class="supplier-detail-close" aria-label="상세정보 닫기">×</button>
+                        </div>
+
+                        <!-- 공급업체를 선택하지 않은 초기 상태 -->
+                        <div id="supplierDetailEmpty" class="supplier-detail-empty">
+                            <p>목록에서 공급업체를 선택하거나 신규 등록을 눌러주세요.</p>
+                        </div>
+
+                        <form id="supplierDetailForm" class="supplier-detail-form" novalidate hidden>
+                            <!-- 서버가 관리하는 공급업체 코드와 현재 사용 상태 -->
+                            <section class="supplier-form-section">
+                                <h3>공급업체 상태</h3>
+                                <div class="supplier-summary-grid">
+                                    <div class="supplier-form-field">
+                                        <label class="supplier-summary-label" for="supplierCodeValue">공급업체 코드</label>
+                                        <input id="supplierCodeValue" type="text" placeholder="등록 시 자동 생성" readonly>
+                                    </div>
+                                    <div class="supplier-form-field">
+                                        <span class="supplier-summary-label">사용 상태</span>
+                                        <div class="supplier-status-value">
+                                            <span id="supplierStatusBadge" class="status-badge is-active">사용중</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- 공급업체 기본 연락 정보 -->
+                            <section class="supplier-form-section">
+                                <h3>기본 정보</h3>
+                                <div class="supplier-form-grid">
+                                    <label class="supplier-form-field supplier-form-field-wide">
+                                        <span>공급업체명 <em>*</em></span>
+                                        <input type="text" id="supplierName" name="supplierName" maxlength="150" autocomplete="organization" required>
+                                    </label>
+                                    <label class="supplier-form-field">
+                                        <span>연락처</span>
+                                        <input type="tel" id="supplierPhone" name="phone" maxlength="30" autocomplete="tel">
+                                    </label>
+                                    <label class="supplier-form-field">
+                                        <span>발주 이메일 <em>*</em></span>
+                                        <input type="email" id="supplierEmail" name="email" maxlength="255" autocomplete="email" required>
+                                    </label>
+                                </div>
+                            </section>
+
+                            <!-- 공급업체 사업장 주소 -->
+                            <section class="supplier-form-section">
+                                <h3>주소 정보</h3>
+                                <div class="supplier-form-grid">
+                                    <label class="supplier-form-field">
+                                        <span>우편번호</span>
+                                        <input type="text" id="supplierPostalCode" name="postalCode" maxlength="10" autocomplete="postal-code">
+                                    </label>
+                                    <label class="supplier-form-field supplier-form-field-wide">
+                                        <span>주소</span>
+                                        <input type="text" id="supplierAddress" name="address" maxlength="500" autocomplete="street-address">
+                                    </label>
+                                    <label class="supplier-form-field supplier-form-field-wide">
+                                        <span>상세주소</span>
+                                        <input type="text" id="supplierAddressDetail" name="addressDetail" maxlength="300">
+                                    </label>
+                                </div>
+                            </section>
+
+                            <!-- ADMIN·OFFICE 사용자에게만 표시하고 WAREHOUSE 사용자에게는 숨김 -->
+                            <section id="supplierMemoSection" class="supplier-form-section">
+                                <h3>메모</h3>
+                                <label class="supplier-form-field supplier-form-field-wide">
+                                    <span>공급업체 메모</span>
+                                    <textarea id="supplierMemo" name="memo" rows="4" maxlength="2000"></textarea>
+                                </label>
+                            </section>
+
+                            <!-- 입력값 검증·API 요청 실패 메시지 -->
+                            <p id="supplierFormError" class="form-error" role="alert" hidden></p>
+
+                            <div class="supplier-detail-actions">
+                                <!-- 사용 상태 변경은 ADMIN 사용자에게만 표시 -->
+                                <button type="button" id="supplierStatusButton" class="button button-secondary">사용 상태 변경</button>
+                                <!-- 저장은 ADMIN·OFFICE 사용자에게만 표시 -->
+                                <button type="submit" id="supplierSaveButton" class="button button-primary">저장</button>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+            </section>
+        </section>
+        </main>
+    </div>
+
+    <!-- 공급업체 사용 상태 변경 확인 모달 -->
+    <div id="statusModalBackdrop" class="common-modal-backdrop" hidden>
+        <section class="common-modal" role="dialog" aria-modal="true" aria-labelledby="statusModalTitle">
+            <header class="common-modal-header">
+                <h2 id="statusModalTitle" class="common-modal-title">사용 상태 변경</h2>
+                <button type="button" id="closeStatusModalButton" class="common-modal-close" aria-label="모달 닫기">×</button>
+            </header>
+
+            <form id="statusChangeForm" novalidate>
+                <div class="common-modal-body">
+                    <p class="common-modal-target">대상 공급업체: <strong id="statusTargetSupplier">-</strong></p>
+                    <div class="common-status-summary" aria-label="사용 상태 변경 내용">
+                        <div class="common-status-item">
+                            <span class="common-status-label">현재 상태</span>
+                            <strong id="currentStatusValue" class="common-status-value">-</strong>
+                        </div>
+                        <span class="common-status-arrow" aria-hidden="true">→</span>
+                        <div class="common-status-item">
+                            <span class="common-status-label">변경 상태</span>
+                            <strong id="nextStatusValue" class="common-status-value">-</strong>
+                        </div>
+                    </div>
+
+                    <p id="statusModalError" class="form-error" role="alert" hidden></p>
+                </div>
+
+                <div class="common-modal-actions">
+                    <button type="button" id="cancelStatusButton" class="button button-secondary">취소</button>
+                    <button type="submit" id="confirmStatusButton" class="button button-primary">변경</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <!-- 공급업체 관리 화면의 인증과 역할별 UI 제어 -->
+    <script type="module" src="../js/suppliers.js"></script>
+</body>
+</html>

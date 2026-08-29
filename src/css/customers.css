@@ -1,167 +1,11 @@
 /* =========================================================
-    1. 거래처 관리 페이지 전체
+    거래처 관리 업무 전용 스타일
+    - 공통 Sidebar와 Header는 common-layout.css에서 관리한다.
    ========================================================= */
-
-   .customer-page {
-    display: grid;
-    grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
-
-    min-height: calc(100dvh - (var(--grid-gutter) * 2));
-
-    column-gap: var(--grid-gutter);
-}
 
 
 /* =========================================================
-    2. Sidebar
-   ========================================================= */
-
-.customer-sidebar {
-    grid-column: 1 / span 2;
-
-    display: flex;
-    flex-direction: column;
-
-    min-width: 0;
-    max-height: calc(100dvh - (var(--grid-gutter) * 2));
-
-    padding-right: 16px;
-
-    gap: 18px;
-
-    overflow-y: auto;
-
-    border-right: 1px solid #E3E7ED;
-}
-
-.sidebar-brand {
-    padding: 8px 4px;
-
-    font-size: 18px;
-    font-weight: 800;
-
-    color: var(--color-primary);
-}
-
-.sidebar-nav {
-    display: flex;
-    flex-direction: column;
-
-    gap: 12px;
-}
-
-.sidebar-group {
-    display: flex;
-    flex-direction: column;
-
-    gap: 4px;
-}
-
-.sidebar-group-title {
-    font-size: 10px;
-    font-weight: 800;
-
-    color: var(--color-text-subtle);
-}
-
-.sidebar-link {
-    display: flex;
-    align-items: center;
-
-    min-height: 32px;
-
-    padding: 0 10px;
-
-    border: 0;
-    border-radius: 6px;
-
-    font-size: 11px;
-    text-align: left;
-
-    color: #344054;
-    background: transparent;
-}
-
-.sidebar-link:hover {
-    background: rgba(63, 91, 134, 0.06);
-}
-
-.sidebar-link.is-active {
-    font-weight: 700;
-
-    color: var(--color-primary);
-    background: rgba(63, 91, 134, 0.10);
-}
-
-
-/* =========================================================
-    3. 거래처 관리 업무 영역
-   ========================================================= */
-
-.customer-main {
-    grid-column: 3 / -1;
-
-    display: flex;
-    flex-direction: column;
-
-    min-width: 0;
-
-    gap: 16px;
-}
-
-.customer-topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    min-height: 48px;
-
-    padding-bottom: 12px;
-
-    gap: 16px;
-
-    border-bottom: 1px solid #E3E7ED;
-}
-
-.customer-topbar-left,
-.customer-topbar-right {
-    display: flex;
-    align-items: center;
-
-    gap: 10px;
-}
-
-.customer-title {
-    font-size: 20px;
-    font-weight: 800;
-
-    color: var(--color-text);
-}
-
-.current-user {
-    font-size: 11px;
-    font-weight: 700;
-
-    color: #475467;
-}
-
-.logout-button {
-    height: 30px;
-
-    padding: 0 10px;
-
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-
-    font-size: 10px;
-
-    color: #475467;
-    background: var(--color-surface);
-}
-
-
-/* =========================================================
-    4. 거래처 관리 Card와 검색 영역
+    1. 거래처 관리 Card와 검색 영역
    ========================================================= */
 
 .customer-card {
@@ -278,22 +122,19 @@
     background: var(--color-surface);
 }
 
-.secondary-button:hover,
-.logout-button:hover {
+.secondary-button:hover {
     background: #F7F8FA;
 }
 
 .primary-button:focus-visible,
-.secondary-button:focus-visible,
-.logout-button:focus-visible,
-.sidebar-link:focus-visible {
+.secondary-button:focus-visible {
     outline: 3px solid rgba(63, 91, 134, 0.18);
     outline-offset: 2px;
 }
 
 
 /* =========================================================
-    5. 거래처 목록과 상세정보 Grid
+    2. 거래처 목록과 상세정보 Grid
    ========================================================= */
 
 .customer-workspace {
@@ -366,7 +207,7 @@
 
 
 /* =========================================================
-    6. 거래처 목록 Table
+    3. 거래처 목록 Table
    ========================================================= */
 
 .customer-table-wrap {
@@ -478,7 +319,7 @@
 
 
 /* =========================================================
-    7. Pagination
+    4. Pagination
    ========================================================= */
 
 .pagination {
@@ -521,7 +362,7 @@
 
 
 /* =========================================================
-    8. 거래처 상세정보 Form
+    5. 거래처 상세정보 Form
    ========================================================= */
 
 .customer-detail-empty {
@@ -711,7 +552,7 @@
 
 
 /* =========================================================
-    9. 거래 상태 변경 이력
+    6. 거래 상태 변경 이력
    ========================================================= */
 
 .trade-history-section {
@@ -791,7 +632,7 @@
 
 
 /* =========================================================
-    10. Mobile 목록과 변경 이력 Card
+    7. Mobile 목록과 변경 이력 Card
    ========================================================= */
 
 .customer-mobile-list,
@@ -914,138 +755,6 @@
 }
 
 
-/* =========================================================
-    11. 공통 상태 변경 Modal
-   ========================================================= */
-
-.status-modal-backdrop {
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 20px;
-
-    background: rgba(17, 24, 39, 0.46);
-}
-
-.status-modal {
-    display: flex;
-    flex-direction: column;
-
-    width: 100%;
-    max-width: 460px;
-
-    border-radius: 10px;
-
-    background: var(--color-surface);
-
-    box-shadow: 0 18px 48px rgba(17, 24, 39, 0.18);
-}
-
-.status-modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    padding: 16px 18px;
-
-    border-bottom: 1px solid #E3E7ED;
-}
-
-.status-modal-title {
-    font-size: 15px;
-    font-weight: 800;
-
-    color: var(--color-text);
-}
-
-.status-modal-close {
-    width: 28px;
-    height: 28px;
-
-    padding: 0;
-
-    border: 0;
-    border-radius: 6px;
-
-    font-size: 18px;
-
-    color: var(--color-text-subtle);
-    background: transparent;
-}
-
-.status-modal-close:hover {
-    background: #F7F8FA;
-}
-
-.status-modal-body {
-    display: flex;
-    flex-direction: column;
-
-    padding: 16px 18px;
-
-    gap: 14px;
-}
-
-.status-target-customer {
-    font-size: 10px;
-    font-weight: 700;
-
-    color: #475467;
-}
-
-.status-change-summary {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-
-    align-items: center;
-
-    padding: 14px;
-
-    gap: 10px;
-
-    border: 1px solid #E3E7ED;
-    border-radius: 8px;
-
-    background: #FAFBFC;
-}
-
-.status-change-item {
-    display: flex;
-    flex-direction: column;
-
-    min-width: 0;
-
-    gap: 5px;
-}
-
-.status-change-label {
-    font-size: 9px;
-
-    color: var(--color-text-subtle);
-}
-
-.status-change-value {
-    overflow: hidden;
-
-    font-size: 11px;
-
-    color: #344054;
-
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.status-change-arrow {
-    font-size: 14px;
-
-    color: var(--color-secondary);
-}
-
 .textarea-length {
     align-self: flex-end;
 
@@ -1054,18 +763,8 @@
     color: var(--color-text-subtle);
 }
 
-.status-modal-actions {
-    display: flex;
-    justify-content: flex-end;
-
-    padding: 0 18px 18px;
-
-    gap: 8px;
-}
-
-
 /* =========================================================
-    12. JavaScript 동작 상태와 오류 표시
+    8. JavaScript 동작 상태와 오류 표시
    ========================================================= */
 
 .customer-page-error,
@@ -1112,7 +811,6 @@
 .customer-detail-empty[hidden],
 .customer-detail-form[hidden],
 .trade-history-section[hidden],
-.status-modal-backdrop[hidden],
 #statusReasonField[hidden],
 .receivable-column[hidden],
 #totalReceivableField[hidden],
@@ -1122,7 +820,6 @@
 
 .primary-button:disabled,
 .secondary-button:disabled,
-.logout-button:disabled,
 .page-button:disabled,
 .customer-form-input:disabled,
 .customer-form-textarea:disabled {
@@ -1133,18 +830,10 @@
 
 
 /* =========================================================
-    13. Tablet
+    9. Tablet
    ========================================================= */
 
 @media (max-width: 768px) {
-
-    .customer-sidebar {
-        display: none;
-    }
-
-    .customer-main {
-        grid-column: 1 / -1;
-    }
 
     .customer-toolbar {
         align-items: stretch;
@@ -1209,26 +898,10 @@
 
 
 /* =========================================================
-    14. Mobile
+    10. Mobile
    ========================================================= */
 
 @media (max-width: 375px) {
-
-    .customer-main {
-        gap: 12px;
-    }
-
-    .customer-topbar {
-        min-height: 42px;
-    }
-
-    .customer-title {
-        font-size: 17px;
-    }
-
-    .current-user {
-        display: none;
-    }
 
     .customer-card {
         border-radius: 8px;
@@ -1356,22 +1029,4 @@
         gap: 8px;
     }
 
-    /*
-     * Mobile에서는 상태 변경 Modal을 화면 하단 Sheet로 표시한다.
-     */
-    .status-modal-backdrop {
-        align-items: flex-end;
-
-        padding: 0;
-    }
-
-    .status-modal {
-        max-width: none;
-
-        border-radius: 12px 12px 0 0;
-    }
-
-    .status-change-summary {
-        padding: 12px;
-    }
 }

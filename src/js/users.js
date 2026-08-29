@@ -1,7 +1,8 @@
 // ********** 사용자 관리 화면의 목록 조회, 등록, 수정, 상태 변경 및 비밀번호 초기화 처리 **********
 
 import { api, getApiErrorMessage } from './api.js';
-import { hasRole, logout, requireAuth } from './auth.js';
+import { hasRole } from './auth.js';
+import { initializeCommonLayout } from './common-layout.js';
 
 // 사용자 목록에서 한 페이지에 표시할 개수
 const PAGE_SIZE = 20;
@@ -21,13 +22,8 @@ let selectedUser = null;
 // Mobile에서 사용자 정보 하단 Panel이 열려 있는지 저장한다.
 let mobileDetailOpen = false;
 
-// ========== 상단 사용자 정보 ==========
-const currentUserName = document.querySelector('#currentUserName');
-const logoutButton = document.querySelector('#logoutButton');
+// ========== 사용자 관리 화면 공통 오류 ==========
 const userPageError = document.querySelector('#userPageError');
-const dashboardMenuButton = document.querySelector('#dashboardMenuButton');
-const usersMenuButton = document.querySelector('#usersMenuButton');
-const customersMenuButton = document.querySelector('#customersMenuButton');
 
 // ========== 사용자 목록 Filter ==========
 const roleFilter = document.querySelector('#roleFilter');
@@ -78,7 +74,12 @@ async function initialize() {
 
     try {
 
-        const currentUser = await requireAuth();
+        // 공통 Sidebar·Header를 생성하고 현재 로그인 Session의 사용자 정보를 조회한다.
+        const currentUser = await initializeCommonLayout({
+            pageTitle: '사용자 관리',
+            activeMenu: 'users',
+            onError: showPageError
+        });
 
         if (!currentUser) {
             return;
@@ -89,8 +90,6 @@ async function initialize() {
             window.location.replace('./index.html');
             return;
         }
-
-        currentUserName.textContent = currentUser.userName;
 
         await loadUsers(0);
 
@@ -912,26 +911,8 @@ function closeMobileDetailPanel() {
     syncDetailVisibility();
 }
 
-// 로그아웃 버튼을 처리한다.
-async function handleLogout() {
-
-    logoutButton.disabled = true;
-
-    try {
-        await logout();
-    } catch (error) {
-        logoutButton.disabled = false;
-        handlePageError(error, '로그아웃 중 오류가 발생했습니다.');
-    }
-}
-
 // + 신규 등록
 newUserButton.addEventListener('click', enterCreateMode);
-
-// 현재 구현된 공통 업무 화면 이동
-dashboardMenuButton.addEventListener('click', () => window.location.href = './index.html');
-usersMenuButton.addEventListener('click', () => window.location.href = './users.html');
-customersMenuButton.addEventListener('click', () => window.location.href = './customers.html');
 
 // 역할 / 사용 상태 Filter
 roleFilter.addEventListener('change', applyFilters);
@@ -959,9 +940,6 @@ passwordModalBackdrop.addEventListener('click', event => {
 
 // Mobile 상세 Panel 닫기
 detailCloseButton.addEventListener('click', closeMobileDetailPanel);
-
-// 로그아웃
-logoutButton.addEventListener('click', handleLogout);
 
 // 화면 크기 변경 시 Mobile 상세 Panel 표시 상태를 다시 적용한다.
 window.addEventListener('resize', syncDetailVisibility);

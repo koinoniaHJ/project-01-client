@@ -7,93 +7,25 @@
     <title>ERP User Management</title>
 
     <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/common-layout.css">
     <link rel="stylesheet" href="../css/users.css">
+    <link rel="stylesheet" href="../css/common-modal.css">
 </head>
 
 <body>
 
     <div class="page-root">
 
-        <main class="page-container user-page">
+        <main class="page-container erp-page">
 
-            <!-- Sidebar -->
-            <aside class="user-sidebar">
-
-                <div class="sidebar-brand">ERP</div>
-
-                <nav class="sidebar-nav" aria-label="ERP 메뉴">
-
-                    <!-- 대시보드 -->
-                    <div class="sidebar-group">
-                        <button id="dashboardMenuButton" class="sidebar-link" type="button">대시보드</button>
-                    </div>
-
-                    <!-- 기준정보 -->
-                    <div class="sidebar-group">
-                        <p class="sidebar-group-title">기준정보</p>
-                        <button id="usersMenuButton" class="sidebar-link is-active" type="button">사용자 관리</button>
-                        <button id="customersMenuButton" class="sidebar-link" type="button">거래처 관리</button>
-                        <button class="sidebar-link" type="button">공급업체 관리</button>
-                        <button class="sidebar-link" type="button">품목 관리</button>
-                        <button class="sidebar-link" type="button">창고 관리</button>
-                        <button class="sidebar-link" type="button">안전재고 관리</button>
-                    </div>
-
-                    <!-- 구매 -->
-                    <div class="sidebar-group">
-                        <p class="sidebar-group-title">구매</p>
-                        <button class="sidebar-link" type="button">발주 목록</button>
-                        <button class="sidebar-link" type="button">입고 목록</button>
-                        <button class="sidebar-link" type="button">매입 반품</button>
-                    </div>
-
-                    <!-- 판매 -->
-                    <div class="sidebar-group">
-                        <p class="sidebar-group-title">판매</p>
-                        <button class="sidebar-link" type="button">주문 목록</button>
-                        <button class="sidebar-link" type="button">출고 목록</button>
-                        <button class="sidebar-link" type="button">거래처 반품</button>
-                    </div>
-
-                    <!-- 재고 -->
-                    <div class="sidebar-group">
-                        <p class="sidebar-group-title">재고</p>
-                        <button class="sidebar-link" type="button">재고 현황</button>
-                        <button class="sidebar-link" type="button">재고 변동 이력</button>
-                        <button class="sidebar-link" type="button">재고 실사</button>
-                        <button class="sidebar-link" type="button">재고 조정</button>
-                    </div>
-
-                    <!-- 정산 -->
-                    <div class="sidebar-group">
-                        <p class="sidebar-group-title">정산</p>
-                        <button class="sidebar-link" type="button">전표 조회</button>
-                        <button class="sidebar-link" type="button">입금</button>
-                        <button class="sidebar-link" type="button">매출 정산</button>
-                        <button class="sidebar-link" type="button">매입 현황</button>
-                    </div>
-
-                </nav>
-
-            </aside>
+            <!-- common-layout.js에서 모든 업무 화면이 공유하는 ERP Sidebar를 생성한다. -->
+            <aside id="commonSidebar" class="erp-sidebar"></aside>
 
             <!-- 사용자 관리 업무 영역 -->
-            <section class="user-main">
+            <section class="erp-main">
 
-                <!-- 상단 Header -->
-                <header class="user-topbar">
-
-                    <div class="user-topbar-left">
-                        <h1 class="user-title">사용자 관리</h1>
-                        <!-- <span class="admin-badge">ADMIN 전용</span> -->
-                    </div>
-                
-                    <div class="user-topbar-right">
-                        <span id="currentUserName" class="current-user">관리자</span>
-                        <button id="logoutButton" class="logout-button" type="button">로그아웃</button>
-                    </div>
-                
-                </header>
+                <!-- common-layout.js에서 화면 제목, 사용자명과 로그아웃 버튼을 생성한다. -->
+                <header id="commonHeader" class="erp-header"></header>
                 
                 <p id="userPageError" class="user-page-error" role="alert" aria-live="polite" hidden></p>
 
@@ -269,18 +201,18 @@
     </div>
 
     <!-- 비밀번호 초기화 Modal -->
-    <div id="passwordModalBackdrop" class="password-modal-backdrop" hidden>
+    <div id="passwordModalBackdrop" class="common-modal-backdrop" hidden>
 
-        <form id="passwordResetForm" class="password-modal" role="dialog" aria-modal="true" aria-labelledby="passwordModalTitle">
+        <form id="passwordResetForm" class="common-modal" role="dialog" aria-modal="true" aria-labelledby="passwordModalTitle">
 
-            <header class="password-modal-header">
-                <h2 id="passwordModalTitle" class="password-modal-title">비밀번호 초기화</h2>
-                <button id="passwordModalCloseButton" class="password-modal-close" type="button" aria-label="비밀번호 초기화 창 닫기">×</button>
+            <header class="common-modal-header">
+                <h2 id="passwordModalTitle" class="common-modal-title">비밀번호 초기화</h2>
+                <button id="passwordModalCloseButton" class="common-modal-close" type="button" aria-label="비밀번호 초기화 창 닫기">×</button>
             </header>
 
-            <div class="password-modal-body">
+            <div class="common-modal-body">
 
-                <p id="passwordTargetUser" class="password-target-user">대상 사용자: 이오피스 (office01)</p>
+                <p id="passwordTargetUser" class="common-modal-target">대상 사용자: 이오피스 (office01)</p>
             
                 <div class="user-form-field">
                     <label class="user-form-label" for="newPassword">새 비밀번호 <span class="required-mark">*</span></label>
@@ -296,7 +228,7 @@
             
             </div>
 
-            <div class="password-modal-actions">
+            <div class="common-modal-actions">
                 <button id="passwordCancelButton" class="secondary-button" type="button">취소</button>
                 <button id="passwordConfirmButton" class="primary-button" type="submit">초기화</button>
             </div>

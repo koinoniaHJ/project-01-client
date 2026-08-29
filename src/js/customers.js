@@ -1,7 +1,8 @@
 // ********** 거래처 관리 화면의 인증, 역할별 UI, 목록·상세·상태 변경 처리를 담당 **********
 
 import { api, getApiErrorMessage } from './api.js';
-import { hasRole, logout, requireAuth } from './auth.js';
+import { hasRole } from './auth.js';
+import { initializeCommonLayout } from './common-layout.js';
 
 
 // 거래처 목록과 거래 상태 변경 이력의 한 페이지 표시 개수
@@ -9,8 +10,7 @@ const CUSTOMER_PAGE_SIZE = 20;
 const TRADE_HISTORY_PAGE_SIZE = 20;
 
 
-// 현재 로그인 사용자와 역할별 처리 가능 여부
-let currentUser = null;
+// 현재 로그인 사용자의 역할별 처리 가능 여부
 let canEditCustomer = false;
 let canChangeCustomerStatus = false;
 let canViewSensitiveCustomerInfo = false;
@@ -43,13 +43,8 @@ let statusModalVersion = null;
 let mobileDetailOpen = false;
 
 
-// ========== 상단 사용자 정보 ==========
-const currentUserName = document.querySelector('#currentUserName');
-const logoutButton = document.querySelector('#logoutButton');
+// ========== 거래처 관리 화면 공통 오류 ==========
 const customerPageError = document.querySelector('#customerPageError');
-const dashboardMenuButton = document.querySelector('#dashboardMenuButton');
-const usersMenuButton = document.querySelector('#usersMenuButton');
-const customersMenuButton = document.querySelector('#customersMenuButton');
 
 
 // ========== 거래처 목록 검색 조건 ==========
@@ -150,14 +145,17 @@ async function initialize() {
 
     try {
 
-        currentUser = await requireAuth();
+        // 공통 Sidebar·Header를 생성하고 현재 로그인 Session의 사용자 정보를 조회한다.
+        const currentUser = await initializeCommonLayout({
+            pageTitle: '거래처 관리',
+            activeMenu: 'customers',
+            onError: showPageError
+        });
 
-        // requireAuth()에서 로그인 화면으로 이동한 경우 이후 초기화를 중단한다.
+        // 공통 Layout에서 로그인 화면으로 이동한 경우 이후 초기화를 중단한다.
         if (!currentUser) {
             return;
         }
-
-        currentUserName.textContent = currentUser.userName;
 
         // 목록과 상세정보를 그리기 전에 역할별 민감정보 표시 범위를 먼저 확정한다.
         applyRoleAccess();
@@ -182,9 +180,6 @@ function applyRoleAccess() {
     canEditCustomer = hasRole('ADMIN', 'OFFICE');
     canChangeCustomerStatus = hasRole('ADMIN');
     canViewSensitiveCustomerInfo = !hasRole('WAREHOUSE');
-
-    // 사용자 관리는 ADMIN 전용 화면이므로 다른 역할에는 메뉴를 표시하지 않는다.
-    usersMenuButton.hidden = !hasRole('ADMIN');
 
     // 거래처 등록과 기본정보 수정은 ADMIN과 OFFICE만 가능하다.
     newCustomerButton.hidden = !canEditCustomer;
@@ -1639,30 +1634,7 @@ function handlePageError(error, fallbackMessage) {
     showPageError(error ? getApiErrorMessage(error) : fallbackMessage);
 }
 
-// ========== 로그아웃 ==========
-
-// 로그아웃 요청 중 중복 클릭을 막고 완료 후 로그인 화면으로 이동한다.
-async function handleLogout() {
-
-    logoutButton.disabled = true;
-
-    try {
-        await logout();
-
-    } catch (error) {
-
-        showPageError(getApiErrorMessage(error));
-        logoutButton.disabled = false;
-    }
-}
-
-
 // ========== Event 연결 ==========
-
-// 현재 구현된 공통 업무 화면 이동
-dashboardMenuButton.addEventListener('click', () => window.location.href = './index.html');
-usersMenuButton.addEventListener('click', () => window.location.href = './users.html');
-customersMenuButton.addEventListener('click', () => window.location.href = './customers.html');
 
 // 거래처 신규 등록과 상세 Form 저장
 newCustomerButton.addEventListener('click', enterCustomerCreateMode);
@@ -1699,9 +1671,6 @@ keywordFilter.addEventListener('keydown', handleKeywordKeydown);
 
 // Mobile 거래처 상세 Panel 닫기
 detailCloseButton.addEventListener('click', closeMobileDetailPanel);
-
-// 로그아웃
-logoutButton.addEventListener('click', handleLogout);
 
 // 화면 크기 변경 시 Mobile 상세 Panel 표시 상태를 다시 적용
 window.addEventListener('resize', syncDetailVisibility);

@@ -1,140 +1,7 @@
 /* =========================================================
-    1. 사용자 관리 페이지 전체
+    사용자 관리 업무 전용 스타일
+    - 공통 Sidebar와 Header는 common-layout.css에서 관리한다.
    ========================================================= */
-
-.user-page {
-    display: grid;
-    grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
-
-    min-height: calc(100dvh - (var(--grid-gutter) * 2));
-
-    column-gap: var(--grid-gutter);
-}
-
-/* =========================================================
-    2. Sidebar
-   ========================================================= */
-
-.user-sidebar {
-    grid-column: 1 / span 2;
-
-    display: flex;
-    flex-direction: column;
-
-    min-width: 0;
-    max-height: calc(100dvh - (var(--grid-gutter) * 2));
-
-    padding-right: 16px;
-
-    gap: 18px;
-
-    overflow-y: auto;
-
-    border-right: 1px solid #E3E7ED;
-}
-
-.sidebar-brand {
-    padding: 8px 4px;
-
-    font-size: 18px;
-    font-weight: 800;
-
-    color: var(--color-primary);
-}
-
-.sidebar-nav {
-    display: flex;
-    flex-direction: column;
-
-    gap: 12px;
-}
-
-.sidebar-group {
-    display: flex;
-    flex-direction: column;
-
-    gap: 4px;
-}
-
-.sidebar-group-title {
-    font-size: 10px;
-    font-weight: 800;
-
-    color: var(--color-text-subtle);
-}
-
-.sidebar-link {
-    display: flex;
-    align-items: center;
-
-    min-height: 32px;
-
-    padding: 0 10px;
-
-    border: 0;
-    border-radius: 6px;
-
-    font-size: 11px;
-    text-align: left;
-
-    color: #344054;
-    background: transparent;
-}
-
-.sidebar-link:hover {
-    background: rgba(63, 91, 134, 0.06);
-}
-
-.sidebar-link.is-active {
-    font-weight: 700;
-
-    color: var(--color-primary);
-    background: rgba(63, 91, 134, 0.10);
-}
-
-/* =========================================================
-    3. 사용자 관리 업무 영역
-   ========================================================= */
-
-.user-main {
-    grid-column: 3 / -1;
-
-    display: flex;
-    flex-direction: column;
-
-    min-width: 0;
-
-    gap: 16px;
-}
-
-.user-topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    min-height: 48px;
-
-    padding-bottom: 12px;
-
-    gap: 16px;
-
-    border-bottom: 1px solid #E3E7ED;
-}
-
-.user-topbar-left,
-.user-topbar-right {
-    display: flex;
-    align-items: center;
-
-    gap: 10px;
-}
-
-.user-title {
-    font-size: 20px;
-    font-weight: 800;
-
-    color: var(--color-text);
-}
 
 .admin-badge {
     display: inline-flex;
@@ -153,29 +20,8 @@
     background: rgba(63, 91, 134, 0.10);
 }
 
-.current-user {
-    font-size: 11px;
-    font-weight: 700;
-
-    color: #475467;
-}
-
-.logout-button {
-    height: 30px;
-
-    padding: 0 10px;
-
-    border: 1px solid var(--color-border);
-    border-radius: 6px;
-
-    font-size: 10px;
-
-    color: #475467;
-    background: var(--color-surface);
-}
-
 /* =========================================================
-    4. 사용자 관리 Card
+    1. 사용자 관리 Card
    ========================================================= */
 
 .user-card {
@@ -273,7 +119,7 @@
 }
 
 /* =========================================================
-    5. 사용자 목록 / 사용자 정보 Grid
+    2. 사용자 목록 / 사용자 정보 Grid
    ========================================================= */
 
 .user-workspace {
@@ -345,7 +191,7 @@
 }
 
 /* =========================================================
-    6. 사용자 목록 Table
+    3. 사용자 목록 Table
    ========================================================= */
 
 .user-table-wrap {
@@ -427,7 +273,7 @@
 }
 
 /* =========================================================
-    7. Pagination
+    4. Pagination
    ========================================================= */
 
 .pagination {
@@ -461,7 +307,7 @@
 }
 
 /* =========================================================
-    8. 사용자 정보 Form
+    5. 사용자 정보 Form
    ========================================================= */
 
 .user-detail-form {
@@ -552,7 +398,7 @@
 }
 
 /* =========================================================
-    9. Mobile 사용자 목록
+    6. Mobile 사용자 목록
    ========================================================= */
 
 .user-mobile-list {
@@ -603,98 +449,7 @@
 }
 
 /* =========================================================
-    10. 비밀번호 초기화 Modal
-   ========================================================= */
-
-.password-modal-backdrop {
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    padding: 20px;
-
-    background: rgba(17, 24, 39, 0.46);
-}
-
-.password-modal-backdrop[hidden] {
-    display: none;
-}
-
-.password-modal {
-    display: flex;
-    flex-direction: column;
-
-    width: 100%;
-    max-width: 460px;
-
-    border-radius: 10px;
-
-    background: var(--color-surface);
-
-    box-shadow: 0 18px 48px rgba(17, 24, 39, 0.18);
-}
-
-.password-modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    padding: 16px 18px;
-
-    border-bottom: 1px solid #E3E7ED;
-}
-
-.password-modal-title {
-    font-size: 15px;
-    font-weight: 800;
-
-    color: #1F2937;
-}
-
-.password-modal-close {
-    width: 28px;
-    height: 28px;
-
-    padding: 0;
-
-    border: 0;
-
-    font-size: 18px;
-
-    color: var(--color-text-subtle);
-    background: transparent;
-}
-
-.password-modal-body {
-    display: flex;
-    flex-direction: column;
-
-    padding: 16px 18px;
-
-    gap: 11px;
-}
-
-.password-target-user {
-    font-size: 10px;
-
-    color: var(--color-text-subtle);
-}
-
-.password-modal-actions {
-    display: flex;
-    justify-content: flex-end;
-
-    padding: 0 18px 18px;
-
-    gap: 8px;
-}
-
-/* =========================================================
-    사용자 관리 JavaScript 동작 상태
+    7. 사용자 관리 JavaScript 동작 상태
    ========================================================= */
 
 .user-page-error,
@@ -760,7 +515,6 @@
 
 .primary-button:disabled,
 .secondary-button:disabled,
-.logout-button:disabled,
 .page-button:disabled {
     cursor: default;
 
@@ -768,18 +522,10 @@
 }
 
 /* =========================================================
-    11. Tablet
+    8. Tablet
    ========================================================= */
 
 @media (max-width: 768px) {
-
-    .user-sidebar {
-        display: none;
-    }
-
-    .user-main {
-        grid-column: 1 / -1;
-    }
 
     .user-toolbar {
         align-items: stretch;
@@ -827,26 +573,10 @@
 }
 
 /* =========================================================
-    12. Mobile
+    9. Mobile
    ========================================================= */
 
 @media (max-width: 375px) {
-
-    .user-main {
-        gap: 12px;
-    }
-
-    .user-topbar {
-        min-height: 42px;
-    }
-
-    .user-title {
-        font-size: 17px;
-    }
-
-    .current-user {
-        display: none;
-    }
 
     .user-card {
         border-radius: 8px;
@@ -937,15 +667,4 @@
         min-width: 0;
     }
 
-    .password-modal-backdrop {
-        align-items: flex-end;
-
-        padding: 0;
-    }
-
-    .password-modal {
-        max-width: none;
-
-        border-radius: 12px 12px 0 0;
-    }
 }

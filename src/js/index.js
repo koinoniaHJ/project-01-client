@@ -10,6 +10,7 @@ const logoutButton = document.querySelector('#logoutButton');
 const pageError = document.querySelector('#pageError');
 const usersMenuButton = document.querySelector('#usersMenuButton');
 const customersMenuButton = document.querySelector('#customersMenuButton');
+const suppliersMenuButton = document.querySelector('#suppliersMenuButton');
 
 async function initialize() {
 
@@ -59,5 +60,6 @@ logoutButton.addEventListener('click', async () => {
 // 현재 구현된 기준정보 업무 화면 이동
 usersMenuButton.addEventListener('click', () => window.location.href = './users.html');
 customersMenuButton.addEventListener('click', () => window.location.href = './customers.html');
+suppliersMenuButton.addEventListener('click', () => window.location.href = './suppliers.html');
 
 initialize();

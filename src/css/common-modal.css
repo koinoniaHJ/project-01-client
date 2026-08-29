@@ -1,0 +1,218 @@
+/* =========================================================
+    ERP Common Modal
+    - 사용자·거래처·공급업체 화면에서 같은 Modal 골격을 사용한다.
+    - 화면별 CSS에서는 Modal의 크기·Header·본문·버튼 영역을 다시 정의하지 않는다.
+   ========================================================= */
+
+
+/* =========================================================
+    1. Modal 배경과 본체
+   ========================================================= */
+
+/* Modal이 열리면 현재 업무 화면 위에 반투명 배경을 표시한다. */
+.common-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(17, 24, 39, 0.46);
+}
+
+.common-modal-backdrop[hidden] {
+    display: none;
+}
+
+/* 모든 업무 Modal은 같은 너비·모서리·그림자를 사용한다. */
+.common-modal {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    max-width: 460px;
+
+    border-radius: 10px;
+
+    background: var(--color-surface);
+
+    box-shadow: 0 18px 48px rgba(17, 24, 39, 0.18);
+}
+
+
+/* =========================================================
+    2. Modal Header
+   ========================================================= */
+
+.common-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 16px 18px;
+
+    border-bottom: 1px solid #E3E7ED;
+}
+
+.common-modal-title {
+    font-size: 15px;
+    font-weight: 800;
+
+    color: var(--color-text);
+}
+
+.common-modal-close {
+    width: 28px;
+    height: 28px;
+
+    padding: 0;
+
+    border: 0;
+    border-radius: 6px;
+
+    font-size: 18px;
+
+    color: var(--color-text-subtle);
+    background: transparent;
+}
+
+.common-modal-close:hover {
+    background: #F7F8FA;
+}
+
+.common-modal-close:focus-visible {
+    outline: 3px solid rgba(63, 91, 134, 0.18);
+    outline-offset: 2px;
+}
+
+
+/* =========================================================
+    3. Modal 본문과 대상 정보
+   ========================================================= */
+
+.common-modal-body {
+    display: flex;
+    flex-direction: column;
+
+    padding: 16px 18px;
+
+    gap: 14px;
+}
+
+/* 상태 변경·비밀번호 초기화처럼 처리 대상을 확인해야 하는 Modal에서 사용한다. */
+.common-modal-target {
+    overflow: hidden;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    color: #475467;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+    4. 상태 변경 전·후 요약
+   ========================================================= */
+
+/*
+ * 현재 상태와 변경 상태는 동일한 너비의 좌우 영역을 사용한다.
+ * 화살표는 두 영역 사이의 Modal 정중앙에 고정한다.
+ */
+.common-status-summary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+
+    padding: 14px;
+
+    gap: 10px;
+
+    border: 1px solid #E3E7ED;
+    border-radius: 8px;
+
+    background: #FAFBFC;
+}
+
+/* 좌우 상태 문구는 각각 할당된 영역의 중앙에 표시한다. */
+.common-status-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    min-width: 0;
+
+    gap: 5px;
+
+    text-align: center;
+}
+
+.common-status-label {
+    font-size: 9px;
+
+    color: var(--color-text-subtle);
+}
+
+.common-status-value {
+    overflow: hidden;
+
+    max-width: 100%;
+
+    font-size: 11px;
+
+    color: #344054;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.common-status-arrow {
+    font-size: 14px;
+
+    color: var(--color-secondary);
+}
+
+
+/* =========================================================
+    5. Modal 처리 버튼
+   ========================================================= */
+
+.common-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+
+    padding: 0 18px 18px;
+
+    gap: 8px;
+}
+
+
+/* =========================================================
+    6. Mobile
+   ========================================================= */
+
+@media (max-width: 375px) {
+
+    /* Mobile에서는 Modal을 화면 하단에서 열리는 Sheet 형태로 표시한다. */
+    .common-modal-backdrop {
+        align-items: flex-end;
+
+        padding: 0;
+    }
+
+    .common-modal {
+        max-width: none;
+
+        border-radius: 12px 12px 0 0;
+    }
+
+    .common-status-summary {
+        padding: 12px;
+    }
+}
