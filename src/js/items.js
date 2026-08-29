@@ -1281,12 +1281,20 @@ async function createItem() {
     const response = await api.post('/items', createItemRequestBody());
     const createdItem = response.data;
 
-    // 신규 품목이 첫 페이지에 표시되도록 기존 검색 조건을 초기화한다.
+    // 신규 품목을 전체 목록에서 찾을 수 있도록 기존 검색 조건을 초기화한다.
     keywordFilter.value = '';
     statusFilter.value = '';
     supplierFilter.value = '';
 
+    // itemCode 오름차순에서 신규 코드는 마지막 페이지에 있으므로 전체 페이지 수를 먼저 확인한다.
     await loadItems(0);
+
+    const lastPage = Math.max((itemPageMeta?.totalPages ?? 1) - 1, 0);
+
+    if (lastPage > 0) {
+        await loadItems(lastPage);
+    }
+
     await selectItem(createdItem.itemId);
 }
 
