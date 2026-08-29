@@ -8,6 +8,9 @@ import { initializeCommonLayout } from './common-layout.js';
 // 공급업체 목록의 한 페이지 표시 개수
 const SUPPLIER_PAGE_SIZE = 20;
 
+// 취급 품목 Select에 한 번에 표시할 최대 품목 개수
+const ITEM_FILTER_PAGE_SIZE = 2000;
+
 
 // 현재 로그인 사용자의 역할별 공급업체 처리 가능 여부
 let canEditSupplier = false;
@@ -43,6 +46,7 @@ const supplierPageError = document.querySelector('#supplierPageError');
 // ========== 공급업체 목록 검색 조건 ==========
 const keywordFilter = document.querySelector('#keywordFilter');
 const statusFilter = document.querySelector('#statusFilter');
+const itemFilter = document.querySelector('#itemFilter');
 const searchButton = document.querySelector('#searchButton');
 const resetFilterButton = document.querySelector('#resetFilterButton');
 
@@ -114,6 +118,9 @@ async function initialize() {
         // 공급업체 데이터를 연결하기 전에 역할별 표시와 수정 범위를 먼저 확정한다.
         applyRoleAccess();
 
+        // 취급 품목 필터에 표시할 품목 목록을 품목 코드 오름차순으로 조회한다.
+        await loadItemFilterOptions();
+
         // 역할별 UI 적용 후 공급업체 목록 첫 페이지를 조회한다.
         await loadSuppliers(0);
 
@@ -123,6 +130,45 @@ async function initialize() {
     } catch (error) {
         handlePageError(error, '공급업체 목록을 불러오지 못했습니다.');
     }
+}
+
+
+// ========== 취급 품목 필터 조회 ==========
+
+// 공급업체 검색 조건에서 사용할 품목 목록을 조회하여 Select Option을 구성한다.
+async function loadItemFilterOptions() {
+
+    itemFilter.disabled = true;
+
+    try {
+        const response = await api.get(`/items?page=0&size=${ITEM_FILTER_PAGE_SIZE}&sort=itemCode,asc`);
+
+        renderItemFilterOptions(response.data ?? []);
+        itemFilter.disabled = false;
+
+    } catch (error) {
+
+        // Session 만료는 화면 초기화의 공통 인증 오류 처리로 전달한다.
+        if (error?.status === 401) {
+            throw error;
+        }
+
+        itemFilter.replaceChildren(new Option('품목 목록 조회 실패', ''));
+        showPageError(error ? getApiErrorMessage(error) : '취급 품목 목록을 불러오지 못했습니다.');
+    }
+}
+
+
+// 조회한 품목을 품목 코드와 품목명이 함께 표시되는 Select Option으로 출력한다.
+function renderItemFilterOptions(items) {
+
+    const options = [new Option('전체', '')];
+
+    items.forEach(item => {
+        options.push(new Option(`${item.itemCode} - ${item.itemName}`, String(item.itemId)));
+    });
+
+    itemFilter.replaceChildren(...options);
 }
 
 
@@ -169,6 +215,7 @@ function createSupplierListPath(page) {
     const params = new URLSearchParams();
     const keyword = keywordFilter.value.trim();
     const status = statusFilter.value;
+    const itemId = itemFilter.value;
 
     // 입력된 검색 조건만 Query Parameter에 포함한다.
     if (keyword) {
@@ -179,7 +226,10 @@ function createSupplierListPath(page) {
         params.set('status', status);
     }
 
-    // itemId는 ITEM·SUPPLIER_ITEM 구현 후 취급 품목 필터와 함께 추가한다.
+    if (itemId) {
+        params.set('itemId', itemId);
+    }
+
     params.set('page', String(page));
     params.set('size', String(SUPPLIER_PAGE_SIZE));
     params.set('sort', 'supplierId,desc');
@@ -612,6 +662,7 @@ async function createSupplier() {
         // 신규 공급업체가 첫 페이지에 표시되도록 기존 검색 조건을 초기화한다.
         keywordFilter.value = '';
         statusFilter.value = '';
+        itemFilter.value = '';
 
         await loadSuppliers(0);
         await selectSupplier(createdSupplier.supplierId);
@@ -980,6 +1031,7 @@ async function resetSupplierFilters() {
 
     keywordFilter.value = '';
     statusFilter.value = '';
+    itemFilter.value = '';
 
     await applySupplierFilters();
 }

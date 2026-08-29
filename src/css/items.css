@@ -1,0 +1,1064 @@
+/* =========================================================
+    품목 관리 업무 전용 스타일
+    - 공통 Sidebar와 Header는 common-layout.css에서 관리한다.
+    - Modal 골격과 상태 변경 요약은 common-modal.css에서 관리한다.
+   ========================================================= */
+
+/* =========================================================
+    1. Button과 오류 메시지
+   ========================================================= */
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 34px;
+
+    padding: 0 13px;
+
+    border-radius: 6px;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.button-primary {
+    border: 1px solid var(--color-primary);
+
+    color: #FFFFFF;
+    background: var(--color-primary);
+}
+
+.button-primary:hover:not(:disabled) {
+    filter: brightness(0.96);
+}
+
+.button-secondary {
+    border: 1px solid var(--color-border);
+
+    color: #475467;
+    background: var(--color-surface);
+}
+
+.button-secondary:hover:not(:disabled) {
+    background: #F7F8FA;
+}
+
+.button-small {
+    min-height: 30px;
+
+    padding: 0 10px;
+
+    font-size: 10px;
+}
+
+.button:focus-visible,
+.item-detail-close:focus-visible {
+    outline: 3px solid rgba(63, 91, 134, 0.18);
+    outline-offset: 2px;
+}
+
+.button:disabled,
+.item-form-field input:disabled,
+.item-form-field select:disabled,
+.item-form-field textarea:disabled,
+.item-filter-field select:disabled {
+    cursor: default;
+
+    opacity: 0.55;
+}
+
+.form-error {
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.5;
+
+    color: var(--color-warning);
+
+    word-break: keep-all;
+}
+
+.item-page-error {
+    padding: 10px 12px;
+
+    border: 1px solid rgba(222, 106, 94, 0.28);
+    border-radius: 6px;
+
+    background: rgba(222, 106, 94, 0.06);
+}
+
+
+/* =========================================================
+    2. 품목 Card와 검색 영역
+   ========================================================= */
+
+.item-card {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    border: 1px solid #E3E7ED;
+    border-radius: 10px;
+
+    background: var(--color-surface);
+
+    box-shadow: 0 6px 18px rgba(63, 91, 134, 0.06);
+}
+
+.item-toolbar {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+
+    padding: 14px 16px;
+
+    gap: 14px;
+
+    border-bottom: 1px solid #E3E7ED;
+}
+
+.item-filter-group {
+    display: flex;
+    align-items: end;
+    flex-wrap: wrap;
+
+    gap: 10px;
+}
+
+.item-filter-field {
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+.item-filter-field > span {
+    font-size: 10px;
+    font-weight: 700;
+
+    color: var(--color-text-subtle);
+}
+
+.item-keyword-field {
+    width: 250px;
+}
+
+.item-filter-field input,
+.item-filter-field select {
+    width: 140px;
+    height: 34px;
+
+    padding: 0 10px;
+
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    outline: 0;
+
+    font-size: 10px;
+
+    color: #344054;
+    background: var(--color-surface);
+}
+
+.item-keyword-field input {
+    width: 100%;
+}
+
+.item-filter-field input::placeholder {
+    color: #A0A9B5;
+}
+
+.item-filter-field input:focus,
+.item-filter-field select:focus {
+    border-color: var(--color-primary);
+
+    box-shadow: 0 0 0 3px rgba(63, 91, 134, 0.08);
+}
+
+.item-filter-field select:disabled {
+    color: var(--color-text-subtle);
+    background: #F7F8FA;
+}
+
+.item-filter-actions {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+}
+
+
+/* =========================================================
+    3. 품목 목록과 상세정보 Layout
+   ========================================================= */
+
+/* 업무 영역 내부는 기존 거래처·공급업체 화면과 같은 10 Column Grid를 사용한다. */
+.item-workspace {
+    display: grid;
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+
+    min-width: 0;
+}
+
+.item-list-section {
+    grid-column: 1 / span 6;
+
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    padding: 16px;
+
+    gap: 10px;
+
+    border-right: 1px solid #E3E7ED;
+}
+
+.item-detail-section {
+    grid-column: 7 / span 4;
+
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    padding: 16px;
+
+    gap: 14px;
+}
+
+.item-section-header,
+.item-supplier-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    min-height: 28px;
+
+    gap: 10px;
+}
+
+.item-section-header h2 {
+    font-size: 13px;
+    font-weight: 800;
+
+    color: var(--color-text);
+}
+
+.item-section-description {
+    font-size: 9px;
+    line-height: 1.5;
+
+    color: var(--color-text-subtle);
+
+    word-break: keep-all;
+}
+
+.item-count,
+.item-supplier-count {
+    font-size: 10px;
+    font-weight: 700;
+
+    color: #475467;
+}
+
+.item-detail-close {
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    width: 28px;
+    height: 28px;
+
+    padding: 0;
+
+    border: 0;
+    border-radius: 6px;
+
+    font-size: 18px;
+
+    color: var(--color-text-subtle);
+    background: transparent;
+}
+
+.item-detail-close:hover {
+    background: #F7F8FA;
+}
+
+
+/* =========================================================
+    4. 품목 목록 Table과 Mobile 목록
+   ========================================================= */
+
+.item-table-wrap {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+.item-table {
+    width: 100%;
+    min-width: 620px;
+
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.item-table th,
+.item-table td {
+    height: 40px;
+
+    padding: 0 8px;
+
+    border-bottom: 1px solid #E8ECF1;
+
+    overflow: hidden;
+
+    font-size: 9px;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.item-table th {
+    font-weight: 700;
+
+    color: var(--color-text-subtle);
+    background: #FAFBFC;
+}
+
+.item-table tbody tr:not(:has(.item-empty-cell)) {
+    cursor: pointer;
+}
+
+.item-table tbody tr:not(:has(.item-empty-cell)):hover {
+    background: rgba(63, 91, 134, 0.04);
+}
+
+.item-table tbody tr.is-selected {
+    background: rgba(63, 91, 134, 0.09);
+}
+
+.item-table .item-price-column {
+    text-align: right;
+}
+
+.item-table th:last-child,
+.item-table td:last-child {
+    text-align: center;
+}
+
+.item-empty-cell {
+    height: 120px !important;
+
+    text-align: center !important;
+
+    color: var(--color-text-subtle);
+}
+
+.item-mobile-list {
+    display: none;
+}
+
+.item-mobile-empty {
+    padding: 24px 12px;
+
+    font-size: 10px;
+    text-align: center;
+
+    color: var(--color-text-subtle);
+}
+
+/* JavaScript에서 생성하는 Mobile 품목 Card에 적용한다. */
+.item-mobile-item {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+
+    padding: 11px;
+
+    gap: 8px;
+
+    border: 1px solid #E3E7ED;
+    border-radius: 8px;
+
+    font: inherit;
+    text-align: left;
+
+    color: #344054;
+    background: var(--color-surface);
+}
+
+.item-mobile-item.is-selected {
+    border-color: var(--color-primary);
+
+    background: rgba(63, 91, 134, 0.05);
+}
+
+.item-mobile-top,
+.item-mobile-middle,
+.item-mobile-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 8px;
+}
+
+.item-mobile-name {
+    overflow: hidden;
+
+    font-size: 11px;
+    font-weight: 800;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.item-mobile-code,
+.item-mobile-unit,
+.item-mobile-price {
+    overflow: hidden;
+
+    font-size: 9px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: var(--color-text-subtle);
+}
+
+
+/* =========================================================
+    5. 사용 상태 Badge와 Pagination
+   ========================================================= */
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+
+    min-height: 18px;
+
+    padding: 0 6px;
+
+    border-radius: 999px;
+
+    font-size: 8px;
+    font-weight: 700;
+}
+
+.status-badge.status-active,
+.status-badge.is-active {
+    color: var(--color-accent);
+    background: rgba(79, 138, 123, 0.12);
+}
+
+.status-badge.status-inactive,
+.status-badge.is-inactive {
+    color: var(--color-warning);
+    background: rgba(222, 106, 94, 0.12);
+}
+
+.item-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 28px;
+
+    gap: 5px;
+}
+
+/* JavaScript에서 생성하는 품목 목록 페이지 버튼에 적용한다. */
+.item-pagination .page-button {
+    min-width: 28px;
+    height: 28px;
+
+    padding: 0 7px;
+
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+
+    font-size: 9px;
+
+    color: #475467;
+    background: var(--color-surface);
+}
+
+.item-pagination .page-button:hover:not(:disabled) {
+    border-color: var(--color-primary);
+
+    color: var(--color-primary);
+}
+
+.item-pagination .page-button.is-active {
+    border-color: var(--color-primary);
+
+    color: #FFFFFF;
+    background: var(--color-primary);
+}
+
+
+/* =========================================================
+    6. 품목 상세·등록·수정 Form
+   ========================================================= */
+
+.item-detail-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 320px;
+
+    padding: 20px;
+
+    border: 1px dashed #D5DBE4;
+    border-radius: 8px;
+
+    font-size: 10px;
+    line-height: 1.6;
+    text-align: center;
+
+    color: var(--color-text-subtle);
+    background: #FAFBFC;
+}
+
+.item-detail-form {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    gap: 14px;
+}
+
+.item-form-section {
+    display: flex;
+    flex-direction: column;
+
+    padding-bottom: 14px;
+
+    gap: 10px;
+
+    border-bottom: 1px solid #E8ECF1;
+}
+
+.item-form-section:last-of-type {
+    border-bottom: 0;
+}
+
+.item-form-section h3 {
+    font-size: 11px;
+    font-weight: 800;
+
+    color: #344054;
+}
+
+.item-summary-grid,
+.item-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+}
+
+.item-summary-label {
+    font-size: 10px;
+    font-weight: 700;
+
+    color: #344054;
+}
+
+.item-status-value {
+    display: flex;
+    align-items: center;
+
+    min-height: 36px;
+}
+
+.item-form-field {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    gap: 5px;
+}
+
+.item-form-field-wide {
+    grid-column: 1 / -1;
+}
+
+.item-form-field > span {
+    font-size: 10px;
+    font-weight: 700;
+
+    color: #344054;
+}
+
+.item-form-field em {
+    font-style: normal;
+
+    color: var(--color-warning);
+}
+
+.item-form-field input,
+.item-form-field select,
+.item-form-field textarea {
+    width: 100%;
+
+    padding: 0 10px;
+
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    outline: 0;
+
+    font-size: 10px;
+    line-height: 1.5;
+
+    color: #344054;
+    background: var(--color-surface);
+}
+
+.item-form-field input,
+.item-form-field select {
+    height: 36px;
+}
+
+.item-form-field textarea {
+    min-height: 80px;
+
+    padding-top: 9px;
+    padding-bottom: 9px;
+
+    resize: vertical;
+}
+
+.item-form-field input:focus,
+.item-form-field select:focus,
+.item-form-field textarea:focus {
+    border-color: var(--color-primary);
+
+    box-shadow: 0 0 0 3px rgba(63, 91, 134, 0.08);
+}
+
+.item-form-field input[readonly],
+.item-form-field input:disabled,
+.item-form-field select:disabled,
+.item-form-field textarea:disabled {
+    color: var(--color-text-subtle);
+    background: #F7F8FA;
+}
+
+.item-detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+
+    padding-top: 2px;
+
+    gap: 8px;
+}
+
+.item-detail-actions .button-primary {
+    min-width: 88px;
+}
+
+
+/* =========================================================
+    7. 취급 공급업체 등록·해제 영역
+   ========================================================= */
+
+.item-supplier-section {
+    min-width: 0;
+}
+
+.item-supplier-header {
+    align-items: flex-start;
+}
+
+.item-supplier-header > div {
+    flex: 1 1 auto;
+
+    min-width: 0;
+}
+
+.item-supplier-count {
+    flex: 0 0 auto;
+
+    white-space: nowrap;
+}
+
+.item-supplier-controls {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-items: end;
+
+    gap: 8px;
+}
+
+.item-supplier-keyword-field,
+.item-supplier-select-field {
+    grid-column: span 3;
+}
+
+.item-supplier-controls > .button {
+    grid-column: span 1;
+}
+
+.item-supplier-guide {
+    padding: 9px 10px;
+
+    border-radius: 6px;
+
+    font-size: 9px;
+    line-height: 1.5;
+
+    color: var(--color-text-subtle);
+    background: #F7F8FA;
+
+    word-break: keep-all;
+}
+
+.item-supplier-table-wrap {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+.item-supplier-table {
+    width: 100%;
+    min-width: 360px;
+
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.item-supplier-table th,
+.item-supplier-table td {
+    height: 36px;
+
+    padding: 0 7px;
+
+    border-bottom: 1px solid #E8ECF1;
+
+    overflow: hidden;
+
+    font-size: 9px;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.item-supplier-table th {
+    font-weight: 700;
+
+    color: var(--color-text-subtle);
+    background: #FAFBFC;
+}
+
+.item-supplier-table th:nth-child(3),
+.item-supplier-table td:nth-child(3),
+.item-supplier-table th:last-child,
+.item-supplier-table td:last-child {
+    text-align: center;
+}
+
+.item-supplier-empty-cell {
+    height: 82px !important;
+
+    text-align: center !important;
+
+    color: var(--color-text-subtle);
+}
+
+.item-supplier-remove-button {
+    min-height: 26px;
+
+    padding: 0 8px;
+
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    color: var(--color-warning);
+    background: var(--color-surface);
+}
+
+.item-supplier-remove-button:hover:not(:disabled) {
+    border-color: rgba(222, 106, 94, 0.48);
+
+    background: rgba(222, 106, 94, 0.05);
+}
+
+.item-supplier-mobile-list {
+    display: none;
+}
+
+.item-supplier-mobile-empty {
+    padding: 20px 12px;
+
+    font-size: 9px;
+    text-align: center;
+
+    color: var(--color-text-subtle);
+}
+
+/* JavaScript에서 생성하는 Mobile 취급 공급업체 Card에 적용한다. */
+.item-supplier-mobile-item {
+    display: flex;
+    flex-direction: column;
+
+    padding: 10px;
+
+    gap: 7px;
+
+    border: 1px solid #E3E7ED;
+    border-radius: 7px;
+
+    background: var(--color-surface);
+}
+
+.item-supplier-mobile-top,
+.item-supplier-mobile-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 8px;
+}
+
+.item-supplier-mobile-name {
+    overflow: hidden;
+
+    font-size: 10px;
+    font-weight: 800;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.item-supplier-mobile-code {
+    overflow: hidden;
+
+    font-size: 9px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: var(--color-text-subtle);
+}
+
+
+/* =========================================================
+    8. 품목 Modal 내부 고유 내용
+   ========================================================= */
+
+/* Modal 크기·Header·본문·버튼은 common-modal.css를 그대로 사용하고 안내 문구만 정의한다. */
+.item-remove-description {
+    padding: 10px 12px;
+
+    border-radius: 6px;
+
+    font-size: 10px;
+    line-height: 1.55;
+
+    color: #475467;
+    background: #F7F8FA;
+
+    word-break: keep-all;
+}
+
+
+/* =========================================================
+    9. JavaScript 동작 상태
+   ========================================================= */
+
+.item-page-error[hidden],
+.item-detail-empty[hidden],
+.item-detail-form[hidden],
+.item-price-column[hidden],
+.item-price-field[hidden],
+.item-supplier-manage-column[hidden],
+.item-form-field[hidden],
+.item-supplier-section[hidden],
+.item-supplier-controls[hidden],
+.item-supplier-guide[hidden],
+.form-error[hidden],
+#itemStatusButton[hidden],
+#itemSaveButton[hidden],
+#newItemButton[hidden] {
+    display: none;
+}
+
+
+/* =========================================================
+    10. Tablet
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .item-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .item-filter-group {
+        display: grid;
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+
+        gap: 12px;
+    }
+
+    .item-keyword-field {
+        grid-column: span 4;
+
+        width: auto;
+    }
+
+    .item-filter-field:not(.item-keyword-field) {
+        grid-column: span 2;
+    }
+
+    .item-filter-field select {
+        width: 100%;
+    }
+
+    .item-filter-actions {
+        grid-column: span 8;
+    }
+
+    .item-filter-actions .button {
+        flex: 1;
+    }
+
+    .item-new-button {
+        width: 100%;
+    }
+
+    .item-workspace {
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+    }
+
+    .item-list-section,
+    .item-detail-section {
+        grid-column: 1 / -1;
+    }
+
+    .item-list-section {
+        border-right: 0;
+        border-bottom: 1px solid #E3E7ED;
+    }
+
+    .item-summary-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+
+/* =========================================================
+    11. Mobile
+   ========================================================= */
+
+@media (max-width: 375px) {
+
+    .item-card {
+        border-radius: 8px;
+    }
+
+    .item-toolbar {
+        padding: 12px;
+    }
+
+    .item-filter-group {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+
+        gap: 10px;
+    }
+
+    .item-keyword-field,
+    .item-filter-field:not(.item-keyword-field),
+    .item-filter-actions {
+        grid-column: 1 / -1;
+    }
+
+    .item-list-section {
+        padding: 12px;
+
+        border-bottom: 0;
+    }
+
+    .item-table-wrap {
+        display: none;
+    }
+
+    .item-mobile-list {
+        display: flex;
+        flex-direction: column;
+
+        gap: 8px;
+    }
+
+    .item-detail-close {
+        display: inline-flex;
+    }
+
+    /* Mobile 상세정보는 기존 기준정보 화면과 같은 하단 Panel로 사용한다. */
+    .item-detail-section {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 900;
+
+        max-height: 88dvh;
+
+        padding: 16px 20px;
+
+        overflow-y: auto;
+
+        border-top: 1px solid #E3E7ED;
+        border-radius: 12px 12px 0 0;
+
+        background: var(--color-surface);
+
+        box-shadow: 0 -12px 30px rgba(17, 24, 39, 0.14);
+    }
+
+    .item-detail-section[hidden] {
+        display: none;
+    }
+
+    .item-summary-grid,
+    .item-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .item-form-field-wide {
+        grid-column: 1;
+    }
+
+    .item-supplier-table-wrap {
+        display: none;
+    }
+
+    .item-supplier-mobile-list {
+        display: flex;
+        flex-direction: column;
+
+        gap: 7px;
+    }
+
+    .item-detail-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .item-detail-actions .button-primary {
+        grid-column: 1 / -1;
+
+        min-width: 0;
+    }
+}

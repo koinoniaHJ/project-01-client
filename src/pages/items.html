@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERP 품목 관리</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/common-layout.css">
+    <link rel="stylesheet" href="../css/items.css">
+    <link rel="stylesheet" href="../css/common-modal.css">
+</head>
+<body>
+    <div class="page-root">
+        <!-- 품목 관리 화면 전체 영역 -->
+        <main class="page-container erp-page">
+            <!-- common-layout.js에서 모든 업무 화면이 공유하는 ERP Sidebar를 생성한다. -->
+            <aside id="commonSidebar" class="erp-sidebar"></aside>
+
+            <!-- 품목 목록과 상세정보를 포함하는 본문 영역 -->
+            <section class="erp-main">
+                <!-- common-layout.js에서 화면 제목, 사용자명과 로그아웃 버튼을 생성한다. -->
+                <header id="commonHeader" class="erp-header"></header>
+
+                <!-- 로그인·권한·초기 조회 실패 등 화면 전체 오류 표시 -->
+                <p id="itemPageError" class="form-error item-page-error" role="alert" hidden></p>
+
+                <section class="item-card">
+                    <!-- 품목 검색 조건과 신규 등록 버튼 -->
+                    <div class="item-toolbar">
+                        <div class="item-filter-group">
+                            <label class="item-filter-field item-keyword-field">
+                                <span>검색어</span>
+                                <input type="search" id="keywordFilter" placeholder="품목 코드, 품목명" autocomplete="off">
+                            </label>
+                            <label class="item-filter-field">
+                                <span>사용 상태</span>
+                                <select id="statusFilter">
+                                    <option value="">전체</option>
+                                    <option value="ACTIVE">사용</option>
+                                    <option value="INACTIVE">미사용</option>
+                                </select>
+                            </label>
+                            <!-- 공급업체 목록을 조회하여 선택한 supplierId의 취급 품목만 검색 -->
+                            <label class="item-filter-field">
+                                <span>취급 공급업체</span>
+                                <select id="supplierFilter">
+                                    <option value="">전체</option>
+                                </select>
+                            </label>
+                            <div class="item-filter-actions">
+                                <button type="button" id="searchButton" class="button button-primary">검색</button>
+                                <button type="button" id="resetFilterButton" class="button button-secondary">초기화</button>
+                            </div>
+                        </div>
+                        <!-- ADMIN·OFFICE 사용자에게만 표시하고 WAREHOUSE 사용자에게는 숨김 -->
+                        <button type="button" id="newItemButton" class="button button-primary item-new-button">신규 등록</button>
+                    </div>
+
+                    <!-- PC·Tablet에서는 목록과 상세정보를 나란히 표시 -->
+                    <div class="item-workspace">
+                        <section class="item-list-section" aria-labelledby="itemListTitle">
+                            <div class="item-section-header">
+                                <div>
+                                    <h2 id="itemListTitle">품목 목록</h2>
+                                </div>
+                                <span id="itemCount" class="item-count">총 0건</span>
+                            </div>
+
+                            <!-- PC·Tablet 품목 목록 -->
+                            <div class="item-table-wrap">
+                                <table class="item-table">
+                                    <colgroup>
+                                        <col style="width: 20%">
+                                        <col style="width: 28%">
+                                        <col style="width: 14%">
+                                        <col class="item-price-column" style="width: 22%">
+                                        <col style="width: 16%">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">품목 코드</th>
+                                            <th scope="col">품목명</th>
+                                            <th scope="col">단위</th>
+                                            <!-- WAREHOUSE 사용자에게는 기본 판매가격 열을 숨김 -->
+                                            <th scope="col" class="item-price-column">기본 판매가격</th>
+                                            <th scope="col">사용 상태</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="itemTableBody">
+                                        <tr>
+                                            <td colspan="5" class="item-empty-cell">품목 목록을 불러오는 중입니다.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Mobile 품목 카드 목록 -->
+                            <div id="itemMobileList" class="item-mobile-list" aria-live="polite">
+                                <p class="item-mobile-empty">품목 목록을 불러오는 중입니다.</p>
+                            </div>
+
+                            <!-- 품목 목록 페이지 이동 영역 -->
+                            <nav id="itemPagination" class="item-pagination" aria-label="품목 목록 페이지"></nav>
+                        </section>
+
+                        <!-- 선택 품목 상세·신규 등록·수정 입력 영역 -->
+                        <section id="itemDetailSection" class="item-detail-section" aria-labelledby="itemDetailTitle">
+                            <div class="item-section-header item-detail-header">
+                                <div>
+                                    <h2 id="itemDetailTitle">품목 정보</h2>
+                                    <p id="itemDetailMode" class="item-section-description">선택한 품목 정보를 확인하거나 수정할 수 있습니다.</p>
+                                </div>
+                                <button type="button" id="closeDetailButton" class="item-detail-close" aria-label="상세정보 닫기">×</button>
+                            </div>
+
+                            <!-- 품목을 선택하지 않은 초기 상태 -->
+                            <div id="itemDetailEmpty" class="item-detail-empty">
+                                <p>목록에서 품목을 선택하거나 신규 등록을 눌러주세요.</p>
+                            </div>
+
+                            <form id="itemDetailForm" class="item-detail-form" novalidate hidden>
+                                <!-- 서버가 관리하는 품목 코드와 현재 사용 상태 -->
+                                <section class="item-form-section">
+                                    <h3>품목 상태</h3>
+                                    <div class="item-summary-grid">
+                                        <div class="item-form-field">
+                                            <label class="item-summary-label" for="itemCodeValue">품목 코드</label>
+                                            <input id="itemCodeValue" type="text" placeholder="등록 시 자동 생성" readonly>
+                                        </div>
+                                        <div class="item-form-field">
+                                            <span class="item-summary-label">사용 상태</span>
+                                            <div class="item-status-value">
+                                                <span id="itemStatusBadge" class="status-badge is-active">사용중</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <!-- 품목명·재고 단위·기본 판매가격 입력 영역 -->
+                                <section class="item-form-section">
+                                    <h3>기본 정보</h3>
+                                    <div class="item-form-grid">
+                                        <label class="item-form-field item-form-field-wide">
+                                            <span>품목명 <em>*</em></span>
+                                            <input type="text" id="itemName" name="itemName" maxlength="150" required>
+                                        </label>
+                                        <label class="item-form-field">
+                                            <span>단위 <em>*</em></span>
+                                            <select id="itemUnit" name="unit" required>
+                                                <option value="">선택</option>
+                                                <option value="G">g</option>
+                                                <option value="KG">kg</option>
+                                                <option value="EA">개</option>
+                                                <option value="PACK">팩</option>
+                                                <option value="BOX">박스</option>
+                                                <option value="OTHER">기타</option>
+                                            </select>
+                                        </label>
+                                        <!-- OTHER 단위를 선택한 경우에만 표시하고 필수값으로 검증 -->
+                                        <label id="otherUnitNameField" class="item-form-field" hidden>
+                                            <span>기타 단위명 <em>*</em></span>
+                                            <input type="text" id="otherUnitName" name="otherUnitName" maxlength="50">
+                                        </label>
+                                        <!-- WAREHOUSE 사용자에게는 기본 판매가격 입력 영역을 숨김 -->
+                                        <label id="itemPriceField" class="item-form-field item-price-field">
+                                            <span>기본 판매가격 <em>*</em></span>
+                                            <input type="number" id="defaultSalesPrice" name="defaultSalesPrice" min="0" step="0.01" inputmode="decimal" required>
+                                        </label>
+                                    </div>
+                                </section>
+
+                                <!-- 모든 역할이 조회할 수 있는 품목 관리 메모 -->
+                                <section class="item-form-section">
+                                    <h3>메모</h3>
+                                    <label class="item-form-field item-form-field-wide">
+                                        <span>품목 메모</span>
+                                        <textarea id="itemMemo" name="memo" rows="4" maxlength="2000"></textarea>
+                                    </label>
+                                </section>
+
+                                <!-- 품목 저장 후 관리할 수 있는 취급 공급업체 관계 영역 -->
+                                <section id="itemSupplierSection" class="item-form-section item-supplier-section">
+                                    <div class="item-supplier-header">
+                                        <div>
+                                            <h3>취급 공급업체</h3>
+                                            <p class="item-section-description">사용 중인 공급업체를 검색하여 품목의 취급 관계를 등록하거나 해제할 수 있습니다.</p>
+                                        </div>
+                                        <span id="itemSupplierCount" class="item-supplier-count">총 0건</span>
+                                    </div>
+
+                                    <!-- ADMIN·OFFICE 사용자에게만 표시하며 신규 품목을 먼저 저장한 후 활성화 -->
+                                    <div id="itemSupplierControls" class="item-supplier-controls">
+                                        <label class="item-form-field item-supplier-keyword-field">
+                                            <span>공급업체 검색</span>
+                                            <input type="search" id="supplierKeyword" placeholder="공급업체 코드, 공급업체명" autocomplete="off" disabled>
+                                        </label>
+                                        <button type="button" id="searchSupplierButton" class="button button-secondary" disabled>조회</button>
+                                        <label class="item-form-field item-supplier-select-field">
+                                            <span>등록 대상</span>
+                                            <select id="supplierSelect" disabled>
+                                                <option value="">품목 저장 후 선택</option>
+                                            </select>
+                                        </label>
+                                        <button type="button" id="addSupplierButton" class="button button-primary" disabled>등록</button>
+                                    </div>
+
+                                    <p id="itemSupplierGuide" class="item-supplier-guide">품목 등록 시 취급 공급업체를 등록할 수 있습니다.</p>
+                                    <p id="itemSupplierError" class="form-error" role="alert" hidden></p>
+
+                                    <!-- PC·Tablet 취급 공급업체 목록 -->
+                                    <div class="item-supplier-table-wrap">
+                                        <table class="item-supplier-table">
+                                            <colgroup>
+                                                <col style="width: 24%">
+                                                <col style="width: 38%">
+                                                <col style="width: 20%">
+                                                <col class="item-supplier-manage-column" style="width: 18%">
+                                            </colgroup>
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">공급업체 코드</th>
+                                                    <th scope="col">공급업체명</th>
+                                                    <th scope="col">사용 상태</th>
+                                                    <th scope="col" class="item-supplier-manage-column">관리</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="itemSupplierTableBody">
+                                                <tr>
+                                                    <td colspan="4" class="item-supplier-empty-cell">등록된 취급 공급업체가 없습니다.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- Mobile 취급 공급업체 목록 -->
+                                    <div id="itemSupplierMobileList" class="item-supplier-mobile-list" aria-live="polite">
+                                        <p class="item-supplier-mobile-empty">등록된 취급 공급업체가 없습니다.</p>
+                                    </div>
+                                </section>
+
+                                <!-- 입력값 검증·API 요청 실패 메시지 -->
+                                <p id="itemFormError" class="form-error" role="alert" hidden></p>
+
+                                <div class="item-detail-actions">
+                                    <!-- 사용 상태 변경은 ADMIN 사용자에게만 표시 -->
+                                    <button type="button" id="itemStatusButton" class="button button-secondary">사용 상태 변경</button>
+                                    <!-- 저장은 ADMIN·OFFICE 사용자에게만 표시 -->
+                                    <button type="submit" id="itemSaveButton" class="button button-primary">저장</button>
+                                </div>
+                            </form>
+                        </section>
+                    </div>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <!-- 품목 사용 상태 변경 확인 모달 -->
+    <div id="statusModalBackdrop" class="common-modal-backdrop" hidden>
+        <section class="common-modal" role="dialog" aria-modal="true" aria-labelledby="statusModalTitle">
+            <header class="common-modal-header">
+                <h2 id="statusModalTitle" class="common-modal-title">사용 상태 변경</h2>
+                <button type="button" id="closeStatusModalButton" class="common-modal-close" aria-label="모달 닫기">×</button>
+            </header>
+
+            <form id="statusChangeForm" novalidate>
+                <div class="common-modal-body">
+                    <p class="common-modal-target">대상 품목: <strong id="statusTargetItem">-</strong></p>
+                    <div class="common-status-summary" aria-label="사용 상태 변경 내용">
+                        <div class="common-status-item">
+                            <span class="common-status-label">현재 상태</span>
+                            <strong id="currentStatusValue" class="common-status-value">-</strong>
+                        </div>
+                        <span class="common-status-arrow" aria-hidden="true">→</span>
+                        <div class="common-status-item">
+                            <span class="common-status-label">변경 상태</span>
+                            <strong id="nextStatusValue" class="common-status-value">-</strong>
+                        </div>
+                    </div>
+
+                    <p id="statusModalError" class="form-error" role="alert" hidden></p>
+                </div>
+
+                <div class="common-modal-actions">
+                    <button type="button" id="cancelStatusButton" class="button button-secondary">취소</button>
+                    <button type="submit" id="confirmStatusButton" class="button button-primary">변경</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <!-- 취급 공급업체 관계 해제 확인 모달 -->
+    <div id="supplierRemoveModalBackdrop" class="common-modal-backdrop" hidden>
+        <section class="common-modal" role="dialog" aria-modal="true" aria-labelledby="supplierRemoveModalTitle">
+            <header class="common-modal-header">
+                <h2 id="supplierRemoveModalTitle" class="common-modal-title">취급 공급업체 해제</h2>
+                <button type="button" id="closeSupplierRemoveModalButton" class="common-modal-close" aria-label="모달 닫기">×</button>
+            </header>
+
+            <form id="supplierRemoveForm" novalidate>
+                <div class="common-modal-body">
+                    <p class="common-modal-target">대상 품목: <strong id="removeTargetItem">-</strong></p>
+                    <p class="common-modal-target">대상 공급업체: <strong id="removeTargetSupplier">-</strong></p>
+                    <p class="item-remove-description">취급 관계를 해제해도 기존 발주·입고 이력은 유지됩니다.</p>
+                    <p id="supplierRemoveModalError" class="form-error" role="alert" hidden></p>
+                </div>
+
+                <div class="common-modal-actions">
+                    <button type="button" id="cancelSupplierRemoveButton" class="button button-secondary">취소</button>
+                    <button type="submit" id="confirmSupplierRemoveButton" class="button button-primary">해제</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <!-- 품목 관리 화면의 인증과 역할별 UI 제어 -->
+    <script type="module" src="../js/items.js"></script>
+</body>
+</html>

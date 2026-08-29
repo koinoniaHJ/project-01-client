@@ -11,6 +11,7 @@ const pageError = document.querySelector('#pageError');
 const usersMenuButton = document.querySelector('#usersMenuButton');
 const customersMenuButton = document.querySelector('#customersMenuButton');
 const suppliersMenuButton = document.querySelector('#suppliersMenuButton');
+const itemsMenuButton = document.querySelector('#itemsMenuButton');
 
 async function initialize() {
 
@@ -61,5 +62,6 @@ logoutButton.addEventListener('click', async () => {
 usersMenuButton.addEventListener('click', () => window.location.href = './users.html');
 customersMenuButton.addEventListener('click', () => window.location.href = './customers.html');
 suppliersMenuButton.addEventListener('click', () => window.location.href = './suppliers.html');
+itemsMenuButton.addEventListener('click', () => window.location.href = './items.html');
 
 initialize();

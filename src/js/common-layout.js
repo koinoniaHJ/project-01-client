@@ -29,7 +29,7 @@ const MENU_GROUPS = [
             { key: 'users', label: '사용자 관리', elementId: 'usersMenuButton', path: './users.html', adminOnly: true },
             { key: 'customers', label: '거래처 관리', elementId: 'customersMenuButton', path: './customers.html' },
             { key: 'suppliers', label: '공급업체 관리', elementId: 'suppliersMenuButton', path: './suppliers.html' },
-            { key: 'items', label: '품목 관리', elementId: null, path: null },
+            { key: 'items', label: '품목 관리', elementId: 'itemsMenuButton', path: './items.html' },
             { key: 'warehouses', label: '창고 관리', elementId: null, path: null },
             { key: 'safetyStock', label: '안전재고 관리', elementId: null, path: null }
         ]

@@ -40,11 +40,11 @@
                                 <option value="INACTIVE">미사용</option>
                             </select>
                         </label>
-                        <!-- ITEM·SUPPLIER_ITEM 구현 후 실제 취급 품목 목록과 itemId 검색 조건을 연결 -->
+                        <!-- 품목 목록을 조회하여 선택한 itemId로 해당 품목을 취급하는 공급업체만 검색 -->
                         <label class="supplier-filter-field">
                             <span>취급 품목</span>
-                            <select id="itemFilter" disabled>
-                                <option value="">품목 구현 후 연결</option>
+                            <select id="itemFilter">
+                                <option value="">전체</option>
                             </select>
                         </label>
                         <div class="supplier-filter-actions">
