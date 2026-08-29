@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERP 창고 관리</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/common-layout.css">
+    <link rel="stylesheet" href="../css/warehouses.css">
+    <link rel="stylesheet" href="../css/common-modal.css">
+</head>
+<body>
+    <div class="page-root">
+        <!-- 창고 관리 화면 전체 영역 -->
+        <main class="page-container erp-page">
+            <!-- common-layout.js에서 모든 업무 화면이 공유하는 ERP Sidebar를 생성한다. -->
+            <aside id="commonSidebar" class="erp-sidebar"></aside>
+
+            <!-- 창고 목록과 상세정보를 포함하는 본문 영역 -->
+            <section class="erp-main">
+                <!-- common-layout.js에서 화면 제목, 사용자명과 로그아웃 버튼을 생성한다. -->
+                <header id="commonHeader" class="erp-header"></header>
+
+                <!-- 로그인·권한·초기 조회 실패 등 화면 전체 오류 표시 -->
+                <p id="warehousePageError" class="form-error warehouse-page-error" role="alert" hidden></p>
+
+                <section class="warehouse-card">
+                    <!-- 창고 검색 조건과 신규 등록 버튼 -->
+                    <div class="warehouse-toolbar">
+                        <div class="warehouse-filter-group">
+                            <label class="warehouse-filter-field warehouse-keyword-field">
+                                <span>검색어</span>
+                                <input type="search" id="keywordFilter" placeholder="창고 코드, 창고명, 주소" autocomplete="off">
+                            </label>
+                            <label class="warehouse-filter-field">
+                                <span>사용 상태</span>
+                                <select id="statusFilter">
+                                    <option value="">전체</option>
+                                    <option value="ACTIVE">사용</option>
+                                    <option value="INACTIVE">미사용</option>
+                                </select>
+                            </label>
+                            <div class="warehouse-filter-actions">
+                                <button type="button" id="searchButton" class="button button-primary">검색</button>
+                                <button type="button" id="resetFilterButton" class="button button-secondary">초기화</button>
+                            </div>
+                        </div>
+                        <!-- ADMIN·OFFICE 사용자에게만 표시하고 WAREHOUSE 사용자에게는 숨긴다. -->
+                        <button type="button" id="newWarehouseButton" class="button button-primary warehouse-new-button">신규 등록</button>
+                    </div>
+
+                    <!-- PC·Tablet에서는 창고 목록과 상세정보를 나란히 표시한다. -->
+                    <div class="warehouse-workspace">
+                        <section class="warehouse-list-section" aria-labelledby="warehouseListTitle">
+                            <div class="warehouse-section-header">
+                                <h2 id="warehouseListTitle">창고 목록</h2>
+                                <span id="warehouseCount" class="warehouse-count">총 0건</span>
+                            </div>
+
+                            <!-- PC·Tablet 창고 목록 -->
+                            <div class="warehouse-table-wrap">
+                                <table class="warehouse-table">
+                                    <colgroup>
+                                        <col style="width: 20%">
+                                        <col style="width: 25%">
+                                        <col style="width: 39%">
+                                        <col style="width: 16%">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">창고 코드</th>
+                                            <th scope="col">창고명</th>
+                                            <th scope="col">주소</th>
+                                            <th scope="col">사용 상태</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="warehouseTableBody">
+                                        <tr>
+                                            <td colspan="4" class="warehouse-empty-cell">창고 목록을 불러오는 중입니다.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Mobile 창고 Card 목록 -->
+                            <div id="warehouseMobileList" class="warehouse-mobile-list" aria-live="polite">
+                                <p class="warehouse-mobile-empty">창고 목록을 불러오는 중입니다.</p>
+                            </div>
+
+                            <!-- 창고 목록 페이지 이동 영역 -->
+                            <nav id="warehousePagination" class="warehouse-pagination" aria-label="창고 목록 페이지"></nav>
+                        </section>
+
+                        <!-- 선택 창고 상세·신규 등록·수정 입력 영역 -->
+                        <section id="warehouseDetailSection" class="warehouse-detail-section" aria-labelledby="warehouseDetailTitle">
+                            <div class="warehouse-section-header warehouse-detail-header">
+                                <div>
+                                    <h2 id="warehouseDetailTitle">창고 정보</h2>
+                                    <p id="warehouseDetailMode" class="warehouse-section-description">선택한 창고 정보를 확인하거나 수정할 수 있습니다.</p>
+                                </div>
+                                <button type="button" id="closeDetailButton" class="warehouse-detail-close" aria-label="상세정보 닫기">×</button>
+                            </div>
+
+                            <!-- 창고를 선택하지 않은 초기 상태 -->
+                            <div id="warehouseDetailEmpty" class="warehouse-detail-empty">
+                                <p>목록에서 창고를 선택하거나 신규 등록을 눌러주세요.</p>
+                            </div>
+
+                            <form id="warehouseDetailForm" class="warehouse-detail-form" novalidate hidden>
+                                <!-- 서버가 관리하는 창고 코드와 현재 사용 상태 -->
+                                <section class="warehouse-form-section">
+                                    <h3>창고 상태</h3>
+                                    <div class="warehouse-summary-grid">
+                                        <div class="warehouse-form-field">
+                                            <label class="warehouse-summary-label" for="warehouseCodeValue">창고 코드</label>
+                                            <input id="warehouseCodeValue" type="text" placeholder="등록 시 자동 생성" readonly>
+                                        </div>
+                                        <div class="warehouse-form-field">
+                                            <span class="warehouse-summary-label">사용 상태</span>
+                                            <div class="warehouse-status-value">
+                                                <span id="warehouseStatusBadge" class="status-badge is-active">사용중</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <!-- 창고의 필수 기본정보 -->
+                                <section class="warehouse-form-section">
+                                    <h3>기본 정보</h3>
+                                    <div class="warehouse-form-grid">
+                                        <label class="warehouse-form-field warehouse-form-field-wide">
+                                            <span>창고명 <em>*</em></span>
+                                            <input type="text" id="warehouseName" name="warehouseName" maxlength="150" autocomplete="organization" required>
+                                        </label>
+                                    </div>
+                                </section>
+
+                                <!-- 창고의 우편번호·기본 주소·상세 주소 -->
+                                <section class="warehouse-form-section">
+                                    <h3>주소 정보</h3>
+                                    <div class="warehouse-form-grid">
+                                        <label class="warehouse-form-field">
+                                            <span>우편번호</span>
+                                            <input type="text" id="warehousePostalCode" name="postalCode" maxlength="10" autocomplete="postal-code">
+                                        </label>
+                                        <label class="warehouse-form-field warehouse-form-field-wide">
+                                            <span>주소</span>
+                                            <input type="text" id="warehouseAddress" name="address" maxlength="500" autocomplete="street-address">
+                                        </label>
+                                        <label class="warehouse-form-field warehouse-form-field-wide">
+                                            <span>상세주소</span>
+                                            <input type="text" id="warehouseAddressDetail" name="addressDetail" maxlength="300">
+                                        </label>
+                                    </div>
+                                </section>
+
+                                <!-- 모든 역할이 조회할 수 있고 ADMIN·OFFICE만 수정할 수 있는 창고 메모 -->
+                                <section class="warehouse-form-section">
+                                    <h3>메모</h3>
+                                    <label class="warehouse-form-field warehouse-form-field-wide">
+                                        <span>창고 메모</span>
+                                        <textarea id="warehouseMemo" name="memo" rows="4" maxlength="2000"></textarea>
+                                    </label>
+                                </section>
+
+                                <!-- 입력값 검증·API 요청 실패 메시지 -->
+                                <p id="warehouseFormError" class="form-error" role="alert" hidden></p>
+
+                                <div class="warehouse-detail-actions">
+                                    <!-- 사용 상태 변경은 ADMIN 사용자에게만 표시한다. -->
+                                    <button type="button" id="warehouseStatusButton" class="button button-secondary">사용 상태 변경</button>
+                                    <!-- 저장은 ADMIN·OFFICE 사용자에게만 표시한다. -->
+                                    <button type="submit" id="warehouseSaveButton" class="button button-primary">저장</button>
+                                </div>
+                            </form>
+                        </section>
+                    </div>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <!-- 창고 사용 상태 변경 확인 Modal은 common-modal.css의 공통 골격을 그대로 사용한다. -->
+    <div id="statusModalBackdrop" class="common-modal-backdrop" hidden>
+        <section class="common-modal" role="dialog" aria-modal="true" aria-labelledby="statusModalTitle">
+            <header class="common-modal-header">
+                <h2 id="statusModalTitle" class="common-modal-title">사용 상태 변경</h2>
+                <button type="button" id="closeStatusModalButton" class="common-modal-close" aria-label="모달 닫기">×</button>
+            </header>
+
+            <form id="statusChangeForm" novalidate>
+                <div class="common-modal-body">
+                    <p class="common-modal-target">대상 창고: <strong id="statusTargetWarehouse">-</strong></p>
+                    <div class="common-status-summary" aria-label="사용 상태 변경 내용">
+                        <div class="common-status-item">
+                            <span class="common-status-label">현재 상태</span>
+                            <strong id="currentStatusValue" class="common-status-value">-</strong>
+                        </div>
+                        <span class="common-status-arrow" aria-hidden="true">→</span>
+                        <div class="common-status-item">
+                            <span class="common-status-label">변경 상태</span>
+                            <strong id="nextStatusValue" class="common-status-value">-</strong>
+                        </div>
+                    </div>
+
+                    <p id="statusModalError" class="form-error" role="alert" hidden></p>
+                </div>
+
+                <div class="common-modal-actions">
+                    <button type="button" id="cancelStatusButton" class="button button-secondary">취소</button>
+                    <button type="submit" id="confirmStatusButton" class="button button-primary">변경</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <!-- 창고 관리 화면의 인증, 역할별 UI와 업무 기능 처리 -->
+    <script type="module" src="../js/warehouses.js"></script>
+</body>
+</html>

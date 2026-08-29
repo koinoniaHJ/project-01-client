@@ -1,0 +1,823 @@
+/* =========================================================
+    창고 관리 업무 전용 스타일
+    - 공통 Sidebar와 Header는 common-layout.css에서 관리한다.
+    - Modal 골격과 상태 변경 요약은 common-modal.css에서 관리한다.
+   ========================================================= */
+
+/* =========================================================
+    1. Button과 오류 메시지
+   ========================================================= */
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 34px;
+
+    padding: 0 13px;
+
+    border-radius: 6px;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.button-primary {
+    border: 1px solid var(--color-primary);
+
+    color: #FFFFFF;
+    background: var(--color-primary);
+}
+
+.button-primary:hover:not(:disabled) {
+    filter: brightness(0.96);
+}
+
+.button-secondary {
+    border: 1px solid var(--color-border);
+
+    color: #475467;
+    background: var(--color-surface);
+}
+
+.button-secondary:hover:not(:disabled) {
+    background: #F7F8FA;
+}
+
+.button:focus-visible,
+.warehouse-detail-close:focus-visible {
+    outline: 3px solid rgba(63, 91, 134, 0.18);
+    outline-offset: 2px;
+}
+
+.button:disabled,
+.warehouse-form-field input:disabled,
+.warehouse-form-field textarea:disabled,
+.warehouse-filter-field select:disabled {
+    cursor: default;
+
+    opacity: 0.55;
+}
+
+.form-error {
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.5;
+
+    color: var(--color-warning);
+
+    word-break: keep-all;
+}
+
+.warehouse-page-error {
+    padding: 10px 12px;
+
+    border: 1px solid rgba(222, 106, 94, 0.28);
+    border-radius: 6px;
+
+    background: rgba(222, 106, 94, 0.06);
+}
+
+
+/* =========================================================
+    2. 창고 Card와 검색 영역
+   ========================================================= */
+
+.warehouse-card {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    border: 1px solid #E3E7ED;
+    border-radius: 10px;
+
+    background: var(--color-surface);
+
+    box-shadow: 0 6px 18px rgba(63, 91, 134, 0.06);
+}
+
+.warehouse-toolbar {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+
+    padding: 14px 16px;
+
+    gap: 14px;
+
+    border-bottom: 1px solid #E3E7ED;
+}
+
+.warehouse-filter-group {
+    display: flex;
+    align-items: end;
+    flex-wrap: wrap;
+
+    gap: 10px;
+}
+
+.warehouse-filter-field {
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+.warehouse-filter-field > span {
+    font-size: 10px;
+    font-weight: 700;
+
+    color: var(--color-text-subtle);
+}
+
+.warehouse-keyword-field {
+    width: 280px;
+}
+
+.warehouse-filter-field input,
+.warehouse-filter-field select {
+    width: 130px;
+    height: 34px;
+
+    padding: 0 10px;
+
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    outline: 0;
+
+    font-size: 10px;
+
+    color: #344054;
+    background: var(--color-surface);
+}
+
+.warehouse-keyword-field input {
+    width: 100%;
+}
+
+.warehouse-filter-field input::placeholder {
+    color: #A0A9B5;
+}
+
+.warehouse-filter-field input:focus,
+.warehouse-filter-field select:focus {
+    border-color: var(--color-primary);
+
+    box-shadow: 0 0 0 3px rgba(63, 91, 134, 0.08);
+}
+
+.warehouse-filter-actions {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+}
+
+
+/* =========================================================
+    3. 창고 목록과 상세정보 Layout
+   ========================================================= */
+
+.warehouse-workspace {
+    display: grid;
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+
+    min-width: 0;
+}
+
+.warehouse-list-section {
+    grid-column: 1 / span 6;
+
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    padding: 16px;
+
+    gap: 10px;
+
+    border-right: 1px solid #E3E7ED;
+}
+
+.warehouse-detail-section {
+    grid-column: 7 / span 4;
+
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    padding: 16px;
+
+    gap: 14px;
+}
+
+.warehouse-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    min-height: 28px;
+
+    gap: 10px;
+}
+
+.warehouse-section-header > div {
+    flex: 1 1 auto;
+
+    min-width: 0;
+}
+
+.warehouse-section-header h2 {
+    font-size: 13px;
+    font-weight: 800;
+
+    color: var(--color-text);
+}
+
+.warehouse-section-description {
+    font-size: 9px;
+    line-height: 1.5;
+
+    color: var(--color-text-subtle);
+
+    word-break: keep-all;
+}
+
+.warehouse-count {
+    flex: 0 0 auto;
+
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+
+    color: #475467;
+}
+
+.warehouse-detail-close {
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    width: 28px;
+    height: 28px;
+
+    padding: 0;
+
+    border: 0;
+    border-radius: 6px;
+
+    font-size: 18px;
+
+    color: var(--color-text-subtle);
+    background: transparent;
+}
+
+.warehouse-detail-close:hover {
+    background: #F7F8FA;
+}
+
+
+/* =========================================================
+    4. 창고 목록 Table과 Mobile Card
+   ========================================================= */
+
+.warehouse-table-wrap {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+.warehouse-table {
+    width: 100%;
+    min-width: 560px;
+
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.warehouse-table th,
+.warehouse-table td {
+    height: 40px;
+
+    padding: 0 8px;
+
+    border-bottom: 1px solid #E8ECF1;
+
+    overflow: hidden;
+
+    font-size: 9px;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.warehouse-table th {
+    font-weight: 700;
+
+    color: var(--color-text-subtle);
+    background: #FAFBFC;
+}
+
+.warehouse-table tbody tr:not(:has(.warehouse-empty-cell)) {
+    cursor: pointer;
+}
+
+.warehouse-table tbody tr:not(:has(.warehouse-empty-cell)):hover {
+    background: rgba(63, 91, 134, 0.04);
+}
+
+.warehouse-table tbody tr.is-selected {
+    background: rgba(63, 91, 134, 0.09);
+}
+
+.warehouse-table th:last-child,
+.warehouse-table td:last-child {
+    text-align: center;
+}
+
+.warehouse-empty-cell {
+    height: 120px !important;
+
+    text-align: center !important;
+
+    color: var(--color-text-subtle);
+}
+
+.warehouse-mobile-list {
+    display: none;
+}
+
+.warehouse-mobile-empty {
+    padding: 24px 12px;
+
+    font-size: 10px;
+    text-align: center;
+
+    color: var(--color-text-subtle);
+}
+
+/* JavaScript에서 생성하는 Mobile 창고 Card에 적용한다. */
+.warehouse-mobile-item {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+
+    padding: 11px;
+
+    gap: 8px;
+
+    border: 1px solid #E3E7ED;
+    border-radius: 8px;
+
+    font: inherit;
+    text-align: left;
+
+    color: #344054;
+    background: var(--color-surface);
+}
+
+.warehouse-mobile-item.is-selected {
+    border-color: var(--color-primary);
+
+    background: rgba(63, 91, 134, 0.05);
+}
+
+.warehouse-mobile-top,
+.warehouse-mobile-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 8px;
+}
+
+.warehouse-mobile-name {
+    overflow: hidden;
+
+    font-size: 11px;
+    font-weight: 800;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.warehouse-mobile-code,
+.warehouse-mobile-address {
+    overflow: hidden;
+
+    font-size: 9px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: var(--color-text-subtle);
+}
+
+
+/* =========================================================
+    5. 사용 상태 Badge와 Pagination
+   ========================================================= */
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+
+    min-height: 18px;
+
+    padding: 0 6px;
+
+    border-radius: 999px;
+
+    font-size: 8px;
+    font-weight: 700;
+}
+
+.status-badge.status-active,
+.status-badge.is-active {
+    color: var(--color-accent);
+    background: rgba(79, 138, 123, 0.12);
+}
+
+.status-badge.status-inactive,
+.status-badge.is-inactive {
+    color: var(--color-warning);
+    background: rgba(222, 106, 94, 0.12);
+}
+
+.warehouse-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 28px;
+
+    gap: 5px;
+}
+
+/* JavaScript에서 생성하는 창고 목록 페이지 버튼에 적용한다. */
+.warehouse-pagination .page-button {
+    min-width: 28px;
+    height: 28px;
+
+    padding: 0 7px;
+
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+
+    font-size: 9px;
+
+    color: #475467;
+    background: var(--color-surface);
+}
+
+.warehouse-pagination .page-button:hover:not(:disabled) {
+    border-color: var(--color-primary);
+
+    color: var(--color-primary);
+}
+
+.warehouse-pagination .page-button.is-active {
+    border-color: var(--color-primary);
+
+    color: #FFFFFF;
+    background: var(--color-primary);
+}
+
+
+/* =========================================================
+    6. 창고 상세·등록·수정 Form
+   ========================================================= */
+
+.warehouse-detail-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 320px;
+
+    padding: 20px;
+
+    border: 1px dashed #D5DBE4;
+    border-radius: 8px;
+
+    font-size: 10px;
+    line-height: 1.6;
+    text-align: center;
+
+    color: var(--color-text-subtle);
+    background: #FAFBFC;
+}
+
+.warehouse-detail-form {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    gap: 14px;
+}
+
+.warehouse-form-section {
+    display: flex;
+    flex-direction: column;
+
+    padding-bottom: 14px;
+
+    gap: 10px;
+
+    border-bottom: 1px solid #E8ECF1;
+}
+
+.warehouse-form-section:last-of-type {
+    border-bottom: 0;
+}
+
+.warehouse-form-section h3 {
+    font-size: 11px;
+    font-weight: 800;
+
+    color: #344054;
+}
+
+.warehouse-summary-grid,
+.warehouse-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+}
+
+.warehouse-summary-label {
+    font-size: 10px;
+    font-weight: 700;
+
+    color: #344054;
+}
+
+.warehouse-status-value {
+    display: flex;
+    align-items: center;
+
+    min-height: 36px;
+}
+
+.warehouse-form-field {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    gap: 5px;
+}
+
+.warehouse-form-field-wide {
+    grid-column: 1 / -1;
+}
+
+.warehouse-form-field > span {
+    font-size: 10px;
+    font-weight: 700;
+
+    color: #344054;
+}
+
+.warehouse-form-field em {
+    font-style: normal;
+
+    color: var(--color-warning);
+}
+
+.warehouse-form-field input,
+.warehouse-form-field textarea {
+    width: 100%;
+
+    padding: 0 10px;
+
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    outline: 0;
+
+    font-size: 10px;
+    line-height: 1.5;
+
+    color: #344054;
+    background: var(--color-surface);
+}
+
+.warehouse-form-field input {
+    height: 36px;
+}
+
+.warehouse-form-field textarea {
+    min-height: 80px;
+
+    padding-top: 9px;
+    padding-bottom: 9px;
+
+    resize: vertical;
+}
+
+.warehouse-form-field input:focus,
+.warehouse-form-field textarea:focus {
+    border-color: var(--color-primary);
+
+    box-shadow: 0 0 0 3px rgba(63, 91, 134, 0.08);
+}
+
+.warehouse-form-field input[readonly],
+.warehouse-form-field input:disabled,
+.warehouse-form-field textarea:disabled {
+    color: var(--color-text-subtle);
+    background: #F7F8FA;
+}
+
+.warehouse-detail-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+
+    padding-top: 2px;
+
+    gap: 8px;
+}
+
+.warehouse-detail-actions .button-primary {
+    min-width: 88px;
+}
+
+
+/* =========================================================
+    7. JavaScript 동작 상태
+   ========================================================= */
+
+.warehouse-page-error[hidden],
+.warehouse-detail-empty[hidden],
+.warehouse-detail-form[hidden],
+.form-error[hidden],
+#warehouseStatusButton[hidden],
+#warehouseSaveButton[hidden],
+#newWarehouseButton[hidden] {
+    display: none;
+}
+
+
+/* =========================================================
+    8. Tablet
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .warehouse-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .warehouse-filter-group {
+        display: grid;
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+
+        gap: 12px;
+    }
+
+    .warehouse-keyword-field {
+        grid-column: span 5;
+
+        width: auto;
+    }
+
+    .warehouse-filter-field:not(.warehouse-keyword-field) {
+        grid-column: span 3;
+    }
+
+    .warehouse-filter-field select {
+        width: 100%;
+    }
+
+    .warehouse-filter-actions {
+        grid-column: span 8;
+    }
+
+    .warehouse-filter-actions .button {
+        flex: 1;
+    }
+
+    .warehouse-new-button {
+        width: 100%;
+    }
+
+    .warehouse-workspace {
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+    }
+
+    .warehouse-list-section,
+    .warehouse-detail-section {
+        grid-column: 1 / -1;
+    }
+
+    .warehouse-list-section {
+        border-right: 0;
+        border-bottom: 1px solid #E3E7ED;
+    }
+
+    .warehouse-summary-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+
+/* =========================================================
+    9. Mobile
+   ========================================================= */
+
+@media (max-width: 375px) {
+
+    .warehouse-card {
+        border-radius: 8px;
+    }
+
+    .warehouse-toolbar {
+        padding: 12px;
+    }
+
+    .warehouse-filter-group {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+
+        gap: 10px;
+    }
+
+    .warehouse-keyword-field,
+    .warehouse-filter-field:not(.warehouse-keyword-field),
+    .warehouse-filter-actions {
+        grid-column: 1 / -1;
+    }
+
+    .warehouse-list-section {
+        padding: 12px;
+
+        border-bottom: 0;
+    }
+
+    .warehouse-table-wrap {
+        display: none;
+    }
+
+    .warehouse-mobile-list {
+        display: flex;
+        flex-direction: column;
+
+        gap: 8px;
+    }
+
+    .warehouse-detail-close {
+        display: inline-flex;
+    }
+
+    /* Mobile 상세정보는 목록 위에 표시하는 하단 Panel로 사용한다. */
+    .warehouse-detail-section {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 900;
+
+        max-height: 88dvh;
+
+        padding: 16px 20px;
+
+        overflow-y: auto;
+
+        border-top: 1px solid #E3E7ED;
+        border-radius: 12px 12px 0 0;
+
+        background: var(--color-surface);
+
+        box-shadow: 0 -12px 30px rgba(17, 24, 39, 0.14);
+    }
+
+    .warehouse-detail-section[hidden] {
+        display: none;
+    }
+
+    .warehouse-summary-grid,
+    .warehouse-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .warehouse-form-field-wide {
+        grid-column: 1;
+    }
+
+    .warehouse-detail-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .warehouse-detail-actions .button-primary {
+        grid-column: 1 / -1;
+
+        min-width: 0;
+    }
+}
