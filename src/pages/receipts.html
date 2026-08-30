@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERP 입고 관리</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/common-layout.css">
+    <link rel="stylesheet" href="../css/receipts.css">
+    <link rel="stylesheet" href="../css/common-modal.css">
+</head>
+<body>
+    <div class="page-root">
+        <!-- 입고 관리 화면 전체 영역 -->
+        <main class="page-container erp-page">
+            <!-- 공통 Layout에서 모든 업무 화면이 공유하는 Sidebar를 생성한다. -->
+            <aside id="commonSidebar" class="erp-sidebar"></aside>
+
+            <!-- 입고 검색·목록·검수 상세를 포함하는 본문 영역 -->
+            <section class="erp-main">
+                <!-- 공통 Layout에서 화면 제목·로그인 사용자·로그아웃 버튼을 생성한다. -->
+                <header id="commonHeader" class="erp-header"></header>
+
+                <!-- 인증·조회·초기화처럼 화면 전체에 해당하는 오류를 표시한다. -->
+                <p id="receiptPageError" class="form-error receipt-page-error" role="alert" hidden></p>
+
+                <section class="receipt-card">
+                    <!-- 발주·입고 상태·등록 기간으로 입고 목록을 조회하는 조건 영역 -->
+                    <div class="receipt-toolbar">
+                        <div class="receipt-filter-group">
+                            <label class="receipt-filter-field receipt-purchase-order-filter">
+                                <span>발주 번호</span>
+                                <input type="number" id="purchaseOrderFilter" min="1" placeholder="발주 번호">
+                            </label>
+                            <label class="receipt-filter-field">
+                                <span>입고 상태</span>
+                                <select id="statusFilter">
+                                    <option value="">전체</option>
+                                    <option value="PENDING">입고 대기</option>
+                                    <option value="INSPECTING">검수 중</option>
+                                    <option value="COMPLETED">입고 완료</option>
+                                    <option value="CANCELED">입고 취소</option>
+                                </select>
+                            </label>
+                            <label class="receipt-filter-field receipt-date-field">
+                                <span>등록 시작일</span>
+                                <input type="date" id="startDateFilter">
+                            </label>
+                            <label class="receipt-filter-field receipt-date-field">
+                                <span>등록 종료일</span>
+                                <input type="date" id="endDateFilter">
+                            </label>
+                            <div class="receipt-filter-actions">
+                                <button type="button" id="searchButton" class="button button-primary">검색</button>
+                                <button type="button" id="resetFilterButton" class="button button-secondary">초기화</button>
+                            </div>
+                        </div>
+                        <!-- ADMIN·WAREHOUSE 역할에만 신규 입고 등록 버튼을 표시한다. -->
+                        <button type="button" id="newReceiptButton" class="button button-primary receipt-new-button">신규 입고</button>
+                    </div>
+
+                    <!-- 조회한 입고를 PC·Tablet Table 또는 Mobile Card로 표시하는 영역 -->
+                    <section class="receipt-list-section" aria-labelledby="receiptListTitle">
+                        <div class="receipt-section-header">
+                            <div>
+                                <h2 id="receiptListTitle">입고 목록</h2>
+                                <p class="receipt-section-description">발주별 입고 진행 상태와 검수 일시를 확인할 수 있습니다.</p>
+                            </div>
+                            <span id="receiptCount" class="receipt-count">총 0건</span>
+                        </div>
+
+                        <!-- PC·Tablet 입고 목록 -->
+                        <div class="receipt-table-wrap">
+                            <table class="receipt-table">
+                                <colgroup>
+                                    <col style="width: 10%">
+                                    <col style="width: 10%">
+                                    <col style="width: 17%">
+                                    <col style="width: 15%">
+                                    <col style="width: 11%">
+                                    <col style="width: 13%">
+                                    <col style="width: 12%">
+                                    <col style="width: 12%">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">입고 번호</th>
+                                        <th scope="col">발주 번호</th>
+                                        <th scope="col">공급업체</th>
+                                        <th scope="col">입고 창고</th>
+                                        <th scope="col">입고 상태</th>
+                                        <th scope="col">등록 일시</th>
+                                        <th scope="col">검수 시작</th>
+                                        <th scope="col">완료 일시</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="receiptTableBody">
+                                    <tr><td colspan="8" class="receipt-empty-cell">입고 목록을 불러오는 중입니다.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Mobile 입고 카드 목록 -->
+                        <div id="receiptMobileList" class="receipt-mobile-list" aria-live="polite">
+                            <p class="receipt-mobile-empty">입고 목록을 불러오는 중입니다.</p>
+                        </div>
+
+                        <!-- 입고 목록 페이지 이동 영역 -->
+                        <nav id="receiptPagination" class="receipt-pagination" aria-label="입고 목록 페이지"></nav>
+                    </section>
+
+                    <!-- 선택 입고의 기본정보·검수·LOT·완료 처리를 표시하는 영역 -->
+                    <section id="receiptDetailSection" class="receipt-detail-section" aria-labelledby="receiptDetailTitle">
+                        <div class="receipt-section-header receipt-detail-header">
+                            <div>
+                                <h2 id="receiptDetailTitle">입고 정보</h2>
+                                <p id="receiptDetailMode" class="receipt-section-description">입고를 선택하면 검수 정보와 처리 상태를 확인할 수 있습니다.</p>
+                            </div>
+                            <button type="button" id="closeDetailButton" class="receipt-detail-close" aria-label="입고 상세정보 닫기">×</button>
+                        </div>
+
+                        <!-- 입고를 선택하지 않은 초기 상태 -->
+                        <div id="receiptDetailEmpty" class="receipt-detail-empty">
+                            <p>목록에서 입고를 선택하거나 신규 입고를 눌러주세요.</p>
+                        </div>
+
+                        <form id="receiptDetailForm" class="receipt-detail-form" novalidate hidden>
+                            <!-- Server가 관리하는 입고·발주·공급업체·처리 시각을 요약한다. -->
+                            <section class="receipt-form-section">
+                                <div class="receipt-form-section-header">
+                                    <h3>입고 현황</h3>
+                                    <span id="receiptStatusBadge" class="receipt-status-badge is-pending">입고 대기</span>
+                                </div>
+                                <div class="receipt-summary-grid">
+                                    <div class="receipt-summary-item"><span>입고 번호</span><strong id="receiptIdValue">-</strong></div>
+                                    <div class="receipt-summary-item"><span>발주 번호</span><strong id="purchaseOrderIdValue">-</strong></div>
+                                    <div class="receipt-summary-item"><span>발주 상태</span><strong id="purchaseOrderStatusValue">-</strong></div>
+                                    <div class="receipt-summary-item"><span>공급업체</span><strong id="supplierValue">-</strong></div>
+                                    <div class="receipt-summary-item"><span>등록 일시</span><strong id="createdAtValue">-</strong></div>
+                                    <div class="receipt-summary-item"><span>검수 시작</span><strong id="inspectionStartedAtValue">-</strong></div>
+                                    <div class="receipt-summary-item"><span>입고 완료</span><strong id="completedAtValue">-</strong></div>
+                                    <div class="receipt-summary-item"><span>매입 전표</span><strong id="purchaseVoucherIdValue">-</strong></div>
+                                </div>
+                            </section>
+
+                            <!-- PENDING 상태에서만 입고 창고를 변경할 수 있다. -->
+                            <section class="receipt-form-section">
+                                <div class="receipt-form-section-header">
+                                    <div>
+                                        <h3>입고 창고</h3>
+                                        <p class="receipt-section-description">검수를 시작하기 전까지 사용 중인 창고로 변경할 수 있습니다.</p>
+                                    </div>
+                                    <button type="button" id="saveWarehouseButton" class="button button-secondary">창고 저장</button>
+                                </div>
+                                <label class="receipt-form-field">
+                                    <span>창고 <em>*</em></span>
+                                    <select id="receiptWarehouse" required><option value="">창고 선택</option></select>
+                                </label>
+                            </section>
+
+                            <!-- 발주 품목별 검수 수량과 정상 수량의 LOT 구성을 입력한다. -->
+                            <section class="receipt-form-section receipt-items-section">
+                                <div class="receipt-form-section-header">
+                                    <div>
+                                        <h3>입고 품목 검수</h3>
+                                        <p class="receipt-section-description">실제 수량은 정상 수량과 불합격 수량의 합이어야 하며, 정상 수량은 LOT 수량의 합과 같아야 합니다.</p>
+                                    </div>
+                                </div>
+                                <div id="receiptItemList" class="receipt-item-list"></div>
+                            </section>
+
+                            <!-- 등록·검수·완료·취소 처리 이력과 사유를 표시한다. -->
+                            <section class="receipt-form-section">
+                                <h3>처리 이력</h3>
+                                <dl class="receipt-action-history">
+                                    <div><dt>등록</dt><dd id="createdActionValue">-</dd></div>
+                                    <div><dt>검수 시작</dt><dd id="inspectionStartedActionValue">-</dd></div>
+                                    <div><dt>입고 완료</dt><dd id="completedActionValue">-</dd></div>
+                                    <div><dt>입고 취소</dt><dd id="canceledActionValue">-</dd></div>
+                                    <div><dt>취소 사유</dt><dd id="cancelReasonValue">-</dd></div>
+                                    <div><dt>잔여 처리</dt><dd id="remainderActionValue">-</dd></div>
+                                    <div class="receipt-history-wide"><dt>잔여 처리 사유</dt><dd id="remainderReasonValue">-</dd></div>
+                                </dl>
+                            </section>
+
+                            <p id="receiptFormNotice" class="receipt-form-notice" role="status" hidden></p>
+                            <p id="receiptFormError" class="form-error" role="alert" hidden></p>
+
+                            <!-- 현재 입고 상태와 역할에 따라 JavaScript에서 표시 범위를 결정한다. -->
+                            <div class="receipt-detail-actions">
+                                <button type="button" id="cancelReceiptButton" class="button button-danger">입고 취소</button>
+                                <button type="button" id="startInspectionButton" class="button button-secondary">검수 시작</button>
+                                <button type="button" id="saveInspectionButton" class="button button-secondary">검수 저장</button>
+                                <button type="button" id="completeReceiptButton" class="button button-primary">입고 완료</button>
+                            </div>
+                        </form>
+                    </section>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <!-- ORDERED 발주와 ACTIVE 창고를 선택하여 신규 입고를 등록하는 모달 -->
+    <div id="createModalBackdrop" class="common-modal-backdrop" hidden>
+        <section class="common-modal receipt-create-modal" role="dialog" aria-modal="true" aria-labelledby="createModalTitle">
+            <header class="common-modal-header">
+                <h2 id="createModalTitle" class="common-modal-title">신규 입고 등록</h2>
+                <button type="button" id="closeCreateModalButton" class="common-modal-close" aria-label="신규 입고 모달 닫기">×</button>
+            </header>
+            <form id="createModalForm" novalidate>
+                <div class="common-modal-body">
+                    <label class="receipt-modal-field">
+                        <span>입고 대상 발주 <em>*</em></span>
+                        <select id="createPurchaseOrder" required><option value="">발주 선택</option></select>
+                    </label>
+                    <label class="receipt-modal-field">
+                        <span>입고 창고 <em>*</em></span>
+                        <select id="createWarehouse" required><option value="">창고 선택</option></select>
+                    </label>
+                    <p class="receipt-modal-description">발주 확정 상태이며 잔여 수량이 있는 발주만 입고 대상으로 선택할 수 있습니다.</p>
+                    <p id="createModalError" class="form-error" role="alert" hidden></p>
+                </div>
+                <div class="common-modal-actions">
+                    <button type="button" id="cancelCreateModalButton" class="button button-secondary">취소</button>
+                    <button type="submit" id="confirmCreateButton" class="button button-primary">등록</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <!-- 검수 시작처럼 별도 입력값이 필요하지 않은 상태 처리를 확인하는 공통 모달 -->
+    <div id="actionModalBackdrop" class="common-modal-backdrop" hidden>
+        <section class="common-modal" role="dialog" aria-modal="true" aria-labelledby="actionModalTitle">
+            <header class="common-modal-header">
+                <h2 id="actionModalTitle" class="common-modal-title">입고 처리 확인</h2>
+                <button type="button" id="closeActionModalButton" class="common-modal-close" aria-label="입고 처리 모달 닫기">×</button>
+            </header>
+            <form id="actionModalForm" novalidate>
+                <div class="common-modal-body">
+                    <p class="common-modal-target">대상 입고: <strong id="actionModalTarget">-</strong></p>
+                    <div class="common-status-summary" aria-label="입고 처리 내용">
+                        <div class="common-status-item"><span class="common-status-label">현재 상태</span><strong id="actionModalCurrentValue" class="common-status-value">-</strong></div>
+                        <span class="common-status-arrow" aria-hidden="true">→</span>
+                        <div class="common-status-item"><span class="common-status-label">변경 상태</span><strong id="actionModalNextValue" class="common-status-value">-</strong></div>
+                    </div>
+                    <p id="actionModalDescription" class="receipt-modal-description"></p>
+                    <p id="actionModalError" class="form-error" role="alert" hidden></p>
+                </div>
+                <div class="common-modal-actions">
+                    <button type="button" id="cancelActionModalButton" class="button button-secondary">취소</button>
+                    <button type="submit" id="confirmActionButton" class="button button-primary">검수 시작</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <!-- 검수 결과에 따라 추가 입고·잔여 종료·전량 불합격 발주 취소를 선택하는 모달 -->
+    <div id="completeModalBackdrop" class="common-modal-backdrop" hidden>
+        <section class="common-modal receipt-complete-modal" role="dialog" aria-modal="true" aria-labelledby="completeModalTitle">
+            <header class="common-modal-header">
+                <h2 id="completeModalTitle" class="common-modal-title">입고 완료</h2>
+                <button type="button" id="closeCompleteModalButton" class="common-modal-close" aria-label="입고 완료 모달 닫기">×</button>
+            </header>
+            <form id="completeModalForm" novalidate>
+                <div class="common-modal-body">
+                    <p class="common-modal-target">대상 입고: <strong id="completeModalTarget">-</strong></p>
+                    <div class="receipt-complete-summary">
+                        <div><span>실제 수량</span><strong id="completeActualQuantity">0</strong></div>
+                        <div><span>정상 수량</span><strong id="completeNormalQuantity">0</strong></div>
+                        <div><span>불합격 수량</span><strong id="completeRejectedQuantity">0</strong></div>
+                        <div><span>완료 후 잔여</span><strong id="completeRemainingQuantity">0</strong></div>
+                    </div>
+                    <fieldset id="remainderActionFieldset" class="receipt-modal-options">
+                        <legend>잔여 수량 처리 <em>*</em></legend>
+                        <label><input type="radio" name="remainderAction" value="ADDITIONAL_RECEIPT"> <span>추가 입고 예정</span></label>
+                        <label id="closeRemainderOption"><input type="radio" name="remainderAction" value="CLOSE_REMAINDER"> <span>잔여 미입고 종료</span></label>
+                        <label id="cancelPurchaseOrderOption"><input type="radio" name="remainderAction" value="CANCEL_PURCHASE_ORDER"> <span>전량 불합격으로 발주 취소</span></label>
+                    </fieldset>
+                    <label id="remainderReasonField" class="receipt-modal-field">
+                        <span id="remainderReasonLabel">잔여 처리 사유</span>
+                        <textarea id="remainderReason" rows="3" maxlength="1000"></textarea>
+                        <small><span id="remainderReasonLength">0</span>/1000</small>
+                    </label>
+                    <label id="supplierCancelConfirmedField" class="receipt-modal-checkbox" hidden>
+                        <input type="checkbox" id="supplierCancelConfirmed">
+                        <span>공급업체에 전량 불합격과 발주 취소를 확인했습니다.</span>
+                    </label>
+                    <p id="completeModalGuide" class="receipt-modal-description"></p>
+                    <p id="completeModalError" class="form-error" role="alert" hidden></p>
+                </div>
+                <div class="common-modal-actions">
+                    <button type="button" id="cancelCompleteModalButton" class="button button-secondary">취소</button>
+                    <button type="submit" id="confirmCompleteButton" class="button button-primary">입고 완료</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <!-- PENDING·INSPECTING 입고를 취소 사유와 함께 처리하는 모달 -->
+    <div id="cancelModalBackdrop" class="common-modal-backdrop" hidden>
+        <section class="common-modal" role="dialog" aria-modal="true" aria-labelledby="cancelModalTitle">
+            <header class="common-modal-header">
+                <h2 id="cancelModalTitle" class="common-modal-title">입고 취소</h2>
+                <button type="button" id="closeCancelModalButton" class="common-modal-close" aria-label="입고 취소 모달 닫기">×</button>
+            </header>
+            <form id="cancelModalForm" novalidate>
+                <div class="common-modal-body">
+                    <p class="common-modal-target">대상 입고: <strong id="cancelModalTarget">-</strong></p>
+                    <div class="common-status-summary" aria-label="입고 취소 내용">
+                        <div class="common-status-item"><span class="common-status-label">현재 상태</span><strong id="cancelModalCurrentValue" class="common-status-value">-</strong></div>
+                        <span class="common-status-arrow" aria-hidden="true">→</span>
+                        <div class="common-status-item"><span class="common-status-label">변경 상태</span><strong class="common-status-value">입고 취소</strong></div>
+                    </div>
+                    <label class="receipt-modal-field">
+                        <span>취소 사유 <em>*</em></span>
+                        <textarea id="cancelReason" rows="4" maxlength="1000" required></textarea>
+                        <small><span id="cancelReasonLength">0</span>/1000</small>
+                    </label>
+                    <p id="cancelModalError" class="form-error" role="alert" hidden></p>
+                </div>
+                <div class="common-modal-actions">
+                    <button type="button" id="cancelCancelModalButton" class="button button-secondary">닫기</button>
+                    <button type="submit" id="confirmCancelButton" class="button button-primary">입고 취소</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <script type="module" src="../js/receipts.js"></script>
+</body>
+</html>

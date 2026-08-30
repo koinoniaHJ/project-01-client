@@ -1,0 +1,1038 @@
+/* =========================================================
+    입고 관리 화면 전용 스타일
+    - 공통 Sidebar와 Header는 common-layout.css에서 관리한다.
+    - 기존 기준정보·발주 화면과 동일한 색상, Grid, Button 규격을 유지한다.
+    - 입고 목록, 품목 검수, LOT 입력과 반응형 상세 Panel만 이 파일에서 관리한다.
+   ========================================================= */
+
+
+/* =========================================================
+    1. 공통 Button과 오류 메시지
+   ========================================================= */
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 0 13px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.button-primary {
+    border: 1px solid var(--color-primary);
+    color: #FFFFFF;
+    background: var(--color-primary);
+}
+
+.button-primary:hover:not(:disabled) { filter: brightness(0.96); }
+
+.button-secondary {
+    border: 1px solid var(--color-border);
+    color: #475467;
+    background: var(--color-surface);
+}
+
+.button-secondary:hover:not(:disabled) { background: #F7F8FA; }
+
+.button-danger {
+    border: 1px solid rgba(222, 106, 94, 0.38);
+    color: var(--color-warning);
+    background: rgba(222, 106, 94, 0.06);
+}
+
+.button-danger:hover:not(:disabled) { background: rgba(222, 106, 94, 0.12); }
+
+.button:focus-visible,
+.receipt-filter-field select:focus-visible,
+.receipt-filter-field input:focus-visible,
+.receipt-page-button:focus-visible,
+.receipt-mobile-item:focus-visible {
+    outline: 3px solid rgba(63, 91, 134, 0.18);
+    outline-offset: 2px;
+}
+
+.button:disabled,
+.receipt-filter-field select:disabled,
+.receipt-filter-field input:disabled,
+.receipt-page-button:disabled {
+    cursor: default;
+    opacity: 0.55;
+}
+
+.form-error {
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--color-warning);
+    word-break: keep-all;
+}
+
+.receipt-page-error {
+    padding: 10px 12px;
+    border: 1px solid rgba(222, 106, 94, 0.28);
+    border-radius: 6px;
+    background: rgba(222, 106, 94, 0.06);
+}
+
+.receipt-page-error[hidden] { display: none; }
+
+.receipt-page-error.is-notice {
+    border-color: rgba(79, 138, 123, 0.25);
+    color: var(--color-accent);
+    background: rgba(79, 138, 123, 0.06);
+}
+
+
+/* =========================================================
+    2. 입고 목록 Card와 검색 영역
+   ========================================================= */
+
+.receipt-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    border: 1px solid #E3E7ED;
+    border-radius: 10px;
+    background: var(--color-surface);
+    box-shadow: 0 6px 18px rgba(63, 91, 134, 0.06);
+}
+
+.receipt-toolbar {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    padding: 14px 16px;
+    gap: 14px;
+    border-bottom: 1px solid #E3E7ED;
+}
+
+.receipt-filter-group {
+    display: flex;
+    align-items: end;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.receipt-filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.receipt-filter-field > span {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--color-text-subtle);
+}
+
+.receipt-filter-field select,
+.receipt-filter-field input {
+    width: 132px;
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    outline: 0;
+    font-size: 10px;
+    color: #344054;
+    background: var(--color-surface);
+}
+
+.receipt-purchase-order-filter input { width: 118px; }
+.receipt-date-field input { width: 132px; }
+
+.receipt-filter-field select:focus,
+.receipt-filter-field input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(63, 91, 134, 0.08);
+}
+
+.receipt-filter-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.receipt-new-button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+.receipt-new-button[hidden] { display: none; }
+
+
+/* =========================================================
+    3. 목록 Header와 검색 결과 건수
+   ========================================================= */
+
+.receipt-list-section {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 430px;
+    padding: 16px;
+    gap: 12px;
+}
+
+.receipt-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 30px;
+    gap: 12px;
+}
+
+.receipt-section-header > div {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.receipt-section-header h2 {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--color-text);
+}
+
+.receipt-section-description {
+    font-size: 9px;
+    line-height: 1.5;
+    color: var(--color-text-subtle);
+    word-break: keep-all;
+}
+
+.receipt-count {
+    flex: 0 0 auto;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+    color: #475467;
+}
+
+
+/* =========================================================
+    4. PC·Tablet 입고 Table
+   ========================================================= */
+
+.receipt-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.receipt-table {
+    width: 100%;
+    min-width: 960px;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.receipt-table th,
+.receipt-table td {
+    height: 44px;
+    padding: 0 8px;
+    border-bottom: 1px solid #E8ECF1;
+    overflow: hidden;
+    font-size: 9px;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.receipt-table th {
+    font-weight: 700;
+    color: var(--color-text-subtle);
+    background: #FAFBFC;
+}
+
+.receipt-table th:nth-child(3),
+.receipt-table td:nth-child(3),
+.receipt-table th:nth-child(4),
+.receipt-table td:nth-child(4) { text-align: left; }
+
+.receipt-table tbody tr:not(:has(.receipt-empty-cell)) { cursor: pointer; }
+.receipt-table tbody tr:not(:has(.receipt-empty-cell)):hover { background: rgba(63, 91, 134, 0.04); }
+.receipt-table tbody tr.is-selected { background: rgba(63, 91, 134, 0.09); }
+
+.receipt-empty-cell {
+    height: 160px !important;
+    text-align: center !important;
+    color: var(--color-text-subtle);
+}
+
+.receipt-number,
+.receipt-supplier-name,
+.receipt-warehouse-name {
+    display: block;
+    overflow: hidden;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #344054;
+}
+
+.receipt-supplier-code,
+.receipt-warehouse-code {
+    display: block;
+    overflow: hidden;
+    padding-top: 2px;
+    font-size: 8px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--color-text-subtle);
+}
+
+
+/* =========================================================
+    5. 입고 상태 Badge
+   ========================================================= */
+
+.receipt-status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 19px;
+    padding: 0 7px;
+    border-radius: 999px;
+    font-size: 8px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.receipt-status-badge.is-pending {
+    color: #8A661C;
+    background: rgba(203, 158, 54, 0.14);
+}
+
+.receipt-status-badge.is-inspecting {
+    color: var(--color-primary);
+    background: rgba(63, 91, 134, 0.11);
+}
+
+.receipt-status-badge.is-completed {
+    color: var(--color-accent);
+    background: rgba(79, 138, 123, 0.12);
+}
+
+.receipt-status-badge.is-canceled {
+    color: var(--color-warning);
+    background: rgba(222, 106, 94, 0.12);
+}
+
+
+/* =========================================================
+    6. Mobile 입고 Card 목록
+   ========================================================= */
+
+.receipt-mobile-list { display: none; }
+
+.receipt-mobile-empty {
+    padding: 28px 12px;
+    font-size: 10px;
+    text-align: center;
+    color: var(--color-text-subtle);
+}
+
+.receipt-mobile-item {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 12px;
+    gap: 9px;
+    border: 1px solid #E3E7ED;
+    border-radius: 8px;
+    text-align: left;
+    color: #344054;
+    background: var(--color-surface);
+}
+
+.receipt-mobile-item:hover { border-color: rgba(63, 91, 134, 0.42); }
+
+.receipt-mobile-item.is-selected {
+    border-color: rgba(63, 91, 134, 0.55);
+    background: rgba(63, 91, 134, 0.07);
+}
+
+.receipt-mobile-top,
+.receipt-mobile-row,
+.receipt-mobile-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.receipt-mobile-number {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--color-primary);
+}
+
+.receipt-mobile-supplier {
+    overflow: hidden;
+    font-size: 10px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.receipt-mobile-label,
+.receipt-mobile-date { font-size: 9px; color: var(--color-text-subtle); }
+.receipt-mobile-value { font-size: 9px; font-weight: 700; color: #475467; }
+
+
+/* =========================================================
+    7. 목록 Pagination과 Loading 상태
+   ========================================================= */
+
+.receipt-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 30px;
+    gap: 5px;
+}
+
+.receipt-page-button {
+    min-width: 28px;
+    height: 28px;
+    padding: 0 7px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-size: 9px;
+    color: #475467;
+    background: var(--color-surface);
+}
+
+.receipt-page-button:hover:not(:disabled) { background: #F7F8FA; }
+
+.receipt-page-button.is-active {
+    border-color: var(--color-primary);
+    color: #FFFFFF;
+    background: var(--color-primary);
+}
+
+.receipt-table.is-loading,
+.receipt-mobile-list.is-loading,
+.receipt-detail-form.is-loading {
+    pointer-events: none;
+    opacity: 0.62;
+}
+
+
+/* =========================================================
+    8. 입고 상세·검수 영역
+   ========================================================= */
+
+.receipt-detail-section {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 16px;
+    gap: 14px;
+    border-top: 1px solid #E3E7ED;
+    background: #FBFCFD;
+}
+
+.receipt-detail-header { align-items: flex-start; }
+
+.receipt-detail-close {
+    display: none;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    font-size: 18px;
+    color: var(--color-text-subtle);
+    background: transparent;
+}
+
+.receipt-detail-close:hover { background: #F0F2F5; }
+
+.receipt-detail-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 90px;
+    border: 1px dashed #D7DDE6;
+    border-radius: 8px;
+    font-size: 10px;
+    text-align: center;
+    color: var(--color-text-subtle);
+    background: var(--color-surface);
+}
+
+.receipt-detail-empty[hidden],
+.receipt-detail-form[hidden] { display: none; }
+
+.receipt-detail-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.receipt-form-section {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 14px;
+    gap: 12px;
+    border: 1px solid #E3E7ED;
+    border-radius: 8px;
+    background: var(--color-surface);
+}
+
+.receipt-form-section h3 {
+    font-size: 11px;
+    font-weight: 800;
+    color: #344054;
+}
+
+.receipt-form-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.receipt-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.receipt-summary-item {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 10px;
+    gap: 5px;
+    border-radius: 6px;
+    background: #F7F8FA;
+}
+
+.receipt-summary-item span { font-size: 8px; color: var(--color-text-subtle); }
+
+.receipt-summary-item strong {
+    overflow: hidden;
+    font-size: 10px;
+    color: #344054;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.receipt-form-field,
+.receipt-modal-field {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 6px;
+}
+
+.receipt-form-field > span,
+.receipt-modal-field > span,
+.receipt-modal-options legend {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--color-text-subtle);
+}
+
+.receipt-form-field em,
+.receipt-modal-field em,
+.receipt-modal-options em {
+    font-style: normal;
+    color: var(--color-warning);
+}
+
+.receipt-form-field select,
+.receipt-modal-field select,
+.receipt-modal-field textarea {
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    outline: 0;
+    font-size: 10px;
+    color: #344054;
+    background: var(--color-surface);
+}
+
+.receipt-form-field select,
+.receipt-modal-field select { height: 34px; padding: 0 10px; }
+
+.receipt-modal-field textarea {
+    padding: 9px 10px;
+    line-height: 1.5;
+    resize: vertical;
+}
+
+.receipt-form-field select:focus,
+.receipt-modal-field select:focus,
+.receipt-modal-field textarea:focus,
+.receipt-item-input:focus,
+.receipt-lot-input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(63, 91, 134, 0.08);
+}
+
+.receipt-form-field select:disabled,
+.receipt-modal-field select:disabled,
+.receipt-item-input:disabled,
+.receipt-lot-input:disabled {
+    color: #667085;
+    background: #F7F8FA;
+}
+
+.receipt-modal-field small {
+    align-self: flex-end;
+    font-size: 8px;
+    color: var(--color-text-subtle);
+}
+
+
+/* =========================================================
+    9. 품목 검수와 LOT 입력
+   ========================================================= */
+
+.receipt-item-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.receipt-item-empty {
+    padding: 32px 12px;
+    font-size: 10px;
+    text-align: center;
+    color: var(--color-text-subtle);
+}
+
+.receipt-item-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    border: 1px solid #E4E8EE;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.receipt-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    gap: 10px;
+    background: #F7F8FA;
+}
+
+.receipt-item-title {
+    display: flex;
+    align-items: baseline;
+    min-width: 0;
+    gap: 7px;
+}
+
+.receipt-item-title strong {
+    overflow: hidden;
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #344054;
+}
+
+.receipt-item-title span,
+.receipt-item-unit {
+    flex: 0 0 auto;
+    font-size: 8px;
+    color: var(--color-text-subtle);
+}
+
+.receipt-quantity-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    padding: 12px;
+    gap: 8px;
+}
+
+.receipt-quantity-field {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 5px;
+}
+
+.receipt-quantity-field > span {
+    font-size: 8px;
+    color: var(--color-text-subtle);
+}
+
+.receipt-quantity-value {
+    display: flex;
+    align-items: center;
+    height: 32px;
+    padding: 0 8px;
+    border-radius: 5px;
+    font-size: 9px;
+    font-weight: 700;
+    color: #475467;
+    background: #F7F8FA;
+}
+
+.receipt-item-input,
+.receipt-lot-input {
+    width: 100%;
+    height: 32px;
+    padding: 0 8px;
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+    outline: 0;
+    font-size: 9px;
+    color: #344054;
+    background: var(--color-surface);
+}
+
+.receipt-item-note {
+    display: flex;
+    flex-direction: column;
+    padding: 0 12px 12px;
+    gap: 5px;
+}
+
+.receipt-item-note > span { font-size: 8px; color: var(--color-text-subtle); }
+
+.receipt-item-note textarea {
+    min-height: 56px;
+    padding: 8px;
+    line-height: 1.45;
+    resize: vertical;
+}
+
+.receipt-lot-section {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    gap: 8px;
+    border-top: 1px solid #E8ECF1;
+    background: #FCFDFE;
+}
+
+.receipt-lot-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.receipt-lot-header h4 { font-size: 9px; color: #475467; }
+
+.receipt-lot-add {
+    min-height: 28px;
+    padding: 0 9px;
+    font-size: 8px;
+}
+
+.receipt-lot-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.receipt-lot-row {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr 1fr 1fr auto;
+    align-items: end;
+    gap: 7px;
+}
+
+.receipt-lot-field {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 4px;
+}
+
+.receipt-lot-field > span { font-size: 8px; color: var(--color-text-subtle); }
+
+.receipt-lot-internal-value {
+    display: flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 0 8px;
+    border-radius: 5px;
+    overflow: hidden;
+    font-size: 8px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #475467;
+    background: #F0F2F5;
+}
+
+.receipt-lot-remove {
+    width: 30px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid rgba(222, 106, 94, 0.28);
+    border-radius: 5px;
+    font-size: 13px;
+    color: var(--color-warning);
+    background: rgba(222, 106, 94, 0.05);
+}
+
+.receipt-lot-empty {
+    padding: 12px;
+    border: 1px dashed #D7DDE6;
+    border-radius: 6px;
+    font-size: 8px;
+    text-align: center;
+    color: var(--color-text-subtle);
+}
+
+
+/* =========================================================
+    10. 처리 이력·안내·상세 Button
+   ========================================================= */
+
+.receipt-action-history {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.receipt-action-history > div {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 9px;
+    gap: 4px;
+    border-radius: 6px;
+    background: #F7F8FA;
+}
+
+.receipt-action-history .receipt-history-wide { grid-column: span 2; }
+.receipt-action-history dt { font-size: 8px; color: var(--color-text-subtle); }
+
+.receipt-action-history dd {
+    overflow: hidden;
+    margin: 0;
+    font-size: 9px;
+    line-height: 1.45;
+    color: #475467;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.receipt-form-notice {
+    padding: 10px 12px;
+    border: 1px solid rgba(79, 138, 123, 0.25);
+    border-radius: 6px;
+    font-size: 10px;
+    line-height: 1.5;
+    color: var(--color-accent);
+    background: rgba(79, 138, 123, 0.06);
+}
+
+.receipt-form-notice[hidden] { display: none; }
+
+.receipt-detail-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.receipt-detail-actions .button[hidden],
+.receipt-form-section-header .button[hidden] { display: none; }
+
+
+/* =========================================================
+    11. 입고 처리 Modal 입력
+   ========================================================= */
+
+.receipt-create-modal { max-width: 520px; }
+.receipt-complete-modal { max-width: 560px; }
+
+.receipt-modal-description {
+    font-size: 9px;
+    line-height: 1.55;
+    color: var(--color-text-subtle);
+    word-break: keep-all;
+}
+
+.receipt-complete-summary {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 7px;
+}
+
+.receipt-complete-summary > div {
+    display: flex;
+    flex-direction: column;
+    padding: 9px;
+    gap: 4px;
+    border-radius: 6px;
+    text-align: center;
+    background: #F7F8FA;
+}
+
+.receipt-complete-summary span { font-size: 8px; color: var(--color-text-subtle); }
+.receipt-complete-summary strong { font-size: 10px; color: #344054; }
+
+.receipt-modal-options {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 8px;
+    border: 1px solid #E3E7ED;
+    border-radius: 7px;
+}
+
+.receipt-modal-options legend { padding: 0 5px; }
+
+.receipt-modal-options label,
+.receipt-modal-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 9px;
+    line-height: 1.5;
+    color: #475467;
+}
+
+.receipt-modal-options input,
+.receipt-modal-checkbox input { margin-top: 2px; }
+
+.receipt-modal-checkbox[hidden],
+.receipt-modal-options label[hidden],
+.receipt-modal-field[hidden],
+.receipt-modal-options[hidden] { display: none; }
+
+
+/* =========================================================
+    12. Tablet
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .receipt-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .receipt-filter-group {
+        display: grid;
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .receipt-filter-field { grid-column: span 2; }
+
+    .receipt-filter-field select,
+    .receipt-filter-field input,
+    .receipt-purchase-order-filter input,
+    .receipt-date-field input { width: 100%; }
+
+    .receipt-filter-actions {
+        grid-column: span 4;
+        align-self: end;
+    }
+
+    .receipt-new-button { width: 100%; }
+    .receipt-list-section { min-height: 400px; }
+    .receipt-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .receipt-quantity-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .receipt-action-history { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    .receipt-lot-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        padding-bottom: 8px;
+        border-bottom: 1px solid #E8ECF1;
+    }
+
+    .receipt-lot-remove { width: 100%; }
+}
+
+
+/* =========================================================
+    13. Mobile
+   ========================================================= */
+
+@media (max-width: 375px) {
+
+    .receipt-card { border-radius: 8px; }
+
+    .receipt-toolbar,
+    .receipt-list-section { padding: 12px; }
+
+    .receipt-filter-group {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .receipt-filter-field,
+    .receipt-purchase-order-filter { grid-column: 1 / -1; }
+    .receipt-date-field { grid-column: span 2; }
+
+    .receipt-filter-actions {
+        display: grid;
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .receipt-section-description { display: none; }
+    .receipt-list-section { min-height: 340px; }
+    .receipt-table-wrap { display: none; }
+
+    .receipt-mobile-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .receipt-detail-section {
+        position: fixed;
+        inset: 52px 0 0;
+        z-index: 200;
+        overflow-y: auto;
+        padding: 12px;
+        border: 0;
+        background: #F7F8FA;
+    }
+
+    .receipt-detail-section[hidden] { display: none; }
+
+    .receipt-detail-close {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .receipt-summary-grid,
+    .receipt-action-history,
+    .receipt-quantity-grid,
+    .receipt-complete-summary { grid-template-columns: 1fr; }
+
+    .receipt-action-history .receipt-history-wide { grid-column: auto; }
+
+    .receipt-form-section-header {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .receipt-form-section-header > .button { width: 100%; }
+
+    .receipt-lot-row {
+        grid-template-columns: 1fr;
+        padding: 10px;
+        border: 1px solid #E3E7ED;
+        border-radius: 7px;
+    }
+
+    .receipt-detail-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .receipt-detail-actions .button { width: 100%; }
+}
