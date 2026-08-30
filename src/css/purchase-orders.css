@@ -1,0 +1,1068 @@
+/* =========================================================
+    발주 관리 목록 화면 전용 스타일
+    - 공통 Sidebar와 Header는 common-layout.css에서 관리한다.
+    - 발주 검색 조건, 목록 Table, Mobile Card와 Pagination만 이 파일에서 관리한다.
+   ========================================================= */
+
+
+/* =========================================================
+    1. 공통 Button과 오류 메시지
+   ========================================================= */
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 0 13px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.button-primary {
+    border: 1px solid var(--color-primary);
+    color: #FFFFFF;
+    background: var(--color-primary);
+}
+
+.button-primary:hover:not(:disabled) {
+    filter: brightness(0.96);
+}
+
+.button-secondary {
+    border: 1px solid var(--color-border);
+    color: #475467;
+    background: var(--color-surface);
+}
+
+.button-secondary:hover:not(:disabled) {
+    background: #F7F8FA;
+}
+
+.button-danger {
+    border: 1px solid rgba(222, 106, 94, 0.38);
+    color: var(--color-warning);
+    background: rgba(222, 106, 94, 0.06);
+}
+
+.button-danger:hover:not(:disabled) {
+    background: rgba(222, 106, 94, 0.12);
+}
+
+.button:focus-visible,
+.purchase-order-filter-field select:focus-visible,
+.purchase-order-filter-field input:focus-visible,
+.purchase-order-page-button:focus-visible,
+.purchase-order-mobile-item:focus-visible {
+    outline: 3px solid rgba(63, 91, 134, 0.18);
+    outline-offset: 2px;
+}
+
+.button:disabled,
+.purchase-order-filter-field select:disabled,
+.purchase-order-filter-field input:disabled,
+.purchase-order-page-button:disabled {
+    cursor: default;
+    opacity: 0.55;
+}
+
+.form-error {
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--color-warning);
+    word-break: keep-all;
+}
+
+.purchase-order-page-error {
+    padding: 10px 12px;
+    border: 1px solid rgba(222, 106, 94, 0.28);
+    border-radius: 6px;
+    background: rgba(222, 106, 94, 0.06);
+}
+
+.purchase-order-page-error[hidden] {
+    display: none;
+}
+
+.purchase-order-page-error.is-notice {
+    border-color: rgba(79, 138, 123, 0.25);
+    color: var(--color-accent);
+    background: rgba(79, 138, 123, 0.06);
+}
+
+
+/* =========================================================
+    2. 발주 목록 Card와 검색 영역
+   ========================================================= */
+
+.purchase-order-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    border: 1px solid #E3E7ED;
+    border-radius: 10px;
+    background: var(--color-surface);
+    box-shadow: 0 6px 18px rgba(63, 91, 134, 0.06);
+}
+
+.purchase-order-toolbar {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    padding: 14px 16px;
+    gap: 14px;
+    border-bottom: 1px solid #E3E7ED;
+}
+
+.purchase-order-filter-group {
+    display: flex;
+    align-items: end;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.purchase-order-filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.purchase-order-filter-field > span {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--color-text-subtle);
+}
+
+.purchase-order-filter-field select,
+.purchase-order-filter-field input {
+    width: 126px;
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    outline: 0;
+    font-size: 10px;
+    color: #344054;
+    background: var(--color-surface);
+}
+
+.purchase-order-supplier-field select {
+    width: 170px;
+}
+
+.purchase-order-date-field input {
+    width: 132px;
+}
+
+.purchase-order-filter-field select:focus,
+.purchase-order-filter-field input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(63, 91, 134, 0.08);
+}
+
+.purchase-order-filter-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.purchase-order-new-button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+.purchase-order-new-button[hidden] {
+    display: none;
+}
+
+
+/* =========================================================
+    3. 발주 목록 Header와 Count
+   ========================================================= */
+
+.purchase-order-list-section {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 480px;
+    padding: 16px;
+    gap: 12px;
+}
+
+.purchase-order-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 30px;
+    gap: 12px;
+}
+
+.purchase-order-section-header > div {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.purchase-order-section-header h2 {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--color-text);
+}
+
+.purchase-order-section-description {
+    font-size: 9px;
+    line-height: 1.5;
+    color: var(--color-text-subtle);
+    word-break: keep-all;
+}
+
+.purchase-order-count {
+    flex: 0 0 auto;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+    color: #475467;
+}
+
+
+/* =========================================================
+    4. PC·Tablet 발주 Table
+   ========================================================= */
+
+.purchase-order-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.purchase-order-table {
+    width: 100%;
+    min-width: 1040px;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.purchase-order-table th,
+.purchase-order-table td {
+    height: 44px;
+    padding: 0 8px;
+    border-bottom: 1px solid #E8ECF1;
+    overflow: hidden;
+    font-size: 9px;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.purchase-order-table th {
+    font-weight: 700;
+    color: var(--color-text-subtle);
+    background: #FAFBFC;
+}
+
+.purchase-order-table th:nth-child(n + 3),
+.purchase-order-table td:nth-child(n + 3) {
+    text-align: center;
+}
+
+.purchase-order-table tbody tr:not(:has(.purchase-order-empty-cell)) {
+    cursor: pointer;
+}
+
+.purchase-order-table tbody tr:not(:has(.purchase-order-empty-cell)):hover {
+    background: rgba(63, 91, 134, 0.04);
+}
+
+.purchase-order-table tbody tr.is-selected {
+    background: rgba(63, 91, 134, 0.09);
+}
+
+.purchase-order-empty-cell {
+    height: 180px !important;
+    text-align: center !important;
+    color: var(--color-text-subtle);
+}
+
+.purchase-order-number,
+.purchase-order-supplier-name {
+    display: block;
+    overflow: hidden;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #344054;
+}
+
+.purchase-order-supplier-code {
+    display: block;
+    overflow: hidden;
+    padding-top: 2px;
+    font-size: 8px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--color-text-subtle);
+}
+
+.purchase-order-quantity,
+.purchase-order-amount {
+    font-variant-numeric: tabular-nums;
+}
+
+
+/* =========================================================
+    5. 발주·이메일 상태 Badge
+   ========================================================= */
+
+.purchase-order-status-badge,
+.purchase-order-email-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 19px;
+    padding: 0 7px;
+    border-radius: 999px;
+    font-size: 8px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.purchase-order-status-badge.is-draft {
+    color: #667085;
+    background: #F0F2F5;
+}
+
+.purchase-order-status-badge.is-submitted {
+    color: #8A661C;
+    background: rgba(203, 158, 54, 0.14);
+}
+
+.purchase-order-status-badge.is-approved {
+    color: var(--color-primary);
+    background: rgba(63, 91, 134, 0.11);
+}
+
+.purchase-order-status-badge.is-ordered,
+.purchase-order-status-badge.is-received {
+    color: var(--color-accent);
+    background: rgba(79, 138, 123, 0.12);
+}
+
+.purchase-order-status-badge.is-canceled {
+    color: var(--color-warning);
+    background: rgba(222, 106, 94, 0.12);
+}
+
+.purchase-order-status-badge.is-closed {
+    color: #596780;
+    background: rgba(89, 103, 128, 0.12);
+}
+
+.purchase-order-email-badge.is-sent {
+    color: var(--color-accent);
+    background: rgba(79, 138, 123, 0.12);
+}
+
+.purchase-order-email-badge.is-failed {
+    color: var(--color-warning);
+    background: rgba(222, 106, 94, 0.12);
+}
+
+.purchase-order-email-badge.is-pending {
+    color: var(--color-text-subtle);
+    background: #F0F2F5;
+}
+
+
+/* =========================================================
+    6. Mobile 발주 Card 목록
+   ========================================================= */
+
+.purchase-order-mobile-list {
+    display: none;
+}
+
+.purchase-order-mobile-empty {
+    padding: 28px 12px;
+    font-size: 10px;
+    text-align: center;
+    color: var(--color-text-subtle);
+}
+
+/* JavaScript에서 생성하는 Mobile 발주 Card에 적용한다. */
+.purchase-order-mobile-item {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 12px;
+    gap: 9px;
+    border: 1px solid #E3E7ED;
+    border-radius: 8px;
+    text-align: left;
+    color: #344054;
+    background: var(--color-surface);
+}
+
+.purchase-order-mobile-item:hover {
+    border-color: rgba(63, 91, 134, 0.42);
+}
+
+.purchase-order-mobile-item.is-selected {
+    border-color: rgba(63, 91, 134, 0.55);
+    background: rgba(63, 91, 134, 0.07);
+}
+
+.purchase-order-mobile-top,
+.purchase-order-mobile-summary,
+.purchase-order-mobile-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.purchase-order-mobile-number {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--color-primary);
+}
+
+.purchase-order-mobile-supplier {
+    overflow: hidden;
+    font-size: 10px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.purchase-order-mobile-label,
+.purchase-order-mobile-date {
+    font-size: 9px;
+    color: var(--color-text-subtle);
+}
+
+.purchase-order-mobile-value {
+    font-size: 9px;
+    font-weight: 700;
+    color: #475467;
+}
+
+
+/* =========================================================
+    7. 발주 목록 Pagination
+   ========================================================= */
+
+.purchase-order-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 30px;
+    gap: 5px;
+}
+
+.purchase-order-page-button {
+    min-width: 28px;
+    height: 28px;
+    padding: 0 7px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-size: 9px;
+    color: #475467;
+    background: var(--color-surface);
+}
+
+.purchase-order-page-button:hover:not(:disabled) {
+    background: #F7F8FA;
+}
+
+.purchase-order-page-button.is-active {
+    border-color: var(--color-primary);
+    color: #FFFFFF;
+    background: var(--color-primary);
+}
+
+
+/* =========================================================
+    8. JavaScript 동작·역할별 표시 상태
+   ========================================================= */
+
+.purchase-order-table.is-loading,
+.purchase-order-mobile-list.is-loading {
+    pointer-events: none;
+    opacity: 0.62;
+}
+
+[data-office-information][hidden] {
+    display: none;
+}
+
+
+/* =========================================================
+    9. 발주 상세·등록·수정 영역
+   ========================================================= */
+
+.purchase-order-detail-section {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 16px;
+    gap: 14px;
+    border-top: 1px solid #E3E7ED;
+    background: #FBFCFD;
+}
+
+.purchase-order-detail-header {
+    align-items: flex-start;
+}
+
+.purchase-order-detail-close {
+    display: none;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    font-size: 18px;
+    color: var(--color-text-subtle);
+    background: transparent;
+}
+
+.purchase-order-detail-close:hover {
+    background: #F0F2F5;
+}
+
+.purchase-order-detail-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 90px;
+    border: 1px dashed #D7DDE6;
+    border-radius: 8px;
+    font-size: 10px;
+    text-align: center;
+    color: var(--color-text-subtle);
+    background: var(--color-surface);
+}
+
+.purchase-order-detail-empty[hidden] {
+    display: none;
+}
+
+.purchase-order-detail-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.purchase-order-detail-form[hidden] {
+    display: none;
+}
+
+.purchase-order-form-section {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 14px;
+    gap: 12px;
+    border: 1px solid #E3E7ED;
+    border-radius: 8px;
+    background: var(--color-surface);
+}
+
+.purchase-order-form-section h3 {
+    font-size: 11px;
+    font-weight: 800;
+    color: #344054;
+}
+
+.purchase-order-form-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.purchase-order-status-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.purchase-order-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.purchase-order-summary-item {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 10px;
+    gap: 5px;
+    border-radius: 6px;
+    background: #F7F8FA;
+}
+
+.purchase-order-summary-item span {
+    font-size: 8px;
+    color: var(--color-text-subtle);
+}
+
+.purchase-order-summary-item strong {
+    overflow: hidden;
+    font-size: 10px;
+    color: #344054;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.purchase-order-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.purchase-order-form-field {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 5px;
+}
+
+.purchase-order-form-field-wide {
+    grid-column: 1 / -1;
+}
+
+.purchase-order-form-field > span,
+.purchase-order-modal-field > span {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--color-text-subtle);
+}
+
+.purchase-order-form-field em,
+.purchase-order-modal-field em {
+    font-style: normal;
+    color: var(--color-warning);
+}
+
+.purchase-order-form-field select,
+.purchase-order-form-field textarea,
+.purchase-order-modal-field textarea {
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    outline: 0;
+    font-size: 10px;
+    color: #344054;
+    background: var(--color-surface);
+}
+
+.purchase-order-form-field select {
+    height: 34px;
+    padding: 0 10px;
+}
+
+.purchase-order-form-field textarea,
+.purchase-order-modal-field textarea {
+    padding: 9px 10px;
+    line-height: 1.5;
+    resize: vertical;
+}
+
+.purchase-order-form-field select:focus,
+.purchase-order-form-field textarea:focus,
+.purchase-order-modal-field textarea:focus,
+.purchase-order-item-table select:focus,
+.purchase-order-item-table input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(63, 91, 134, 0.08);
+}
+
+.purchase-order-form-field select:disabled,
+.purchase-order-form-field textarea:disabled,
+.purchase-order-item-table select:disabled,
+.purchase-order-item-table input:disabled {
+    color: #667085;
+    background: #F7F8FA;
+}
+
+
+/* =========================================================
+    10. 발주 품목 입력 Table
+   ========================================================= */
+
+.purchase-order-item-table-wrap,
+.purchase-order-email-history-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.purchase-order-item-table,
+.purchase-order-email-history-table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.purchase-order-item-table th,
+.purchase-order-item-table td,
+.purchase-order-email-history-table th,
+.purchase-order-email-history-table td {
+    height: 40px;
+    padding: 6px;
+    border-bottom: 1px solid #E8ECF1;
+    overflow: hidden;
+    font-size: 8px;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.purchase-order-item-table th,
+.purchase-order-email-history-table th {
+    font-weight: 700;
+    color: var(--color-text-subtle);
+    background: #FAFBFC;
+}
+
+.purchase-order-item-table select,
+.purchase-order-item-table input {
+    width: 100%;
+    height: 30px;
+    padding: 0 7px;
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+    outline: 0;
+    font-size: 8px;
+    color: #344054;
+    background: var(--color-surface);
+}
+
+.purchase-order-item-table select {
+    text-align: left;
+}
+
+.purchase-order-item-line-amount,
+.purchase-order-item-receipt-value {
+    font-variant-numeric: tabular-nums;
+    color: #475467;
+}
+
+.purchase-order-item-remove {
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    border: 1px solid rgba(222, 106, 94, 0.28);
+    border-radius: 5px;
+    font-size: 13px;
+    color: var(--color-warning);
+    background: rgba(222, 106, 94, 0.05);
+}
+
+.purchase-order-item-empty-cell {
+    height: 90px !important;
+    text-align: center !important;
+    color: var(--color-text-subtle);
+}
+
+
+/* =========================================================
+    11. 처리 이력·이메일 전송 이력
+   ========================================================= */
+
+.purchase-order-action-history {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.purchase-order-action-history > div {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 9px;
+    gap: 4px;
+    border-radius: 6px;
+    background: #F7F8FA;
+}
+
+.purchase-order-action-history dt {
+    font-size: 8px;
+    color: var(--color-text-subtle);
+}
+
+.purchase-order-action-history dd {
+    overflow: hidden;
+    margin: 0;
+    font-size: 9px;
+    line-height: 1.45;
+    color: #475467;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.purchase-order-email-history-table td:last-child {
+    text-align: left;
+}
+
+.purchase-order-email-history-mobile-list {
+    display: none;
+}
+
+.purchase-order-email-history-mobile-item {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 6px;
+    border: 1px solid #E3E7ED;
+    border-radius: 7px;
+    background: #FAFBFC;
+}
+
+.purchase-order-email-history-mobile-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 9px;
+    color: #475467;
+}
+
+.purchase-order-email-history-mobile-row span:first-child {
+    flex: 0 0 auto;
+    color: var(--color-text-subtle);
+}
+
+
+/* =========================================================
+    12. 상세 처리 버튼·안내·Modal 입력
+   ========================================================= */
+
+.purchase-order-form-notice {
+    padding: 10px 12px;
+    border: 1px solid rgba(79, 138, 123, 0.25);
+    border-radius: 6px;
+    font-size: 10px;
+    line-height: 1.5;
+    color: var(--color-accent);
+    background: rgba(79, 138, 123, 0.06);
+}
+
+.purchase-order-form-notice[hidden] {
+    display: none;
+}
+
+.purchase-order-detail-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.purchase-order-detail-actions .button[hidden],
+.purchase-order-item-manage-column[hidden] {
+    display: none;
+}
+
+.purchase-order-modal-description {
+    font-size: 9px;
+    line-height: 1.55;
+    color: var(--color-text-subtle);
+    word-break: keep-all;
+}
+
+.purchase-order-modal-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.purchase-order-modal-field small {
+    align-self: flex-end;
+    font-size: 8px;
+    color: var(--color-text-subtle);
+}
+
+.purchase-order-modal-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 9px;
+    line-height: 1.5;
+    color: #475467;
+}
+
+.purchase-order-modal-checkbox input {
+    margin-top: 2px;
+}
+
+.purchase-order-modal-checkbox[hidden] {
+    display: none;
+}
+
+
+/* =========================================================
+    13. Tablet
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .purchase-order-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .purchase-order-filter-group {
+        display: grid;
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .purchase-order-filter-field {
+        grid-column: span 2;
+    }
+
+    .purchase-order-supplier-field {
+        grid-column: span 4;
+    }
+
+    .purchase-order-filter-field select,
+    .purchase-order-filter-field input,
+    .purchase-order-supplier-field select,
+    .purchase-order-date-field input {
+        width: 100%;
+    }
+
+    .purchase-order-filter-actions {
+        grid-column: span 4;
+        align-self: end;
+    }
+
+    .purchase-order-new-button {
+        width: 100%;
+    }
+
+    .purchase-order-list-section {
+        min-height: 430px;
+    }
+
+    .purchase-order-summary-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .purchase-order-action-history {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+/* =========================================================
+    14. Mobile
+   ========================================================= */
+
+@media (max-width: 375px) {
+
+    .purchase-order-card {
+        border-radius: 8px;
+    }
+
+    .purchase-order-toolbar,
+    .purchase-order-list-section {
+        padding: 12px;
+    }
+
+    .purchase-order-filter-group {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .purchase-order-filter-field,
+    .purchase-order-supplier-field {
+        grid-column: 1 / -1;
+    }
+
+    .purchase-order-date-field {
+        grid-column: span 2;
+    }
+
+    .purchase-order-filter-actions {
+        display: grid;
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .purchase-order-section-description {
+        display: none;
+    }
+
+    .purchase-order-list-section {
+        min-height: 360px;
+    }
+
+    .purchase-order-table-wrap {
+        display: none;
+    }
+
+    .purchase-order-mobile-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .purchase-order-detail-section {
+        position: fixed;
+        inset: 52px 0 0;
+        z-index: 200;
+        overflow-y: auto;
+        padding: 12px;
+        border: 0;
+        background: #F7F8FA;
+    }
+
+    .purchase-order-detail-section[hidden] {
+        display: none;
+    }
+
+    .purchase-order-detail-close {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .purchase-order-summary-grid,
+    .purchase-order-form-grid,
+    .purchase-order-action-history {
+        grid-template-columns: 1fr;
+    }
+
+    .purchase-order-form-section-header {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .purchase-order-form-section-header > .button {
+        width: 100%;
+    }
+
+    .purchase-order-detail-actions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .purchase-order-detail-actions .button {
+        width: 100%;
+    }
+
+    .purchase-order-email-history-table-wrap {
+        display: none;
+    }
+
+    .purchase-order-email-history-mobile-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+}

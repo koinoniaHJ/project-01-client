@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERP 발주 관리</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/common-layout.css">
+    <link rel="stylesheet" href="../css/purchase-orders.css">
+    <link rel="stylesheet" href="../css/common-modal.css">
+</head>
+<body>
+    <div class="page-root">
+        <!-- 발주 관리 화면 전체 영역 -->
+        <main class="page-container erp-page">
+            <!-- common-layout.js에서 모든 업무 화면이 공유하는 ERP Sidebar를 생성한다. -->
+            <aside id="commonSidebar" class="erp-sidebar"></aside>
+
+            <!-- 발주 검색 조건과 목록을 포함하는 본문 영역 -->
+            <section class="erp-main">
+                <!-- common-layout.js에서 화면 제목, 사용자명과 로그아웃 버튼을 생성한다. -->
+                <header id="commonHeader" class="erp-header"></header>
+
+                <!-- 인증·권한·초기 조회·페이지 조회 실패 등 화면 전체 오류 표시 -->
+                <p id="purchaseOrderPageError" class="form-error purchase-order-page-error" role="alert" hidden></p>
+
+                <section class="purchase-order-card">
+                    <!-- 발주 상태·이메일 상태·공급업체·등록 기간 검색 조건 -->
+                    <div class="purchase-order-toolbar">
+                        <div class="purchase-order-filter-group">
+                            <label class="purchase-order-filter-field">
+                                <span>발주 상태</span>
+                                <select id="statusFilter">
+                                    <option value="">전체</option>
+                                    <option value="DRAFT">작성 중</option>
+                                    <option value="SUBMITTED">승인 대기</option>
+                                    <option value="APPROVED">승인 완료</option>
+                                    <option value="ORDERED">발주 확정</option>
+                                    <option value="CANCELED">발주 취소</option>
+                                    <option value="RECEIVED">전량 입고 완료</option>
+                                    <option value="CLOSED">발주 종료</option>
+                                </select>
+                            </label>
+                            <!-- 이메일 상태는 발주 상태와 별도로 SENT·FAILED 조건을 적용한다. -->
+                            <label class="purchase-order-filter-field" data-office-information="email">
+                                <span>이메일 상태</span>
+                                <select id="emailStatusFilter">
+                                    <option value="">전체</option>
+                                    <option value="SENT">전송 성공</option>
+                                    <option value="FAILED">전송 실패</option>
+                                </select>
+                            </label>
+                            <!-- JavaScript에서 ACTIVE·INACTIVE를 포함한 공급업체 목록을 조회하여 선택 항목을 생성한다. -->
+                            <label class="purchase-order-filter-field purchase-order-supplier-field">
+                                <span>공급업체</span>
+                                <select id="supplierFilter">
+                                    <option value="">전체</option>
+                                </select>
+                            </label>
+                            <!-- 시작일과 종료일은 발주 등록 일시를 기준으로 양 끝 날짜를 모두 포함한다. -->
+                            <label class="purchase-order-filter-field purchase-order-date-field">
+                                <span>등록 시작일</span>
+                                <input type="date" id="startDateFilter">
+                            </label>
+                            <label class="purchase-order-filter-field purchase-order-date-field">
+                                <span>등록 종료일</span>
+                                <input type="date" id="endDateFilter">
+                            </label>
+                            <div class="purchase-order-filter-actions">
+                                <button type="button" id="searchButton" class="button button-primary">검색</button>
+                                <button type="button" id="resetFilterButton" class="button button-secondary">초기화</button>
+                            </div>
+                        </div>
+                        <!-- ADMIN·OFFICE 사용자에게만 표시하고 WAREHOUSE 사용자에게는 숨긴다. -->
+                        <button type="button" id="newPurchaseOrderButton" class="button button-primary purchase-order-new-button">신규 발주</button>
+                    </div>
+
+                    <!-- 조회된 발주를 PC·Tablet Table 또는 Mobile Card로 표시하는 영역 -->
+                    <section class="purchase-order-list-section" aria-labelledby="purchaseOrderListTitle">
+                        <div class="purchase-order-section-header">
+                            <div>
+                                <h2 id="purchaseOrderListTitle">발주 목록</h2>
+                                <p class="purchase-order-section-description">발주 진행 상태와 입고 현황 및 이메일 전송 결과를 확인할 수 있습니다.</p>
+                            </div>
+                            <span id="purchaseOrderCount" class="purchase-order-count">총 0건</span>
+                        </div>
+
+                        <!-- PC·Tablet 발주 목록 -->
+                        <div class="purchase-order-table-wrap">
+                            <table class="purchase-order-table">
+                                <colgroup>
+                                    <col style="width: 9%">
+                                    <col style="width: 17%">
+                                    <col style="width: 11%">
+                                    <col style="width: 10%">
+                                    <col style="width: 10%">
+                                    <col style="width: 10%">
+                                    <col style="width: 10%">
+                                    <col style="width: 12%">
+                                    <col style="width: 11%">
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">발주 번호</th>
+                                        <th scope="col">공급업체</th>
+                                        <th scope="col">발주 상태</th>
+                                        <!-- WAREHOUSE에는 이메일 상태를 표시하지 않는다. -->
+                                        <th scope="col" data-office-information="email">이메일</th>
+                                        <th scope="col">발주 수량</th>
+                                        <th scope="col">입고 수량</th>
+                                        <th scope="col">잔여 수량</th>
+                                        <!-- WAREHOUSE에는 발주 총액을 표시하지 않는다. -->
+                                        <th scope="col" data-office-information="amount">발주 총액</th>
+                                        <th scope="col">등록 일시</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="purchaseOrderTableBody">
+                                    <tr>
+                                        <td colspan="9" class="purchase-order-empty-cell">발주 목록을 불러오는 중입니다.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Mobile 발주 Card 목록 -->
+                        <div id="purchaseOrderMobileList" class="purchase-order-mobile-list" aria-live="polite">
+                            <p class="purchase-order-mobile-empty">발주 목록을 불러오는 중입니다.</p>
+                        </div>
+
+                        <!-- 발주 목록 페이지 이동 영역 -->
+                        <nav id="purchaseOrderPagination" class="purchase-order-pagination" aria-label="발주 목록 페이지"></nav>
+                    </section>
+
+                    <!-- 선택 발주의 상세·등록·수정·상태 처리 영역 -->
+                    <section id="purchaseOrderDetailSection" class="purchase-order-detail-section" aria-labelledby="purchaseOrderDetailTitle">
+                        <div class="purchase-order-section-header purchase-order-detail-header">
+                            <div>
+                                <h2 id="purchaseOrderDetailTitle">발주 정보</h2>
+                                <p id="purchaseOrderDetailMode" class="purchase-order-section-description">선택한 발주의 품목과 처리 이력을 확인할 수 있습니다.</p>
+                            </div>
+                            <button type="button" id="closeDetailButton" class="purchase-order-detail-close" aria-label="발주 상세정보 닫기">×</button>
+                        </div>
+
+                        <!-- 발주를 선택하지 않은 초기 상태 -->
+                        <div id="purchaseOrderDetailEmpty" class="purchase-order-detail-empty">
+                            <p>목록에서 발주를 선택하거나 신규 발주를 눌러주세요.</p>
+                        </div>
+
+                        <form id="purchaseOrderDetailForm" class="purchase-order-detail-form" novalidate hidden>
+                            <!-- Server가 관리하는 발주 식별자·상태·수량·금액 요약 -->
+                            <section class="purchase-order-form-section">
+                                <div class="purchase-order-form-section-header">
+                                    <h3>발주 현황</h3>
+                                    <div class="purchase-order-status-group">
+                                        <span id="purchaseOrderStatusBadge" class="purchase-order-status-badge is-draft">작성 중</span>
+                                        <span id="purchaseOrderEmailBadge" class="purchase-order-email-badge is-pending" data-office-information="email">미전송</span>
+                                    </div>
+                                </div>
+                                <div class="purchase-order-summary-grid">
+                                    <div class="purchase-order-summary-item">
+                                        <span>발주 번호</span>
+                                        <strong id="purchaseOrderIdValue">등록 시 자동 생성</strong>
+                                    </div>
+                                    <div class="purchase-order-summary-item">
+                                        <span>발주 수량</span>
+                                        <strong id="totalOrderedQuantityValue">0</strong>
+                                    </div>
+                                    <div class="purchase-order-summary-item">
+                                        <span>입고 수량</span>
+                                        <strong id="totalReceivedQuantityValue">0</strong>
+                                    </div>
+                                    <div class="purchase-order-summary-item">
+                                        <span>잔여 수량</span>
+                                        <strong id="totalRemainingQuantityValue">0</strong>
+                                    </div>
+                                    <div class="purchase-order-summary-item" data-office-information="amount">
+                                        <span>발주 총액</span>
+                                        <strong id="totalAmountValue">0원</strong>
+                                    </div>
+                                    <div class="purchase-order-summary-item" data-office-information="email">
+                                        <span>발주서 이메일</span>
+                                        <strong id="supplierEmailValue">-</strong>
+                                    </div>
+                                    <div class="purchase-order-summary-item">
+                                        <span>최종 수정</span>
+                                        <strong id="purchaseOrderUpdatedAtValue">-</strong>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- 공급업체와 발주 메모 입력 영역 -->
+                            <section class="purchase-order-form-section">
+                                <h3>기본 정보</h3>
+                                <div class="purchase-order-form-grid">
+                                    <label class="purchase-order-form-field purchase-order-form-field-wide">
+                                        <span>공급업체 <em>*</em></span>
+                                        <select id="purchaseOrderSupplier" name="supplierId" required>
+                                            <option value="">공급업체 선택</option>
+                                        </select>
+                                    </label>
+                                    <label class="purchase-order-form-field purchase-order-form-field-wide">
+                                        <span>발주 메모</span>
+                                        <textarea id="purchaseOrderMemo" name="memo" rows="3" maxlength="2000"></textarea>
+                                    </label>
+                                </div>
+                            </section>
+
+                            <!-- 발주 품목별 수량·단가·금액과 입고 현황 -->
+                            <section class="purchase-order-form-section purchase-order-items-section">
+                                <div class="purchase-order-form-section-header">
+                                    <div>
+                                        <h3>발주 품목</h3>
+                                        <p class="purchase-order-section-description">선택한 공급업체가 취급하는 사용 중 품목만 등록할 수 있습니다.</p>
+                                    </div>
+                                    <button type="button" id="addPurchaseOrderItemButton" class="button button-secondary">품목 추가</button>
+                                </div>
+                                <div class="purchase-order-item-table-wrap">
+                                    <table class="purchase-order-item-table">
+                                        <colgroup>
+                                            <col style="width: 6%">
+                                            <col style="width: 28%">
+                                            <col style="width: 9%">
+                                            <col style="width: 13%">
+                                            <col data-office-information="amount" style="width: 14%">
+                                            <col data-office-information="amount" style="width: 14%">
+                                            <col style="width: 10%">
+                                            <col class="purchase-order-item-manage-column" style="width: 6%">
+                                        </colgroup>
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">순번</th>
+                                                <th scope="col">품목</th>
+                                                <th scope="col">단위</th>
+                                                <th scope="col">발주 수량</th>
+                                                <th scope="col" data-office-information="amount">발주 단가</th>
+                                                <th scope="col" data-office-information="amount">품목 금액</th>
+                                                <th scope="col">입고/잔여</th>
+                                                <th scope="col" class="purchase-order-item-manage-column">관리</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="purchaseOrderItemTableBody">
+                                            <tr>
+                                                <td colspan="8" class="purchase-order-item-empty-cell">발주 품목을 추가해 주세요.</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </section>
+
+                            <!-- 승인 요청부터 취소·종료까지 Server에 저장된 처리자와 일시 -->
+                            <section id="purchaseOrderHistorySection" class="purchase-order-form-section">
+                                <h3>처리 이력</h3>
+                                <dl class="purchase-order-action-history">
+                                    <div><dt>등록</dt><dd id="createdActionValue">-</dd></div>
+                                    <div><dt>승인 요청</dt><dd id="submittedActionValue">-</dd></div>
+                                    <div><dt>승인</dt><dd id="approvedActionValue">-</dd></div>
+                                    <div><dt>발주 확정</dt><dd id="orderedActionValue">-</dd></div>
+                                    <div><dt>공급업체 취소 확인</dt><dd id="supplierCancelConfirmedActionValue">-</dd></div>
+                                    <div><dt>발주 취소</dt><dd id="canceledActionValue">-</dd></div>
+                                    <div><dt>취소 사유</dt><dd id="cancelReasonValue">-</dd></div>
+                                    <div><dt>발주 종료</dt><dd id="closedActionValue">-</dd></div>
+                                    <div><dt>종료 사유</dt><dd id="closeReasonValue">-</dd></div>
+                                </dl>
+                            </section>
+
+                            <!-- ADMIN·OFFICE가 조회하는 발주서 이메일 전송 이력 -->
+                            <section id="purchaseOrderEmailHistorySection" class="purchase-order-form-section" data-office-information="email">
+                                <div class="purchase-order-form-section-header">
+                                    <div>
+                                        <h3>이메일 전송 이력</h3>
+                                        <p class="purchase-order-section-description">최근 전송 시도부터 표시합니다.</p>
+                                    </div>
+                                    <span id="emailHistoryCount" class="purchase-order-count">총 0건</span>
+                                </div>
+                                <div class="purchase-order-email-history-table-wrap">
+                                    <table class="purchase-order-email-history-table">
+                                        <colgroup>
+                                            <col style="width: 9%">
+                                            <col style="width: 25%">
+                                            <col style="width: 12%">
+                                            <col style="width: 16%">
+                                            <col style="width: 18%">
+                                            <col style="width: 20%">
+                                        </colgroup>
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">시도</th>
+                                                <th scope="col">수신 이메일</th>
+                                                <th scope="col">결과</th>
+                                                <th scope="col">처리자</th>
+                                                <th scope="col">시도 일시</th>
+                                                <th scope="col">실패 원인</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="emailHistoryTableBody">
+                                            <tr><td colspan="6" class="purchase-order-item-empty-cell">이메일 전송 이력이 없습니다.</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div id="emailHistoryMobileList" class="purchase-order-email-history-mobile-list" aria-live="polite"></div>
+                                <nav id="emailHistoryPagination" class="purchase-order-pagination" aria-label="이메일 전송 이력 페이지"></nav>
+                            </section>
+
+                            <p id="purchaseOrderFormNotice" class="purchase-order-form-notice" role="status" hidden></p>
+                            <p id="purchaseOrderFormError" class="form-error" role="alert" hidden></p>
+
+                            <!-- 현재 발주 상태와 역할에 따라 JavaScript에서 표시 범위를 결정한다. -->
+                            <div class="purchase-order-detail-actions">
+                                <button type="button" id="deletePurchaseOrderButton" class="button button-danger">삭제</button>
+                                <button type="button" id="cancelPurchaseOrderButton" class="button button-secondary">발주 취소</button>
+                                <button type="button" id="resendEmailButton" class="button button-secondary">이메일 재전송</button>
+                                <button type="button" id="submitPurchaseOrderButton" class="button button-secondary">승인 요청</button>
+                                <button type="button" id="approvePurchaseOrderButton" class="button button-secondary">발주 승인</button>
+                                <button type="button" id="orderPurchaseOrderButton" class="button button-secondary">발주 확정</button>
+                                <button type="submit" id="savePurchaseOrderButton" class="button button-primary">저장</button>
+                            </div>
+                        </form>
+                    </section>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <!-- 삭제·승인 요청·승인·확정·이메일 재전송에 공통으로 사용하는 확인 모달 -->
+    <div id="actionModalBackdrop" class="common-modal-backdrop" hidden>
+        <section class="common-modal" role="dialog" aria-modal="true" aria-labelledby="actionModalTitle">
+            <header class="common-modal-header">
+                <h2 id="actionModalTitle" class="common-modal-title">발주 처리 확인</h2>
+                <button type="button" id="closeActionModalButton" class="common-modal-close" aria-label="모달 닫기">×</button>
+            </header>
+            <form id="actionModalForm" novalidate>
+                <div class="common-modal-body">
+                    <p class="common-modal-target">대상 발주: <strong id="actionModalTarget">-</strong></p>
+                    <div class="common-status-summary" aria-label="발주 처리 내용">
+                        <div class="common-status-item"><span class="common-status-label">현재 상태</span><strong id="actionModalCurrentValue" class="common-status-value">-</strong></div>
+                        <span class="common-status-arrow" aria-hidden="true">→</span>
+                        <div class="common-status-item"><span class="common-status-label">처리 결과</span><strong id="actionModalNextValue" class="common-status-value">-</strong></div>
+                    </div>
+                    <p id="actionModalDescription" class="purchase-order-modal-description"></p>
+                    <p id="actionModalError" class="form-error" role="alert" hidden></p>
+                </div>
+                <div class="common-modal-actions">
+                    <button type="button" id="cancelActionModalButton" class="button button-secondary">취소</button>
+                    <button type="submit" id="confirmActionButton" class="button button-primary">확인</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <!-- 허용된 발주 상태에서 취소 사유와 공급업체 확인 여부를 입력하는 모달 -->
+    <div id="cancelModalBackdrop" class="common-modal-backdrop" hidden>
+        <section class="common-modal" role="dialog" aria-modal="true" aria-labelledby="cancelModalTitle">
+            <header class="common-modal-header">
+                <h2 id="cancelModalTitle" class="common-modal-title">발주 취소</h2>
+                <button type="button" id="closeCancelModalButton" class="common-modal-close" aria-label="발주 취소 모달 닫기">×</button>
+            </header>
+            <form id="cancelModalForm" novalidate>
+                <div class="common-modal-body">
+                    <p class="common-modal-target">대상 발주: <strong id="cancelModalTarget">-</strong></p>
+                    <div class="common-status-summary" aria-label="발주 취소 내용">
+                        <div class="common-status-item"><span class="common-status-label">현재 상태</span><strong id="cancelModalCurrentValue" class="common-status-value">-</strong></div>
+                        <span class="common-status-arrow" aria-hidden="true">→</span>
+                        <div class="common-status-item"><span class="common-status-label">변경 상태</span><strong class="common-status-value">발주 취소</strong></div>
+                    </div>
+                    <label class="purchase-order-modal-field">
+                        <span>취소 사유 <em>*</em></span>
+                        <textarea id="cancelReason" rows="4" maxlength="1000" required></textarea>
+                        <small><span id="cancelReasonLength">0</span>/1000</small>
+                    </label>
+                    <label id="supplierCancelConfirmedField" class="purchase-order-modal-checkbox" hidden>
+                        <input type="checkbox" id="supplierCancelConfirmed">
+                        <span>공급업체에 발주 취소를 확인했습니다.</span>
+                    </label>
+                    <p id="cancelModalGuide" class="purchase-order-modal-description"></p>
+                    <p id="cancelModalError" class="form-error" role="alert" hidden></p>
+                </div>
+                <div class="common-modal-actions">
+                    <button type="button" id="cancelCancelModalButton" class="button button-secondary">닫기</button>
+                    <button type="submit" id="confirmCancelButton" class="button button-primary">발주 취소</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <script type="module" src="../js/purchase-orders.js"></script>
+</body>
+</html>

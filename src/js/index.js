@@ -14,6 +14,7 @@ const suppliersMenuButton = document.querySelector('#suppliersMenuButton');
 const itemsMenuButton = document.querySelector('#itemsMenuButton');
 const warehousesMenuButton = document.querySelector('#warehousesMenuButton');
 const safetyStocksMenuButton = document.querySelector('#safetyStocksMenuButton');
+const purchaseOrdersMenuButton = document.querySelector('#purchaseOrdersMenuButton');
 
 async function initialize() {
 
@@ -67,5 +68,6 @@ suppliersMenuButton.addEventListener('click', () => window.location.href = './su
 itemsMenuButton.addEventListener('click', () => window.location.href = './items.html');
 warehousesMenuButton.addEventListener('click', () => window.location.href = './warehouses.html');
 safetyStocksMenuButton.addEventListener('click', () => window.location.href = './safety-stocks.html');
+purchaseOrdersMenuButton.addEventListener('click', () => window.location.href = './purchase-orders.html');
 
 initialize();

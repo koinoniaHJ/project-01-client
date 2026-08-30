@@ -118,15 +118,19 @@ export const api = {
     },
 
     // ========== 데이터 삭제용 DELETE 요청 함수 ==========
-    // 전달받은 경로로 DELETE 요청을 보낸다.
-    delete(path) {
+    // 전달받은 경로와 선택 데이터를 사용하여 DELETE 요청을 보낸다.
+    // 삭제 대상의 최신 version처럼 Server가 DELETE Body로 검증값을 요구할 때 data를 함께 전달한다.
+    delete(path, data) {
         // 공통 요청 함수에 경로와 DELETE 설정을 전달한다.
         return request(
             // 요청할 API 경로를 전달한다.
             path,
             {
                 // HTTP Method를 DELETE로 지정한다.
-                method: 'DELETE'
+                method: 'DELETE',
+
+                // 요청 데이터가 있을 때만 JSON Body를 추가하여 기존 Body 없는 DELETE 호출도 그대로 지원한다.
+                ...(data === undefined ? {} : { body: JSON.stringify(data) })
             }
         );
     },
