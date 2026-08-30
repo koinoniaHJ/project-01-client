@@ -1,0 +1,237 @@
+/* =========================================================
+    매입 반품 관리 화면 전용 스타일
+    - Sidebar와 Header는 common-layout.css의 공통 Layout을 그대로 사용한다.
+    - 버튼·색상·간격은 발주·입고 관리 화면과 같은 규격을 유지한다.
+    - 목록, LOT별 반품 수량 입력과 반응형 상세 Panel만 이 파일에서 관리한다.
+   ========================================================= */
+
+
+/* =========================================================
+    1. 공통 Button과 안내·오류 메시지
+   ========================================================= */
+
+.button { display: inline-flex; align-items: center; justify-content: center; min-height: 34px; padding: 0 13px; border-radius: 6px; font-size: 10px; font-weight: 700; }
+.button-primary { border: 1px solid var(--color-primary); color: #FFFFFF; background: var(--color-primary); }
+.button-primary:hover:not(:disabled) { filter: brightness(0.96); }
+.button-secondary { border: 1px solid var(--color-border); color: #475467; background: var(--color-surface); }
+.button-secondary:hover:not(:disabled) { background: #F7F8FA; }
+.button-danger { border: 1px solid rgba(222, 106, 94, 0.38); color: var(--color-warning); background: rgba(222, 106, 94, 0.06); }
+.button-danger:hover:not(:disabled) { background: rgba(222, 106, 94, 0.12); }
+.button:disabled { cursor: default; opacity: 0.55; }
+
+.button:focus-visible,
+.purchase-return-filter-field input:focus-visible,
+.purchase-return-filter-field select:focus-visible,
+.purchase-return-page-button:focus-visible,
+.purchase-return-mobile-item:focus-visible,
+.purchase-return-quantity-input:focus-visible {
+    outline: 3px solid rgba(63, 91, 134, 0.18);
+    outline-offset: 2px;
+}
+
+.form-error { font-size: 10px; font-weight: 600; line-height: 1.5; color: var(--color-warning); word-break: keep-all; }
+.purchase-return-page-error { padding: 10px 12px; border: 1px solid rgba(222, 106, 94, 0.28); border-radius: 6px; background: rgba(222, 106, 94, 0.06); }
+.purchase-return-page-error[hidden] { display: none; }
+.purchase-return-page-error.is-notice { border-color: rgba(79, 138, 123, 0.25); color: var(--color-accent); background: rgba(79, 138, 123, 0.06); }
+
+
+/* =========================================================
+    2. 목록 Card와 검색 영역
+   ========================================================= */
+
+.purchase-return-card { display: flex; flex-direction: column; min-width: 0; border: 1px solid #E3E7ED; border-radius: 10px; background: var(--color-surface); box-shadow: 0 6px 18px rgba(63, 91, 134, 0.06); }
+.purchase-return-toolbar { display: flex; align-items: end; justify-content: space-between; padding: 14px 16px; gap: 14px; border-bottom: 1px solid #E3E7ED; }
+.purchase-return-filter-group { display: flex; align-items: end; flex-wrap: wrap; gap: 10px; }
+.purchase-return-filter-field { display: flex; flex-direction: column; gap: 5px; }
+.purchase-return-filter-field > span { font-size: 10px; font-weight: 700; color: var(--color-text-subtle); }
+.purchase-return-filter-field input,
+.purchase-return-filter-field select { width: 148px; height: 34px; padding: 0 10px; border: 1px solid var(--color-border); border-radius: 6px; outline: 0; font-size: 10px; color: #344054; background: var(--color-surface); }
+.purchase-return-filter-field input:focus,
+.purchase-return-filter-field select:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(63, 91, 134, 0.08); }
+.purchase-return-filter-actions { display: flex; align-items: center; gap: 8px; }
+.purchase-return-new-button { flex: 0 0 auto; white-space: nowrap; }
+.purchase-return-new-button[hidden] { display: none; }
+
+
+/* =========================================================
+    3. 목록 Header·Table·Mobile Card
+   ========================================================= */
+
+.purchase-return-list-section { display: flex; flex-direction: column; min-width: 0; min-height: 410px; padding: 16px; gap: 12px; }
+.purchase-return-section-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.purchase-return-section-header h2 { font-size: 14px; line-height: 1.4; }
+.purchase-return-section-description { padding-top: 3px; font-size: 9px; line-height: 1.45; color: var(--color-text-subtle); word-break: keep-all; }
+.purchase-return-count { flex: 0 0 auto; padding-top: 3px; font-size: 10px; font-weight: 800; color: #475467; white-space: nowrap; }
+
+.purchase-return-table-wrap { overflow-x: auto; min-width: 0; border: 1px solid #EEF0F4; border-radius: 7px; }
+.purchase-return-table { width: 100%; min-width: 850px; border-collapse: collapse; table-layout: fixed; }
+.purchase-return-table th { height: 38px; padding: 0 9px; border-bottom: 1px solid #E3E7ED; font-size: 9px; font-weight: 700; color: #667085; text-align: left; background: #FAFBFC; }
+.purchase-return-table td { height: 46px; padding: 8px 9px; border-bottom: 1px solid #EEF0F4; overflow: hidden; font-size: 9px; color: #344054; text-overflow: ellipsis; white-space: nowrap; }
+.purchase-return-table tbody tr:last-child td { border-bottom: 0; }
+.purchase-return-table tbody tr[data-purchase-return-id] { cursor: pointer; }
+.purchase-return-table tbody tr[data-purchase-return-id]:hover { background: #F8FAFC; }
+.purchase-return-table tbody tr.is-selected { background: rgba(63, 91, 134, 0.08); box-shadow: inset 3px 0 0 var(--color-primary); }
+.purchase-return-empty-cell { height: 150px !important; color: var(--color-text-subtle) !important; text-align: center !important; }
+
+.purchase-return-status-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 62px; min-height: 22px; padding: 0 8px; border-radius: 999px; font-size: 9px; font-weight: 800; white-space: nowrap; }
+.purchase-return-status-badge.is-registered { color: var(--color-primary); background: rgba(63, 91, 134, 0.10); }
+.purchase-return-status-badge.is-completed { color: var(--color-accent); background: rgba(79, 138, 123, 0.11); }
+.purchase-return-status-badge.is-canceled { color: var(--color-warning); background: rgba(222, 106, 94, 0.11); }
+
+.purchase-return-mobile-list { display: none; flex-direction: column; gap: 8px; }
+.purchase-return-mobile-item { width: 100%; padding: 12px; border: 1px solid #E3E7ED; border-radius: 8px; color: inherit; background: #FFFFFF; text-align: left; }
+.purchase-return-mobile-item.is-selected { border-color: rgba(63, 91, 134, 0.48); background: rgba(63, 91, 134, 0.05); }
+.purchase-return-mobile-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.purchase-return-mobile-title { overflow: hidden; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.purchase-return-mobile-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding-top: 10px; gap: 8px 12px; }
+.purchase-return-mobile-row { display: flex; flex-direction: column; min-width: 0; gap: 3px; }
+.purchase-return-mobile-label { font-size: 8px; color: var(--color-text-subtle); }
+.purchase-return-mobile-value { overflow: hidden; font-size: 9px; color: #344054; text-overflow: ellipsis; white-space: nowrap; }
+.purchase-return-mobile-empty { padding: 42px 12px; font-size: 10px; color: var(--color-text-subtle); text-align: center; }
+
+
+/* =========================================================
+    4. Pagination
+   ========================================================= */
+
+.purchase-return-pagination { display: flex; align-items: center; justify-content: center; min-height: 34px; gap: 5px; }
+.purchase-return-page-button { min-width: 30px; height: 30px; padding: 0 8px; border: 1px solid var(--color-border); border-radius: 6px; font-size: 9px; color: #475467; background: #FFFFFF; }
+.purchase-return-page-button:hover:not(:disabled) { background: #F7F8FA; }
+.purchase-return-page-button.is-current { border-color: var(--color-primary); color: #FFFFFF; background: var(--color-primary); }
+.purchase-return-page-button:disabled { cursor: default; opacity: 0.45; }
+
+
+/* =========================================================
+    5. 상세정보와 요약 영역
+   ========================================================= */
+
+.purchase-return-detail-section { display: flex; flex-direction: column; min-width: 0; padding: 16px; gap: 14px; border-top: 1px solid #E3E7ED; }
+.purchase-return-detail-header { align-items: center; }
+.purchase-return-detail-close { display: none; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 6px; font-size: 20px; color: var(--color-text-subtle); background: transparent; }
+.purchase-return-detail-close:hover { background: #F7F8FA; }
+.purchase-return-detail-empty { display: flex; align-items: center; justify-content: center; min-height: 90px; border: 1px dashed #D9DEE7; border-radius: 8px; font-size: 10px; color: var(--color-text-subtle); text-align: center; }
+.purchase-return-detail-empty[hidden] { display: none; }
+.purchase-return-detail-form { display: flex; flex-direction: column; min-width: 0; gap: 14px; }
+.purchase-return-detail-form[hidden] { display: none; }
+.purchase-return-form-section { display: flex; flex-direction: column; min-width: 0; padding: 14px; gap: 12px; border: 1px solid #E3E7ED; border-radius: 8px; }
+.purchase-return-form-section h3 { font-size: 11px; }
+.purchase-return-form-section-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.purchase-return-summary-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.purchase-return-summary-item { display: flex; flex-direction: column; min-width: 0; min-height: 54px; padding: 10px; gap: 6px; border-radius: 7px; background: #F7F8FA; }
+.purchase-return-summary-item span { font-size: 8px; color: var(--color-text-subtle); }
+.purchase-return-summary-item strong { overflow: hidden; font-size: 10px; color: #344054; text-overflow: ellipsis; white-space: nowrap; }
+
+
+/* =========================================================
+    6. LOT별 반품 품목 Table·Mobile Card
+   ========================================================= */
+
+.purchase-return-item-table-wrap { overflow-x: auto; min-width: 0; border: 1px solid #EEF0F4; border-radius: 7px; }
+.purchase-return-item-table { width: 100%; min-width: 1000px; border-collapse: collapse; table-layout: fixed; }
+.purchase-return-item-table th { height: 36px; padding: 0 8px; border-bottom: 1px solid #E3E7ED; font-size: 8px; color: #667085; text-align: left; background: #FAFBFC; }
+.purchase-return-item-table td { height: 50px; padding: 7px 8px; border-bottom: 1px solid #EEF0F4; font-size: 9px; color: #344054; vertical-align: middle; }
+.purchase-return-item-table tbody tr:last-child td { border-bottom: 0; }
+.purchase-return-item-table td:first-child { width: 170px; }
+.purchase-return-item-main { display: flex; flex-direction: column; min-width: 0; gap: 3px; }
+.purchase-return-item-main strong,
+.purchase-return-item-main span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.purchase-return-item-main span { font-size: 8px; color: var(--color-text-subtle); }
+.purchase-return-quantity-input { width: 86px; height: 32px; padding: 0 8px; border: 1px solid var(--color-border); border-radius: 6px; outline: 0; font-size: 9px; color: #344054; background: #FFFFFF; text-align: right; }
+.purchase-return-quantity-input:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(63, 91, 134, 0.08); }
+.purchase-return-quantity-input:disabled { color: #667085; background: #F7F8FA; }
+.purchase-return-item-empty { height: 120px !important; color: var(--color-text-subtle) !important; text-align: center !important; }
+.purchase-return-item-mobile-list { display: none; flex-direction: column; gap: 8px; }
+.purchase-return-item-mobile-card { display: flex; flex-direction: column; padding: 12px; gap: 10px; border: 1px solid #E3E7ED; border-radius: 8px; }
+.purchase-return-item-mobile-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.purchase-return-item-mobile-head strong { font-size: 10px; }
+.purchase-return-item-mobile-head span { font-size: 8px; color: var(--color-text-subtle); }
+.purchase-return-item-mobile-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 12px; }
+.purchase-return-item-mobile-field { display: flex; flex-direction: column; min-width: 0; gap: 3px; }
+.purchase-return-item-mobile-field span { font-size: 8px; color: var(--color-text-subtle); }
+.purchase-return-item-mobile-field strong { overflow: hidden; font-size: 9px; color: #344054; text-overflow: ellipsis; white-space: nowrap; }
+
+
+/* =========================================================
+    7. 반품 사유와 상세 처리 Button
+   ========================================================= */
+
+.purchase-return-form-field,
+.purchase-return-modal-field { display: flex; flex-direction: column; gap: 6px; }
+.purchase-return-form-field > span,
+.purchase-return-modal-field > span { font-size: 9px; font-weight: 700; color: #475467; }
+.purchase-return-form-field em,
+.purchase-return-modal-field em { color: var(--color-warning); font-style: normal; }
+.purchase-return-form-field textarea,
+.purchase-return-modal-field textarea,
+.purchase-return-modal-field select { width: 100%; padding: 9px 10px; border: 1px solid var(--color-border); border-radius: 6px; outline: 0; font-size: 10px; line-height: 1.5; color: #344054; background: #FFFFFF; resize: vertical; }
+.purchase-return-modal-field select { height: 36px; padding-block: 0; }
+.purchase-return-form-field textarea:focus,
+.purchase-return-modal-field textarea:focus,
+.purchase-return-modal-field select:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(63, 91, 134, 0.08); }
+.purchase-return-form-field textarea:disabled { color: #667085; background: #F7F8FA; }
+.purchase-return-form-field small,
+.purchase-return-modal-field small { align-self: flex-end; font-size: 8px; color: var(--color-text-subtle); }
+.purchase-return-cancel-reason { display: flex; flex-direction: column; padding: 10px; gap: 5px; border-radius: 7px; background: rgba(222, 106, 94, 0.06); }
+.purchase-return-cancel-reason span { font-size: 8px; color: var(--color-warning); }
+.purchase-return-cancel-reason p { font-size: 10px; line-height: 1.5; color: #475467; white-space: pre-wrap; }
+.purchase-return-form-notice { padding: 10px 12px; border: 1px solid rgba(79, 138, 123, 0.22); border-radius: 6px; font-size: 10px; font-weight: 600; color: var(--color-accent); background: rgba(79, 138, 123, 0.06); }
+.purchase-return-form-notice[hidden] { display: none; }
+.purchase-return-detail-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.purchase-return-detail-actions [hidden] { display: none; }
+.purchase-return-modal-description { font-size: 9px; line-height: 1.5; color: var(--color-text-subtle); word-break: keep-all; }
+.purchase-return-create-modal { max-width: 520px; }
+
+
+/* =========================================================
+    8. 역할별 금액 비공개와 Loading 상태
+   ========================================================= */
+
+body.is-warehouse .amount-column,
+body.is-warehouse .amount-field { display: none; }
+.purchase-return-card.is-loading { cursor: wait; }
+.purchase-return-card.is-loading .purchase-return-table tbody tr,
+.purchase-return-card.is-loading .purchase-return-mobile-item { pointer-events: none; }
+
+
+/* =========================================================
+    9. Tablet
+   ========================================================= */
+
+@media (max-width: 900px) {
+    .purchase-return-toolbar { align-items: stretch; flex-direction: column; }
+    .purchase-return-new-button { align-self: flex-end; }
+    .purchase-return-summary-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+
+/* =========================================================
+    10. Mobile
+   ========================================================= */
+
+@media (max-width: 600px) {
+    .purchase-return-toolbar { padding: 12px; }
+    .purchase-return-filter-group { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+    .purchase-return-filter-field input,
+    .purchase-return-filter-field select { width: 100%; }
+    .purchase-return-filter-actions { grid-column: 1 / -1; }
+    .purchase-return-filter-actions .button { flex: 1; }
+    .purchase-return-new-button { width: 100%; }
+    .purchase-return-list-section { min-height: 320px; padding: 12px; }
+    .purchase-return-table-wrap { display: none; }
+    .purchase-return-mobile-list { display: flex; }
+    .purchase-return-detail-section { position: fixed; inset: 0; z-index: 800; overflow-y: auto; padding: 16px; background: var(--color-page-background); transform: translateY(100%); transition: transform 0.2s ease; }
+    .purchase-return-detail-section.is-open { transform: translateY(0); }
+    .purchase-return-detail-close { display: inline-flex; align-items: center; justify-content: center; }
+    .purchase-return-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .purchase-return-item-table-wrap { display: none; }
+    .purchase-return-item-mobile-list { display: flex; }
+    .purchase-return-detail-actions { position: sticky; bottom: 0; padding: 10px 0 2px; background: var(--color-page-background); }
+    .purchase-return-detail-actions .button { flex: 1; }
+}
+
+@media (max-width: 375px) {
+    .purchase-return-filter-group { grid-template-columns: 1fr; }
+    .purchase-return-summary-grid { grid-template-columns: 1fr; }
+    .purchase-return-mobile-grid,
+    .purchase-return-item-mobile-grid { grid-template-columns: 1fr; }
+}

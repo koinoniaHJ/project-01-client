@@ -39,7 +39,7 @@ const MENU_GROUPS = [
         items: [
             { key: 'purchaseOrders', label: '발주 목록', elementId: 'purchaseOrdersMenuButton', path: './purchase-orders.html' },
             { key: 'receipts', label: '입고 목록', elementId: 'receiptsMenuButton', path: './receipts.html' },
-            { key: 'purchaseReturns', label: '매입 반품', elementId: null, path: null }
+            { key: 'purchaseReturns', label: '매입 반품', elementId: 'purchaseReturnsMenuButton', path: './purchase-returns.html' }
         ]
     },
     {
