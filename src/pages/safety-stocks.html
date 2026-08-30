@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERP 안전재고 관리</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/common-layout.css">
+    <link rel="stylesheet" href="../css/safety-stocks.css">
+</head>
+<body>
+    <div class="page-root">
+        <!-- 안전재고 관리 화면 전체 영역 -->
+        <main class="page-container erp-page">
+            <!-- common-layout.js에서 모든 업무 화면이 공유하는 ERP Sidebar를 생성한다. -->
+            <aside id="commonSidebar" class="erp-sidebar"></aside>
+
+            <!-- 안전재고 목록과 등록·변경 입력 영역을 포함하는 본문 -->
+            <section class="erp-main">
+                <!-- common-layout.js에서 화면 제목, 사용자명과 로그아웃 버튼을 생성한다. -->
+                <header id="commonHeader" class="erp-header"></header>
+
+                <!-- 인증·초기 조회·페이지 조회 실패 등 화면 전체 오류 표시 -->
+                <p id="safetyStockPageError" class="form-error safety-stock-page-error" role="alert" hidden></p>
+
+                <section class="safety-stock-card">
+                    <!-- 사용 중인 창고·품목과 안전재고 미달 여부 검색 조건 -->
+                    <div class="safety-stock-toolbar">
+                        <div class="safety-stock-filter-group">
+                            <label class="safety-stock-filter-field">
+                                <span>창고</span>
+                                <select id="warehouseFilter">
+                                    <option value="">전체</option>
+                                </select>
+                            </label>
+                            <label class="safety-stock-filter-field">
+                                <span>품목</span>
+                                <select id="itemFilter">
+                                    <option value="">전체</option>
+                                </select>
+                            </label>
+                            <label class="safety-stock-filter-field">
+                                <span>안전재고 미달</span>
+                                <select id="belowSafetyStockFilter">
+                                    <option value="">전체</option>
+                                    <option value="true">미달</option>
+                                    <option value="false">정상</option>
+                                </select>
+                            </label>
+                            <div class="safety-stock-filter-actions">
+                                <button type="button" id="searchButton" class="button button-primary">검색</button>
+                                <button type="button" id="resetFilterButton" class="button button-secondary">초기화</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PC·Tablet에서는 안전재고 목록과 선택 조합의 입력 영역을 나란히 표시한다. -->
+                    <div class="safety-stock-workspace">
+                        <section class="safety-stock-list-section" aria-labelledby="safetyStockListTitle">
+                            <div class="safety-stock-section-header">
+                                <div>
+                                    <h2 id="safetyStockListTitle">안전재고 목록</h2>
+                                    <p class="safety-stock-section-description">사용 중인 창고와 품목의 조합별 재고 기준입니다.</p>
+                                </div>
+                                <span id="safetyStockCount" class="safety-stock-count">총 0건</span>
+                            </div>
+
+                            <!-- PC·Tablet 안전재고 목록 -->
+                            <div class="safety-stock-table-wrap">
+                                <table class="safety-stock-table">
+                                    <colgroup>
+                                        <col style="width: 18%">
+                                        <col style="width: 21%">
+                                        <col style="width: 8%">
+                                        <col style="width: 14%">
+                                        <col style="width: 14%">
+                                        <col style="width: 25%">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">창고</th>
+                                            <th scope="col">품목</th>
+                                            <th scope="col">단위</th>
+                                            <th scope="col">안전재고</th>
+                                            <th scope="col">가용재고</th>
+                                            <th scope="col">부족 수량·미달 여부</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="safetyStockTableBody">
+                                        <tr>
+                                            <td colspan="6" class="safety-stock-empty-cell">안전재고 목록을 불러오는 중입니다.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Mobile 안전재고 Card 목록 -->
+                            <div id="safetyStockMobileList" class="safety-stock-mobile-list" aria-live="polite">
+                                <p class="safety-stock-mobile-empty">안전재고 목록을 불러오는 중입니다.</p>
+                            </div>
+
+                            <!-- 안전재고 목록 페이지 이동 영역 -->
+                            <nav id="safetyStockPagination" class="safety-stock-pagination" aria-label="안전재고 목록 페이지"></nav>
+                        </section>
+
+                        <!-- 선택한 창고·품목 조합의 안전재고 등록·변경 영역 -->
+                        <section id="safetyStockDetailSection" class="safety-stock-detail-section" aria-labelledby="safetyStockDetailTitle">
+                            <div class="safety-stock-section-header safety-stock-detail-header">
+                                <div>
+                                    <h2 id="safetyStockDetailTitle">안전재고 정보</h2>
+                                    <p id="safetyStockDetailMode" class="safety-stock-section-description">목록에서 창고·품목 조합을 선택해 주세요.</p>
+                                </div>
+                                <button type="button" id="closeDetailButton" class="safety-stock-detail-close" aria-label="상세정보 닫기">×</button>
+                            </div>
+
+                            <!-- 선택된 조합이 없는 초기 상태 -->
+                            <div id="safetyStockDetailEmpty" class="safety-stock-detail-empty">
+                                <p>목록에서 안전재고를 확인할 창고·품목 조합을 선택해 주세요.</p>
+                            </div>
+
+                            <form id="safetyStockDetailForm" class="safety-stock-detail-form" novalidate hidden>
+                                <!-- 안전재고를 설정할 창고 정보 -->
+                                <section class="safety-stock-form-section">
+                                    <h3>창고 정보</h3>
+                                    <div class="safety-stock-summary-grid">
+                                        <label class="safety-stock-form-field">
+                                            <span>창고 코드</span>
+                                            <input id="warehouseCodeValue" type="text" readonly>
+                                        </label>
+                                        <label class="safety-stock-form-field">
+                                            <span>창고명</span>
+                                            <input id="warehouseNameValue" type="text" readonly>
+                                        </label>
+                                    </div>
+                                </section>
+
+                                <!-- 안전재고를 설정할 품목과 기준 단위 -->
+                                <section class="safety-stock-form-section">
+                                    <h3>품목 정보</h3>
+                                    <div class="safety-stock-summary-grid">
+                                        <label class="safety-stock-form-field">
+                                            <span>품목 코드</span>
+                                            <input id="itemCodeValue" type="text" readonly>
+                                        </label>
+                                        <label class="safety-stock-form-field">
+                                            <span>품목명</span>
+                                            <input id="itemNameValue" type="text" readonly>
+                                        </label>
+                                        <label class="safety-stock-form-field safety-stock-form-field-wide">
+                                            <span>단위</span>
+                                            <input id="itemUnitValue" type="text" readonly>
+                                        </label>
+                                    </div>
+                                </section>
+
+                                <!-- 현재 가용재고와 부족 수량 및 미달 여부 -->
+                                <section class="safety-stock-form-section">
+                                    <h3>재고 현황</h3>
+                                    <div class="safety-stock-metric-grid">
+                                        <div class="safety-stock-metric">
+                                            <span>가용재고</span>
+                                            <strong id="availableStockValue">0</strong>
+                                        </div>
+                                        <div class="safety-stock-metric">
+                                            <span>부족 수량</span>
+                                            <strong id="shortageValue">0</strong>
+                                        </div>
+                                        <div class="safety-stock-metric">
+                                            <span>미달 여부</span>
+                                            <strong><span id="detailSafetyStatusBadge" class="safety-status-badge is-sufficient">정상</span></strong>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <!-- ADMIN만 수정할 수 있는 창고·품목별 안전재고 수량 -->
+                                <section class="safety-stock-form-section">
+                                    <h3>안전재고 설정</h3>
+                                    <label class="safety-stock-form-field safety-stock-form-field-wide">
+                                        <span>안전재고 수량 <em>*</em></span>
+                                        <input type="number" id="safetyStockQuantity" name="safetyStockQuantity" min="0" step="0.001" inputmode="decimal" required>
+                                    </label>
+                                </section>
+
+                                <!-- 입력값 검증·권한·version 충돌 등 저장 실패 메시지 -->
+                                <p id="safetyStockFormError" class="form-error" role="alert" hidden></p>
+
+                                <div class="safety-stock-detail-actions">
+                                    <!-- 저장은 ADMIN 사용자에게만 표시한다. -->
+                                    <button type="submit" id="safetyStockSaveButton" class="button button-primary">안전재고 저장</button>
+                                </div>
+                            </form>
+                        </section>
+                    </div>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <!-- 안전재고 관리 화면의 인증, 역할별 UI와 업무 기능 처리 -->
+    <script type="module" src="../js/safety-stocks.js"></script>
+</body>
+</html>

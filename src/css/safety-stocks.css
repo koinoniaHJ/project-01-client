@@ -1,0 +1,722 @@
+/* =========================================================
+    안전재고 관리 업무 전용 스타일
+    - 공통 Sidebar와 Header는 common-layout.css에서 관리한다.
+    - 창고·품목 조합 목록과 안전재고 입력 영역만 이 파일에서 관리한다.
+   ========================================================= */
+
+/* =========================================================
+    1. Button과 오류 메시지
+   ========================================================= */
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 0 13px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.button-primary {
+    border: 1px solid var(--color-primary);
+    color: #FFFFFF;
+    background: var(--color-primary);
+}
+
+.button-primary:hover:not(:disabled) {
+    filter: brightness(0.96);
+}
+
+.button-secondary {
+    border: 1px solid var(--color-border);
+    color: #475467;
+    background: var(--color-surface);
+}
+
+.button-secondary:hover:not(:disabled) {
+    background: #F7F8FA;
+}
+
+.button:focus-visible,
+.safety-stock-detail-close:focus-visible {
+    outline: 3px solid rgba(63, 91, 134, 0.18);
+    outline-offset: 2px;
+}
+
+.button:disabled,
+.safety-stock-filter-field select:disabled,
+.safety-stock-form-field input:disabled {
+    cursor: default;
+    opacity: 0.55;
+}
+
+.form-error {
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--color-warning);
+    word-break: keep-all;
+}
+
+.safety-stock-page-error {
+    padding: 10px 12px;
+    border: 1px solid rgba(222, 106, 94, 0.28);
+    border-radius: 6px;
+    background: rgba(222, 106, 94, 0.06);
+}
+
+
+/* =========================================================
+    2. 안전재고 Card와 검색 영역
+   ========================================================= */
+
+.safety-stock-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    border: 1px solid #E3E7ED;
+    border-radius: 10px;
+    background: var(--color-surface);
+    box-shadow: 0 6px 18px rgba(63, 91, 134, 0.06);
+}
+
+.safety-stock-toolbar {
+    display: flex;
+    align-items: end;
+    padding: 14px 16px;
+    border-bottom: 1px solid #E3E7ED;
+}
+
+.safety-stock-filter-group {
+    display: flex;
+    align-items: end;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.safety-stock-filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.safety-stock-filter-field > span {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--color-text-subtle);
+}
+
+.safety-stock-filter-field select {
+    width: 190px;
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    outline: 0;
+    font-size: 10px;
+    color: #344054;
+    background: var(--color-surface);
+}
+
+.safety-stock-filter-field:nth-child(3) select {
+    width: 130px;
+}
+
+.safety-stock-filter-field select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(63, 91, 134, 0.08);
+}
+
+.safety-stock-filter-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+
+/* =========================================================
+    3. 안전재고 목록과 입력 영역 Layout
+   ========================================================= */
+
+.safety-stock-workspace {
+    display: grid;
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+    min-width: 0;
+}
+
+.safety-stock-list-section {
+    grid-column: 1 / span 6;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 16px;
+    gap: 10px;
+    border-right: 1px solid #E3E7ED;
+}
+
+.safety-stock-detail-section {
+    grid-column: 7 / span 4;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 16px;
+    gap: 14px;
+}
+
+.safety-stock-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 28px;
+    gap: 10px;
+}
+
+.safety-stock-section-header > div {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.safety-stock-section-header h2 {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--color-text);
+}
+
+.safety-stock-section-description {
+    font-size: 9px;
+    line-height: 1.5;
+    color: var(--color-text-subtle);
+    word-break: keep-all;
+}
+
+.safety-stock-count {
+    flex: 0 0 auto;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+    color: #475467;
+}
+
+.safety-stock-detail-close {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    font-size: 18px;
+    color: var(--color-text-subtle);
+    background: transparent;
+}
+
+.safety-stock-detail-close:hover {
+    background: #F7F8FA;
+}
+
+
+/* =========================================================
+    4. 안전재고 Table과 Mobile Card
+   ========================================================= */
+
+.safety-stock-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.safety-stock-table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.safety-stock-table th,
+.safety-stock-table td {
+    height: 44px;
+    padding: 0 8px;
+    border-bottom: 1px solid #E8ECF1;
+    overflow: hidden;
+    font-size: 9px;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.safety-stock-table th {
+    font-weight: 700;
+    color: var(--color-text-subtle);
+    background: #FAFBFC;
+}
+
+.safety-stock-table tbody tr:not(:has(.safety-stock-empty-cell)) {
+    cursor: pointer;
+}
+
+.safety-stock-table tbody tr:not(:has(.safety-stock-empty-cell)):hover {
+    background: rgba(63, 91, 134, 0.04);
+}
+
+.safety-stock-table tbody tr.is-selected {
+    background: rgba(63, 91, 134, 0.09);
+}
+
+.safety-stock-table th:nth-child(n + 3),
+.safety-stock-table td:nth-child(n + 3) {
+    text-align: center;
+}
+
+.safety-stock-empty-cell {
+    height: 120px !important;
+    text-align: center !important;
+    color: var(--color-text-subtle);
+}
+
+.safety-stock-cell-title {
+    display: block;
+    overflow: hidden;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #344054;
+}
+
+.safety-stock-cell-code {
+    display: block;
+    overflow: hidden;
+    margin-top: 2px;
+    font-size: 8px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--color-text-subtle);
+}
+
+.safety-stock-shortage-cell {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.safety-stock-mobile-list {
+    display: none;
+}
+
+.safety-stock-mobile-empty {
+    padding: 24px 12px;
+    font-size: 10px;
+    text-align: center;
+    color: var(--color-text-subtle);
+}
+
+/* JavaScript에서 생성하는 Mobile 안전재고 Card에 적용한다. */
+.safety-stock-mobile-item {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 11px;
+    gap: 9px;
+    border: 1px solid #E3E7ED;
+    border-radius: 8px;
+    font: inherit;
+    text-align: left;
+    color: #344054;
+    background: var(--color-surface);
+}
+
+.safety-stock-mobile-item.is-selected {
+    border-color: var(--color-primary);
+    background: rgba(63, 91, 134, 0.05);
+}
+
+.safety-stock-mobile-top,
+.safety-stock-mobile-target,
+.safety-stock-mobile-metrics {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.safety-stock-mobile-warehouse {
+    overflow: hidden;
+    font-size: 11px;
+    font-weight: 800;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.safety-stock-mobile-item-name,
+.safety-stock-mobile-code,
+.safety-stock-mobile-unit {
+    overflow: hidden;
+    font-size: 9px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--color-text-subtle);
+}
+
+.safety-stock-mobile-item-name {
+    flex: 1;
+    font-weight: 700;
+    color: #475467;
+}
+
+.safety-stock-mobile-metric {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.safety-stock-mobile-metric span {
+    font-size: 8px;
+    color: var(--color-text-subtle);
+}
+
+.safety-stock-mobile-metric strong {
+    font-size: 9px;
+    color: #344054;
+}
+
+
+/* =========================================================
+    5. 미달 상태 Badge와 Pagination
+   ========================================================= */
+
+.safety-status-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 18px;
+    padding: 0 6px;
+    border-radius: 999px;
+    font-size: 8px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.safety-status-badge.is-sufficient {
+    color: var(--color-accent);
+    background: rgba(79, 138, 123, 0.12);
+}
+
+.safety-status-badge.is-below {
+    color: var(--color-warning);
+    background: rgba(222, 106, 94, 0.12);
+}
+
+.safety-stock-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 28px;
+    gap: 5px;
+}
+
+/* JavaScript에서 생성하는 안전재고 목록 페이지 버튼에 적용한다. */
+.safety-stock-pagination .page-button {
+    min-width: 28px;
+    height: 28px;
+    padding: 0 7px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    font-size: 9px;
+    color: #475467;
+    background: var(--color-surface);
+}
+
+.safety-stock-pagination .page-button:hover:not(:disabled) {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.safety-stock-pagination .page-button.is-active {
+    border-color: var(--color-primary);
+    color: #FFFFFF;
+    background: var(--color-primary);
+}
+
+
+/* =========================================================
+    6. 안전재고 상세·등록·변경 Form
+   ========================================================= */
+
+.safety-stock-detail-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 320px;
+    padding: 20px;
+    border: 1px dashed #D5DBE4;
+    border-radius: 8px;
+    font-size: 10px;
+    line-height: 1.6;
+    text-align: center;
+    color: var(--color-text-subtle);
+    background: #FAFBFC;
+}
+
+.safety-stock-detail-form {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 14px;
+}
+
+.safety-stock-form-section {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 14px;
+    gap: 10px;
+    border-bottom: 1px solid #E8ECF1;
+}
+
+.safety-stock-form-section:last-of-type {
+    border-bottom: 0;
+}
+
+.safety-stock-form-section h3 {
+    font-size: 11px;
+    font-weight: 800;
+    color: #344054;
+}
+
+.safety-stock-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.safety-stock-form-field {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 5px;
+}
+
+.safety-stock-form-field-wide {
+    grid-column: 1 / -1;
+}
+
+.safety-stock-form-field > span {
+    font-size: 10px;
+    font-weight: 700;
+    color: #344054;
+}
+
+.safety-stock-form-field em {
+    font-style: normal;
+    color: var(--color-warning);
+}
+
+.safety-stock-form-field input {
+    width: 100%;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    outline: 0;
+    font-size: 10px;
+    color: #344054;
+    background: var(--color-surface);
+}
+
+.safety-stock-form-field input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(63, 91, 134, 0.08);
+}
+
+.safety-stock-form-field input[readonly],
+.safety-stock-form-field input:disabled {
+    color: var(--color-text-subtle);
+    background: #F7F8FA;
+}
+
+.safety-stock-metric-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.safety-stock-metric {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 10px;
+    gap: 6px;
+    border: 1px solid #E8ECF1;
+    border-radius: 7px;
+    background: #FAFBFC;
+}
+
+.safety-stock-metric > span {
+    font-size: 8px;
+    color: var(--color-text-subtle);
+}
+
+.safety-stock-metric > strong {
+    overflow: hidden;
+    font-size: 11px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #344054;
+}
+
+.safety-stock-detail-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 2px;
+}
+
+.safety-stock-detail-actions .button-primary {
+    min-width: 110px;
+}
+
+
+/* =========================================================
+    7. JavaScript 동작 상태
+   ========================================================= */
+
+.safety-stock-page-error[hidden],
+.safety-stock-detail-empty[hidden],
+.safety-stock-detail-form[hidden],
+.form-error[hidden],
+#safetyStockSaveButton[hidden] {
+    display: none;
+}
+
+
+/* =========================================================
+    8. Tablet
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .safety-stock-filter-group {
+        display: grid;
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+        width: 100%;
+        gap: 12px;
+    }
+
+    .safety-stock-filter-field {
+        grid-column: span 4;
+    }
+
+    .safety-stock-filter-field:nth-child(3) {
+        grid-column: span 3;
+    }
+
+    .safety-stock-filter-field select,
+    .safety-stock-filter-field:nth-child(3) select {
+        width: 100%;
+    }
+
+    .safety-stock-filter-actions {
+        grid-column: span 5;
+    }
+
+    .safety-stock-filter-actions .button {
+        flex: 1;
+    }
+
+    .safety-stock-workspace {
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+    }
+
+    .safety-stock-list-section,
+    .safety-stock-detail-section {
+        grid-column: 1 / -1;
+    }
+
+    .safety-stock-list-section {
+        border-right: 0;
+        border-bottom: 1px solid #E3E7ED;
+    }
+
+    .safety-stock-summary-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+
+/* =========================================================
+    9. Mobile
+   ========================================================= */
+
+@media (max-width: 375px) {
+
+    .safety-stock-card {
+        border-radius: 8px;
+    }
+
+    .safety-stock-toolbar {
+        padding: 12px;
+    }
+
+    .safety-stock-filter-group {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .safety-stock-filter-field,
+    .safety-stock-filter-field:nth-child(3),
+    .safety-stock-filter-actions {
+        grid-column: 1 / -1;
+    }
+
+    .safety-stock-list-section {
+        padding: 12px;
+        border-bottom: 0;
+    }
+
+    .safety-stock-table-wrap {
+        display: none;
+    }
+
+    .safety-stock-mobile-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .safety-stock-detail-close {
+        display: inline-flex;
+    }
+
+    /* Mobile 상세정보는 목록 위에 표시하는 하단 Panel로 사용한다. */
+    .safety-stock-detail-section {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 900;
+        max-height: 88dvh;
+        padding: 16px 20px;
+        overflow-y: auto;
+        border-top: 1px solid #E3E7ED;
+        border-radius: 12px 12px 0 0;
+        background: var(--color-surface);
+        box-shadow: 0 -12px 30px rgba(17, 24, 39, 0.14);
+    }
+
+    .safety-stock-detail-section[hidden] {
+        display: none;
+    }
+
+    .safety-stock-summary-grid,
+    .safety-stock-metric-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .safety-stock-form-field-wide {
+        grid-column: 1;
+    }
+
+    .safety-stock-detail-actions .button-primary {
+        width: 100%;
+    }
+}

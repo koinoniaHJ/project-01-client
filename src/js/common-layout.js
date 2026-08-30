@@ -31,7 +31,7 @@ const MENU_GROUPS = [
             { key: 'suppliers', label: '공급업체 관리', elementId: 'suppliersMenuButton', path: './suppliers.html' },
             { key: 'items', label: '품목 관리', elementId: 'itemsMenuButton', path: './items.html' },
             { key: 'warehouses', label: '창고 관리', elementId: 'warehousesMenuButton', path: './warehouses.html' },
-            { key: 'safetyStock', label: '안전재고 관리', elementId: null, path: null }
+            { key: 'safetyStock', label: '안전재고 관리', elementId: 'safetyStocksMenuButton', path: './safety-stocks.html' }
         ]
     },
     {
