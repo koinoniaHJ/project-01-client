@@ -45,7 +45,7 @@ const MENU_GROUPS = [
     {
         title: '판매',
         items: [
-            { key: 'orders', label: '주문 목록', elementId: null, path: null },
+            { key: 'orders', label: '주문 목록', elementId: 'ordersMenuButton', path: './orders.html' },
             { key: 'shipments', label: '출고 목록', elementId: null, path: null },
             { key: 'customerReturns', label: '거래처 반품', elementId: null, path: null }
         ]

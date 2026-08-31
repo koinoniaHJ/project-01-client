@@ -1,0 +1,211 @@
+/* =========================================================
+   주문 관리
+   - 공통 Sidebar·Header·Modal은 공통 CSS를 그대로 사용한다.
+   - 이 파일은 주문 목록·상세·입력·반응형 영역만 담당한다.
+   ========================================================= */
+
+/* 발주·입고·매입 반품 화면과 동일한 업무 버튼 규격 */
+.button { display: inline-flex; align-items: center; justify-content: center; min-height: 34px; padding: 0 13px; border-radius: 6px; font-size: 10px; font-weight: 700; }
+.button-primary { border: 1px solid var(--color-primary); color: #FFFFFF; background: var(--color-primary); }
+.button-primary:hover:not(:disabled) { filter: brightness(0.96); }
+.button-secondary { border: 1px solid var(--color-border); color: #475467; background: var(--color-surface); }
+.button-secondary:hover:not(:disabled) { background: #F7F8FA; }
+.button-danger { border: 1px solid rgba(222, 106, 94, 0.38); color: var(--color-warning); background: rgba(222, 106, 94, 0.06); }
+.button-danger:hover:not(:disabled) { background: rgba(222, 106, 94, 0.12); }
+.button:disabled { cursor: default; opacity: 0.55; }
+.button[hidden] { display: none; }
+
+.button:focus-visible,
+.order-filter-field select:focus-visible,
+.order-filter-field input:focus-visible,
+.order-page-button:focus-visible,
+.order-mobile-card:focus-visible {
+    outline: 3px solid rgba(63, 91, 134, 0.18);
+    outline-offset: 2px;
+}
+
+/* API·입력 검증 오류는 다른 업무 화면과 동일한 경고 색상으로 표시 */
+.form-error { font-size: 10px; font-weight: 600; line-height: 1.5; color: var(--color-warning); word-break: keep-all; }
+.order-page-error { padding: 10px 12px; border: 1px solid rgba(222, 106, 94, 0.28); border-radius: 6px; background: rgba(222, 106, 94, 0.06); }
+.order-page-error[hidden] { display: none; }
+
+.order-card {
+    overflow: hidden;
+    border: 1px solid #E3E7ED;
+    border-radius: 10px;
+    background: var(--color-surface);
+    box-shadow: 0 8px 24px rgba(16, 24, 40, 0.04);
+}
+
+/* 검색 조건과 신규 주문 버튼 */
+.order-toolbar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 14px;
+    gap: 12px;
+    border-bottom: 1px solid #E3E7ED;
+}
+
+.order-filter-group { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 10px; }
+.order-filter-field { display: flex; flex-direction: column; gap: 5px; }
+.order-filter-field > span, .order-form-field > span, .order-modal-field > span { font-size: 9px; font-weight: 700; color: #667085; }
+.order-filter-field select, .order-filter-field input { width: 135px; height: 34px; padding: 0 9px; border: 1px solid var(--color-border); border-radius: 6px; outline: 0; font-size: 9px; color: #344054; background: var(--color-surface); }
+.order-customer-filter select { width: 220px; }
+.order-date-field input { width: 130px; }
+.order-filter-field select:focus, .order-filter-field input:focus, .order-form-field input:focus, .order-form-field select:focus, .order-form-field textarea:focus, .order-item-table input:focus, .order-item-table select:focus, .order-modal-field textarea:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(63, 91, 134, 0.10); }
+.order-filter-actions { display: flex; gap: 7px; }
+.order-new-button { min-width: 78px; }
+
+/* 목록 공통 제목·건수 */
+.order-list-section, .order-detail-section { padding: 14px; }
+.order-list-section { min-height: 320px; border-bottom: 1px solid #E3E7ED; }
+.order-section-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; gap: 12px; }
+.order-section-header h2 { margin: 0; font-size: 13px; color: var(--color-text); }
+.order-section-description { margin: 3px 0 0; font-size: 9px; line-height: 1.45; color: var(--color-text-subtle); }
+.order-count { flex: 0 0 auto; font-size: 9px; font-weight: 700; color: #475467; white-space: nowrap; }
+
+/* PC·Tablet 주문 목록 */
+.order-table-wrap { width: 100%; overflow-x: auto; }
+.order-table { width: 100%; min-width: 820px; border-collapse: collapse; table-layout: fixed; }
+.order-table th, .order-table td { height: 40px; padding: 7px 8px; overflow: hidden; border-bottom: 1px solid #E8ECF1; font-size: 8px; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
+.order-table th { font-weight: 700; color: var(--color-text-subtle); background: #FAFBFC; }
+.order-table tbody tr { cursor: pointer; }
+.order-table tbody tr:hover, .order-table tbody tr.is-selected { background: rgba(63, 91, 134, 0.06); }
+.order-table tbody tr:focus-visible { outline: 2px solid rgba(63, 91, 134, 0.24); outline-offset: -2px; }
+.order-empty-cell { height: 90px !important; color: var(--color-text-subtle); }
+
+/* 주문·거래·출고 상태 Badge */
+.order-status-badge, .order-trade-badge, .order-shipment-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 22px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 8px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+.order-status-badge.is-draft { color: #526173; background: #EEF1F5; }
+.order-status-badge.is-registered { color: #315C93; background: #EAF1FA; }
+.order-status-badge.is-completed { color: #2E7564; background: #E7F3EF; }
+.order-status-badge.is-canceled { color: #A45149; background: #FBEDEB; }
+.order-trade-badge.is-normal { color: #2E7564; background: #E7F3EF; }
+.order-trade-badge.is-hold { color: #B45D4E; background: #FBEDEB; }
+.order-shipment-badge { color: #315C93; background: #EAF1FA; }
+.order-trade-warning { color: #B45D4E; font-weight: 700; }
+
+/* Mobile 주문 목록 */
+.order-mobile-list { display: none; }
+.order-mobile-card { padding: 11px; border: 1px solid #E3E7ED; border-radius: 7px; background: #FAFBFC; cursor: pointer; }
+.order-mobile-card.is-selected { border-color: rgba(63, 91, 134, 0.4); background: rgba(63, 91, 134, 0.06); }
+.order-mobile-card-header, .order-mobile-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.order-mobile-card-header { margin-bottom: 8px; }
+.order-mobile-card-title { font-size: 10px; font-weight: 700; color: #344054; }
+.order-mobile-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 10px; }
+.order-mobile-row { font-size: 8px; color: #475467; }
+.order-mobile-row span:first-child { color: var(--color-text-subtle); }
+.order-mobile-empty { padding: 30px 0; margin: 0; font-size: 9px; text-align: center; color: var(--color-text-subtle); }
+
+/* 목록 Pagination */
+.order-pagination { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; min-height: 30px; margin-top: 12px; gap: 5px; }
+.order-page-button { min-width: 28px; height: 28px; padding: 0 7px; border: 1px solid var(--color-border); border-radius: 5px; font-size: 8px; color: #475467; background: var(--color-surface); }
+.order-page-button.is-active { border-color: var(--color-primary); color: #FFFFFF; background: var(--color-primary); }
+.order-page-button:disabled { cursor: default; opacity: 0.45; }
+
+/* 주문 상세 초기·Loading 상태 */
+.order-detail-section { min-height: 160px; background: #FCFCFD; }
+.order-detail-header { margin-bottom: 10px; }
+.order-detail-close { display: none; width: 30px; height: 30px; padding: 0; border: 0; font-size: 20px; color: #667085; background: transparent; }
+.order-detail-empty { display: flex; align-items: center; justify-content: center; min-height: 110px; border: 1px dashed #D9E0E8; border-radius: 7px; font-size: 9px; color: var(--color-text-subtle); background: #FFFFFF; }
+.order-detail-empty p { margin: 0; }
+.order-detail-form { display: flex; flex-direction: column; gap: 12px; }
+.order-detail-empty[hidden], .order-detail-form[hidden], [data-office-information][hidden], .order-item-manage-column[hidden] { display: none; }
+.order-detail-section.is-loading { opacity: 0.58; pointer-events: none; }
+
+/* 상세 Section·요약 */
+.order-form-section { padding: 12px; border: 1px solid #E3E7ED; border-radius: 8px; background: #FFFFFF; }
+.order-form-section > h3, .order-form-section-header h3 { margin: 0 0 10px; font-size: 11px; color: #344054; }
+.order-form-section-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; gap: 10px; }
+.order-form-section-header h3 { margin-bottom: 0; }
+.order-status-group { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+.order-summary-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
+.order-summary-item { display: flex; flex-direction: column; min-width: 0; padding: 9px; gap: 4px; border-radius: 6px; background: #F7F8FA; }
+.order-summary-item span { font-size: 8px; color: var(--color-text-subtle); }
+.order-summary-item strong { overflow: hidden; font-size: 9px; color: #344054; text-overflow: ellipsis; white-space: nowrap; }
+
+/* 주문 기본정보 Form */
+.order-form-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.order-form-field { display: flex; flex-direction: column; min-width: 0; gap: 6px; }
+.order-form-field-wide { grid-column: span 2; }
+.order-form-field-full { grid-column: 1 / -1; }
+.order-form-field em, .order-modal-field em { font-style: normal; color: var(--color-warning); }
+.order-form-field input, .order-form-field select, .order-form-field textarea, .order-modal-field textarea { width: 100%; border: 1px solid var(--color-border); border-radius: 6px; outline: 0; font-size: 9px; color: #344054; background: #FFFFFF; }
+.order-form-field input, .order-form-field select { height: 34px; padding: 0 9px; }
+.order-form-field textarea, .order-modal-field textarea { padding: 9px; line-height: 1.5; resize: vertical; }
+.order-form-field input:disabled, .order-form-field select:disabled, .order-form-field textarea:disabled, .order-item-table input:disabled, .order-item-table select:disabled { color: #667085; background: #F7F8FA; cursor: default; }
+
+/* 주문 품목 Table */
+.order-item-table-wrap { width: 100%; overflow-x: auto; }
+.order-item-table { width: 100%; min-width: 950px; border-collapse: collapse; table-layout: fixed; }
+.order-item-table th, .order-item-table td { height: 42px; padding: 6px; border-bottom: 1px solid #E8ECF1; overflow: hidden; font-size: 8px; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
+.order-item-table th { font-weight: 700; color: var(--color-text-subtle); background: #FAFBFC; }
+.order-item-table select, .order-item-table input { width: 100%; height: 30px; padding: 0 7px; border: 1px solid var(--color-border); border-radius: 5px; outline: 0; font-size: 8px; color: #344054; background: #FFFFFF; }
+.order-item-table select { text-align: left; }
+.order-item-line-amount { font-variant-numeric: tabular-nums; color: #475467; }
+.order-item-availability { overflow: hidden; text-align: left !important; text-overflow: ellipsis; }
+.order-item-availability-list { display: flex; flex-direction: column; gap: 2px; line-height: 1.35; color: #475467; }
+.order-item-availability-list.is-empty { color: var(--color-warning); }
+.order-item-remove { width: 26px; height: 26px; padding: 0; border: 1px solid rgba(222, 106, 94, 0.28); border-radius: 5px; font-size: 13px; color: var(--color-warning); background: rgba(222, 106, 94, 0.05); }
+.order-item-empty-cell { height: 80px !important; color: var(--color-text-subtle); }
+
+/* 처리 이력·안내·하단 버튼 */
+.order-action-history { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.order-action-history > div { display: flex; flex-direction: column; min-width: 0; padding: 9px; gap: 4px; border-radius: 6px; background: #F7F8FA; }
+.order-action-history dt { font-size: 8px; color: var(--color-text-subtle); }
+.order-action-history dd { overflow: hidden; margin: 0; font-size: 9px; line-height: 1.45; color: #475467; text-overflow: ellipsis; white-space: nowrap; }
+.order-form-notice { padding: 10px 12px; border: 1px solid rgba(79, 138, 123, 0.25); border-radius: 6px; font-size: 9px; line-height: 1.5; color: var(--color-accent); background: rgba(79, 138, 123, 0.06); }
+.order-form-notice[hidden] { display: none; }
+.order-detail-actions { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
+
+/* 공통 Modal 내부 주문 전용 문장·입력 */
+.order-modal-description { margin: 0; font-size: 9px; line-height: 1.55; color: var(--color-text-subtle); word-break: keep-all; }
+.order-modal-field { display: flex; flex-direction: column; gap: 6px; }
+.order-modal-field small { align-self: flex-end; font-size: 8px; color: var(--color-text-subtle); }
+
+@media (max-width: 768px) {
+    .order-toolbar { align-items: stretch; flex-direction: column; }
+    .order-filter-group { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 10px; }
+    .order-filter-field { grid-column: span 2; }
+    .order-customer-filter { grid-column: span 4; }
+    .order-filter-field select, .order-filter-field input, .order-customer-filter select { width: 100%; }
+    .order-filter-actions { grid-column: span 4; align-self: end; }
+    .order-new-button { width: 100%; }
+    .order-summary-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .order-form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .order-action-history { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 375px) {
+    .order-card { border-radius: 8px; }
+    .order-toolbar, .order-list-section { padding: 12px; }
+    .order-filter-group { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .order-filter-field, .order-customer-filter { grid-column: 1 / -1; }
+    .order-date-field { grid-column: span 2; }
+    .order-filter-actions { display: grid; grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .order-section-description { display: none; }
+    .order-list-section { min-height: 340px; }
+    .order-table-wrap { display: none; }
+    .order-mobile-list { display: flex; flex-direction: column; gap: 8px; }
+    .order-detail-section { position: fixed; inset: 52px 0 0; z-index: 200; overflow-y: auto; padding: 12px; border: 0; background: #F7F8FA; }
+    .order-detail-section[hidden] { display: none; }
+    .order-detail-close { display: inline-flex; align-items: center; justify-content: center; }
+    .order-summary-grid, .order-form-grid, .order-action-history { grid-template-columns: 1fr; }
+    .order-form-field-wide, .order-form-field-full { grid-column: auto; }
+    .order-form-section-header { align-items: stretch; flex-direction: column; }
+    .order-form-section-header > .button { width: 100%; }
+    .order-status-group { justify-content: flex-start; }
+    .order-detail-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .order-detail-actions .button { width: 100%; }
+}
