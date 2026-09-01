@@ -135,6 +135,19 @@ export const api = {
         );
     },
 
+    // ========== PDF 같은 바이너리 파일 조회 함수 ==========
+    // 일반 웹과 Electron에서 동일하게 사용할 수 있도록 byte 배열을 Blob으로 변환하여 반환한다.
+    async download(path) {
+        const result = await send(path, { method: 'GET', responseType: 'arrayBuffer' });
+
+        if (!result.ok) {
+            throw new ApiError(result.status, result.body);
+        }
+
+        const bytes = result.body instanceof Uint8Array ? result.body : new Uint8Array(result.body ?? []);
+        return new Blob([bytes], { type: result.contentType ?? 'application/octet-stream' });
+    },
+
     // ========== 외부용 CSRF 토큰 재발급 함수 ==========
     // 외부에서도 CSRF 토큰을 새로 발급받을 수 있도록 함수를 공개한다.
     refreshCsrfToken,
@@ -302,6 +315,17 @@ async function browserRequest(path, options) {
             credentials: 'include'
         }
     );
+
+    // PDF처럼 바이너리 응답을 요청했고 요청이 성공한 경우 JSON 변환 없이 byte 배열을 반환한다.
+    if (options.responseType === 'arrayBuffer' && response.ok) {
+        const bytes = new Uint8Array(await response.arrayBuffer());
+        return {
+            ok: true,
+            status: response.status,
+            body: bytes,
+            contentType: response.headers.get('content-type')
+        };
+    }
 
     // 서버의 응답 본문을 문자열로 읽는다.
     const text = await response.text();

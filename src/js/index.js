@@ -18,6 +18,7 @@ const purchaseOrdersMenuButton = document.querySelector('#purchaseOrdersMenuButt
 const receiptsMenuButton = document.querySelector('#receiptsMenuButton');
 const purchaseReturnsMenuButton = document.querySelector('#purchaseReturnsMenuButton');
 const ordersMenuButton = document.querySelector('#ordersMenuButton');
+const shipmentsMenuButton = document.querySelector('#shipmentsMenuButton');
 
 async function initialize() {
 
@@ -75,5 +76,6 @@ purchaseOrdersMenuButton.addEventListener('click', () => window.location.href = 
 receiptsMenuButton.addEventListener('click', () => window.location.href = './receipts.html');
 purchaseReturnsMenuButton.addEventListener('click', () => window.location.href = './purchase-returns.html');
 ordersMenuButton.addEventListener('click', () => window.location.href = './orders.html');
+shipmentsMenuButton.addEventListener('click', () => window.location.href = './shipments.html');
 
 initialize();

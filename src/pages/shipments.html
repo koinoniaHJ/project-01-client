@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERP 출고 관리</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/common-layout.css">
+    <link rel="stylesheet" href="../css/shipments.css">
+    <link rel="stylesheet" href="../css/common-modal.css">
+</head>
+<body>
+    <div class="page-root">
+        <main class="page-container erp-page">
+            <!-- Sidebar와 Header는 모든 업무 화면이 공유하는 common-layout.js에서 생성한다. -->
+            <aside id="commonSidebar" class="erp-sidebar"></aside>
+            <section class="erp-main">
+                <header id="commonHeader" class="erp-header"></header>
+                <p id="shipmentPageError" class="form-error shipment-page-error" role="alert" hidden></p>
+
+                <section class="shipment-card">
+                    <!-- 거래처·출고 상태·주문 접수 기간으로 출고 목록을 조회한다. -->
+                    <div class="shipment-toolbar">
+                        <div class="shipment-filter-group">
+                            <label class="shipment-filter-field shipment-customer-filter">
+                                <span>거래처</span>
+                                <select id="customerFilter"><option value="">전체</option></select>
+                            </label>
+                            <label class="shipment-filter-field">
+                                <span>출고 상태</span>
+                                <select id="statusFilter">
+                                    <option value="">전체</option>
+                                    <option value="PENDING">출고 대기</option>
+                                    <option value="PACKED">포장 완료</option>
+                                    <option value="COMPLETED">출고 완료</option>
+                                    <option value="CANCELED">출고 취소</option>
+                                </select>
+                            </label>
+                            <label class="shipment-filter-field shipment-date-field"><span>접수 시작일</span><input type="date" id="startDateFilter"></label>
+                            <label class="shipment-filter-field shipment-date-field"><span>접수 종료일</span><input type="date" id="endDateFilter"></label>
+                            <div class="shipment-filter-actions">
+                                <button type="button" id="searchButton" class="button button-primary">검색</button>
+                                <button type="button" id="resetFilterButton" class="button button-secondary">초기화</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PC·Tablet Table과 Mobile Card를 함께 제공하는 출고 목록 영역 -->
+                    <section class="shipment-list-section" aria-labelledby="shipmentListTitle">
+                        <div class="shipment-section-header">
+                            <div>
+                                <h2 id="shipmentListTitle">출고 목록</h2>
+                                <p class="shipment-section-description">주문 접수로 생성된 출고의 창고·포장·완료 상태를 확인할 수 있습니다.</p>
+                            </div>
+                            <span id="shipmentCount" class="shipment-count">총 0건</span>
+                        </div>
+                        <div class="shipment-table-wrap">
+                            <table class="shipment-table">
+                                <colgroup>
+                                    <col style="width: 10%"><col style="width: 10%"><col style="width: 20%"><col style="width: 12%">
+                                    <col style="width: 11%"><col style="width: 15%"><col style="width: 10%"><col style="width: 12%">
+                                </colgroup>
+                                <thead><tr>
+                                    <th scope="col">출고 번호</th><th scope="col">주문 번호</th><th scope="col">거래처</th><th scope="col">주문 접수일</th>
+                                    <th scope="col">출고 상태</th><th scope="col">출고 창고</th><th scope="col">거래 상태</th><th scope="col">최근 처리</th>
+                                </tr></thead>
+                                <tbody id="shipmentTableBody"><tr><td colspan="8" class="shipment-empty-cell">출고 목록을 불러오는 중입니다.</td></tr></tbody>
+                            </table>
+                        </div>
+                        <div id="shipmentMobileList" class="shipment-mobile-list" aria-live="polite"><p class="shipment-mobile-empty">출고 목록을 불러오는 중입니다.</p></div>
+                        <nav id="shipmentPagination" class="shipment-pagination" aria-label="출고 목록 페이지"></nav>
+                    </section>
+
+                    <!-- 선택 출고의 주문·배송·포장 LOT·납품서·처리 이력을 표시한다. -->
+                    <section id="shipmentDetailSection" class="shipment-detail-section" aria-labelledby="shipmentDetailTitle">
+                        <div class="shipment-section-header shipment-detail-header">
+                            <div>
+                                <h2 id="shipmentDetailTitle">출고 정보</h2>
+                                <p class="shipment-section-description">선택한 출고의 포장 수량과 실제 진행 상태를 확인할 수 있습니다.</p>
+                            </div>
+                            <button type="button" id="closeDetailButton" class="shipment-detail-close" aria-label="출고 상세정보 닫기">×</button>
+                        </div>
+                        <div id="shipmentDetailEmpty" class="shipment-detail-empty"><p>목록에서 출고를 선택해 주세요.</p></div>
+
+                        <div id="shipmentDetailContent" class="shipment-detail-content" hidden>
+                            <!-- 출고·주문·거래 상태와 주요 처리 결과를 요약한다. -->
+                            <section class="shipment-form-section">
+                                <div class="shipment-form-section-header">
+                                    <h3>출고 현황</h3>
+                                    <div class="shipment-status-group">
+                                        <span id="shipmentStatusBadge" class="shipment-status-badge is-pending">출고 대기</span>
+                                        <span id="tradeStatusBadge" class="shipment-trade-badge is-normal">정상 거래</span>
+                                    </div>
+                                </div>
+                                <div class="shipment-summary-grid">
+                                    <div class="shipment-summary-item"><span>출고 번호</span><strong id="shipmentIdValue">-</strong></div>
+                                    <div class="shipment-summary-item"><span>주문 번호</span><strong id="salesOrderIdValue">-</strong></div>
+                                    <div class="shipment-summary-item"><span>거래처</span><strong id="customerValue">-</strong></div>
+                                    <div class="shipment-summary-item"><span>출고 창고</span><strong id="warehouseValue">미선택</strong></div>
+                                    <div class="shipment-summary-item"><span>포장 회차</span><strong id="packingSequenceValue">0회</strong></div>
+                                    <div class="shipment-summary-item" data-office-information="amount"><span>주문 총액</span><strong id="totalAmountValue">0원</strong></div>
+                                    <div class="shipment-summary-item"><span>주문 접수</span><strong id="registeredAtValue">-</strong></div>
+                                    <div class="shipment-summary-item"><span>포장 완료</span><strong id="packedAtValue">-</strong></div>
+                                    <div class="shipment-summary-item"><span>출고 완료</span><strong id="completedAtValue">-</strong></div>
+                                </div>
+                            </section>
+
+                            <!-- 주문 접수 시점에 확정된 배송 스냅샷을 조회 전용으로 표시한다. -->
+                            <section class="shipment-form-section">
+                                <h3>배송 정보</h3>
+                                <dl class="shipment-information-grid">
+                                    <div><dt>주문 경로</dt><dd id="channelValue">-</dd></div>
+                                    <div><dt>수령인</dt><dd id="recipientValue">-</dd></div>
+                                    <div><dt>수령인 연락처</dt><dd id="recipientPhoneValue">-</dd></div>
+                                    <div class="is-wide"><dt>배송지</dt><dd id="deliveryAddressValue">-</dd></div>
+                                    <div class="is-wide"><dt>주문 메모</dt><dd id="memoValue">-</dd></div>
+                                </dl>
+                            </section>
+
+                            <!-- PENDING에서는 단일 창고와 LOT별 포장 수량을 편집하고 그 외 상태에서는 조회만 한다. -->
+                            <section class="shipment-form-section shipment-packing-section">
+                                <div class="shipment-form-section-header">
+                                    <div>
+                                        <h3>출고 포장</h3>
+                                        <p class="shipment-section-description">하나의 창고에서 사용기한과 입고 순서로 조회한 LOT를 직접 선택합니다.</p>
+                                    </div>
+                                    <label class="shipment-warehouse-field">
+                                        <span>출고 창고</span>
+                                        <select id="shipmentWarehouse"><option value="">창고 선택</option></select>
+                                    </label>
+                                </div>
+                                <p id="lotLoadingMessage" class="shipment-lot-guide" hidden>출고 가능한 LOT를 조회하는 중입니다.</p>
+                                <div id="shipmentPackingItems" class="shipment-packing-items"></div>
+                            </section>
+
+                            <!-- 포장 회차별 ACTIVE·VOID 납품서와 PDF 내려받기를 표시한다. -->
+                            <section class="shipment-form-section">
+                                <div class="shipment-form-section-header"><h3>납품서 이력</h3><span id="deliveryNoteCount" class="shipment-count">총 0건</span></div>
+                                <div class="shipment-note-table-wrap">
+                                    <table class="shipment-note-table">
+                                        <thead><tr><th scope="col">회차</th><th scope="col">상태</th><th scope="col">발행</th><th scope="col">무효</th><th scope="col">무효 사유</th><th scope="col">PDF</th></tr></thead>
+                                        <tbody id="deliveryNoteTableBody"><tr><td colspan="6" class="shipment-note-empty">발행된 납품서가 없습니다.</td></tr></tbody>
+                                    </table>
+                                </div>
+                            </section>
+
+                            <p id="shipmentFormNotice" class="shipment-form-notice" role="status" hidden></p>
+                            <p id="shipmentFormError" class="form-error" role="alert" hidden></p>
+                            <div class="shipment-detail-actions">
+                                <button type="button" id="unpackButton" class="button button-danger">포장 취소</button>
+                                <button type="button" id="savePackingButton" class="button button-secondary">포장 저장</button>
+                                <button type="button" id="packButton" class="button button-primary">포장 완료</button>
+                                <button type="button" id="completeShipmentButton" class="button button-primary">출고 완료</button>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <!-- 포장 완료와 실제 출고 완료에 공통으로 사용하는 확인 Modal -->
+    <div id="actionModalBackdrop" class="common-modal-backdrop" hidden>
+        <section class="common-modal" role="dialog" aria-modal="true" aria-labelledby="actionModalTitle">
+            <header class="common-modal-header">
+                <h2 id="actionModalTitle" class="common-modal-title">출고 처리 확인</h2>
+                <button type="button" id="closeActionModalButton" class="common-modal-close" aria-label="출고 처리 모달 닫기">×</button>
+            </header>
+            <form id="actionModalForm" novalidate>
+                <div class="common-modal-body">
+                    <p class="common-modal-target">대상 출고: <strong id="actionModalTarget">-</strong></p>
+                    <div class="common-status-summary" aria-label="출고 상태 변경">
+                        <div class="common-status-item"><span class="common-status-label">현재 상태</span><strong id="actionModalCurrentValue" class="common-status-value">-</strong></div>
+                        <span class="common-status-arrow" aria-hidden="true">→</span>
+                        <div class="common-status-item"><span class="common-status-label">변경 상태</span><strong id="actionModalNextValue" class="common-status-value">-</strong></div>
+                    </div>
+                    <p id="actionModalDescription" class="shipment-modal-description"></p>
+                    <p id="actionModalError" class="form-error" role="alert" hidden></p>
+                </div>
+                <div class="common-modal-actions">
+                    <button type="button" id="cancelActionModalButton" class="button button-secondary">취소</button>
+                    <button type="submit" id="confirmActionButton" class="button button-primary">확인</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <!-- PACKED 출고의 예약 해제와 납품서 무효 사유를 입력하는 Modal -->
+    <div id="unpackModalBackdrop" class="common-modal-backdrop" hidden>
+        <section class="common-modal" role="dialog" aria-modal="true" aria-labelledby="unpackModalTitle">
+            <header class="common-modal-header">
+                <h2 id="unpackModalTitle" class="common-modal-title">포장 취소</h2>
+                <button type="button" id="closeUnpackModalButton" class="common-modal-close" aria-label="포장 취소 모달 닫기">×</button>
+            </header>
+            <form id="unpackModalForm" novalidate>
+                <div class="common-modal-body">
+                    <p class="common-modal-target">대상 출고: <strong id="unpackModalTarget">-</strong></p>
+                    <div class="common-status-summary" aria-label="포장 취소 상태 변경">
+                        <div class="common-status-item"><span class="common-status-label">현재 상태</span><strong class="common-status-value">포장 완료</strong></div>
+                        <span class="common-status-arrow" aria-hidden="true">→</span>
+                        <div class="common-status-item"><span class="common-status-label">변경 상태</span><strong class="common-status-value">출고 대기</strong></div>
+                    </div>
+                    <label class="shipment-modal-field">
+                        <span>취소 사유 <em>*</em></span>
+                        <textarea id="unpackReason" maxlength="1000" rows="4" placeholder="포장 취소 사유를 입력해 주세요."></textarea>
+                        <small><span id="unpackReasonLength">0</span>/1000</small>
+                    </label>
+                    <p class="shipment-modal-description">재고 LOT의 예약 수량을 해제하고 현재 유효한 납품서를 무효 처리합니다. 주문은 취소되지 않습니다.</p>
+                    <p id="unpackModalError" class="form-error" role="alert" hidden></p>
+                </div>
+                <div class="common-modal-actions">
+                    <button type="button" id="cancelUnpackModalButton" class="button button-secondary">취소</button>
+                    <button type="submit" id="confirmUnpackButton" class="button button-primary">포장 취소</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <script type="module" src="../js/shipments.js"></script>
+</body>
+</html>

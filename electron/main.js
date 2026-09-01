@@ -3,7 +3,7 @@
 // Electron의 앱, 창, IPC, HTTP 통신 기능을 가져온다.
 // ipcMain: Renderer Process가 보낸 IPC 요청을 Main Process에서 받아 처리하는 기능
 // net: Main Process에서 Spring Boot 같은 외부 서버로 HTTP 요청을 보내는 Electron의 네트워크 기능
-const { app, BrowserWindow, ipcMain, net, dialog } = require('electron/main');
+const { app, BrowserWindow, ipcMain, net, dialog } = require('electron');
 
 // 파일 경로를 안전하게 조합하는 Node.js path 모듈을 가져온다.
 const path = require('node:path');
@@ -88,6 +88,17 @@ ipcMain.handle('api:request', async (_event, request) => {
             credentials: 'include'
         }
     );
+
+    // 납품서처럼 바이너리 응답을 요청한 경우 IPC로 안전하게 전달할 수 있는 byte 배열로 변환한다.
+    if (options.responseType === 'arrayBuffer' && response.ok) {
+        const bytes = new Uint8Array(await response.arrayBuffer());
+        return {
+            ok: true,
+            status: response.status,
+            body: bytes,
+            contentType: response.headers.get('content-type')
+        };
+    }
 
     // 서버 응답 내용을 문자열로 읽는다.
     const text = await response.text();
